@@ -24,6 +24,7 @@ const projAllocationRouter = require('./routes/projectAllocationRoutes');
 //const userRouter = require('./routes/userRoutes');
 const progressTrackerRouter = require('./routes/progressTrackerRoutes');
 const notificationRouter = require("./routes/notificationRoutes");
+const contactRoutes = require('./routes/contactRoutes');
 
 const app = express();
 
@@ -89,6 +90,7 @@ app.use('/department', departmentRoutes);
 app.use('/project', projectRouter);
 app.use('/profile', profileRouter);
 app.use('/editProfile', EditProfileRouter);
+app.use('/contact', contactRoutes);
 //app.use('',userRouter);
 app.use('/progressTracker', progressTrackerRouter);
 // Error handling middleware

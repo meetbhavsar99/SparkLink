@@ -1,68 +1,43 @@
-/* General container styling to add spacing from the side navbar */
-.container {
-    margin-left: 250px; /* Adjust this value based on your navbar width */
-    padding: 20px;
-    font-family: Arial, sans-serif;
-  }
-  
-  /* Styling for the cards */
-  /* General card styling */
-  .card {
-    border: 1px solid #ccc;
-    padding: 15px;
-    border-radius: 5px;
-    text-align: center;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    width: 320px; /* Increase width */
-    height: 460px; /* Increase height */
-    display: flex;
-    flex-direction: column; /* Ensure vertical alignment */
-    justify-content: space-between; /* Space out content */
-    background-color: #fff; /* Keep the background as is */
-  }
-  
-  /* Styling for the images */
-  .card img {
-    width: 150px; 
-    height: 150px; 
-    border-radius: 0; 
-    margin: 0 auto; 
-    object-fit: cover;
-  }
-  
-  .card input[type="file"] {
-    margin-top: 10px;
-  }
-  
-  /* Flexbox styling for the team section */
-  .team-section {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px; 
-    justify-content: space-evenly; 
-  }
-  
-  /* Styling for the overall page layout */
-  h1, h2 {
-    text-align: center;
-    color: #333;
-  }
-  
-  p {
-    line-height: 1.5;
-    color: #555;
-  }
+.expandable-title {
+  cursor: pointer;
+  color: #007BFF;
+  font-size: 24px;
+  font-weight: bold;
+}
 
-  .member-link {
-    text-decoration: underline;
-    color: black;
-    transition: color 0.3s ease;
-  }
-  
-  .member-link:hover {
-    color: blue;
-  }
-  
+.expandable-title:hover {
+  text-decoration: underline;
+}
 
-  
-  
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.team-card {
+  border: 1px solid #ccc;
+  padding: 15px;
+  border-radius: 5px;
+  text-align: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+}
+
+.team-image {
+  width: 100%;
+  height: 200px;
+  object-fit: contain;
+  border-radius: 5px;
+}
+
+.member-link {
+  text-decoration: none;
+  color: black;
+}
+
+.member-link:hover {
+  color: blue;
+}

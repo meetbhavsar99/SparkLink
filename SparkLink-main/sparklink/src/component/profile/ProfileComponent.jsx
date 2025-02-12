@@ -1,6 +1,7 @@
 import MasterComponent from '../MasterComponent';
 import '../progress-tracker/ProgressTrackerComponent.css';
 import MenuComponent from '../menu/MenuComponent';
+import FooterComponent from '../footer/FooterComponent';
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './ProfileComponent.css';
@@ -129,44 +130,37 @@ const ProfileComponent = () => {
         <>
             <MenuComponent />
             {role === 'admin' && (
-            <div className="container">
-                <div className="team-single">
-                    <div className="row">
-                        <div className="col-lg-12 col-md-12">
-                            <div className="team-single-text text-center">
-                                <h1>Welcome, {userDetails.username}</h1>
-                                <h4 className="font-size38 sm-font-size32 xs-font-size30">{userDetails.name}</h4>
-                                <p className="no-margin-bottom">You are logged in as an **Administrator**.</p>
+    <div className="container pt-4">
+        <div className="shadow-lg p-4 text-center">
+            <h1 className="text-primary pb-4">Welcome, {userDetails.username}</h1>
+            {/* <h4 className="text-dark">{userDetails.name}</h4> */}
+            <p className="text-muted">You are logged in as an <strong>Administrator</strong>.</p>
 
-                                <div className="contact-info-section margin-40px-tb">
-                                    <ul className="list-style9 no-margin">
-                                        <li>
-                                            <div className="row">
-                                                <div className="col-md-5 col-5">
-                                                    <i className="fas fa-envelope text-pink"></i>
-                                                    <strong className="margin-10px-left xs-margin-four-left text-pink">Email:</strong>
-                                                </div>
-                                                <div className="col-md-7 col-7">
-                                                    <p>{userDetails.email}</p>
-                                                </div>
-                                            </div>
-                                        </li>
-                                    </ul>
-                                </div>
-
-                                <h2>Admin Actions:</h2>
-                                <div className="admin-actions">
-                                    <a href="/admin/dashboard" className="button">Go to Admin Dashboard</a>
-                                    <a href="/admin/viewusers" className="button" style={{ marginLeft: "10px" }}>View Users</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+            <div className="mt-4">
+                <h5 className="text-secondary">Contact Information</h5>
+                <div className="d-flex justify-content-center align-items-center gap-3">
+                    <i className="fas fa-envelope text-danger"></i>
+                    <p className="mb-0">{userDetails.email}</p>
                 </div>
             </div>
-        )}
+
+            <div className="mt-4">
+                <h5 className="text-secondary">Admin Actions</h5>
+                <div className="d-flex justify-content-center gap-3">
+                    <a href="/admin/dashboard" className="btn btn-primary">
+                        <i className="fas fa-tachometer-alt"></i> Admin Dashboard
+                    </a>
+                    <a href="/admin/viewusers" className="btn btn-secondary">
+                        <i className="fas fa-users"></i> View Users
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+)}
+
             {role === 'student' && (
-                <div className="container">
+                <div className="container pt-4">
                     <div className="team-single">
                         <div className="row">
                             <div className="col-lg-4 col-md-5 xs-margin-30px-bottom">
@@ -178,9 +172,9 @@ const ProfileComponent = () => {
                                     />
                                 </div>
                                 <div className="bg-light-gray padding-30px-all md-padding-25px-all sm-padding-20px-all text-center">
-                                    {/* <h4 className="margin-10px-bottom font-size24 md-font-size22 sm-font-size20 font-weight-600">
+                                    <h4 className="margin-10px-bottom font-size24 md-font-size22 sm-font-size20 font-weight-600">
                                         Full Stack Developer
-                                    </h4> */}
+                                    </h4>
                                     <p className="sm-width-95 sm-margin-auto">SKills : {profile.skills}</p>
                                     <div className="margin-20px-top team-single-icons">
                                         <ul className="no-margin">
@@ -198,8 +192,7 @@ const ProfileComponent = () => {
 
                             <div className="col-lg-8 col-md-7">
                                 <div className="team-single-text padding-50px-left sm-no-padding-left">
-                                    <h1>Welcome, {userDetails.username}</h1>
-                                    <h4 className="font-size38 sm-font-size32 xs-font-size30">{userDetails.name}</h4>
+                                    <h1 className="pb-4">Welcome, {userDetails.username}</h1>
                                     <p className="no-margin-bottom">{profile.bio}</p>
                                     <div className="contact-info-section margin-40px-tb padding-left:10px">
                                         <ul className="list-style9 no-margin">
@@ -428,7 +421,7 @@ const ProfileComponent = () => {
 
             {/* supervisor profile starts */}
             {role === 'supervisor' && (
-                <div className="container">
+                <div className="container pt-4">
                     <div className="team-single">
                         <div className="row">
                             <div className="col-lg-4 col-md-5 xs-margin-30px-bottom">
@@ -456,8 +449,8 @@ const ProfileComponent = () => {
 
                             <div className="col-lg-8 col-md-7">
                                 <div className="team-single-text padding-50px-left sm-no-padding-left">
-                                    <h1>Welcome, {userDetails.username}</h1>
-                                    <h4 className="font-size38 sm-font-size32 xs-font-size30">{userDetails.name}</h4>
+                                    <h1 className="pb-4">Welcome, {userDetails.username}</h1>
+                                    {/* <h4 className="font-size38 sm-font-size32 xs-font-size30">{userDetails.name}</h4> */}
                                     <p className="no-margin-bottom">{profile.bio} </p>
                                     <div className="contact-info-section margin-40px-tb padding-left:10px">
                                         <ul className="list-style9 no-margin">
@@ -710,7 +703,7 @@ const ProfileComponent = () => {
             )}
             {/* supervisor profile ends */}
             {role === 'business_owner' && (
-                <div className="container">
+                <div className="container pt-4">
                     <div className="team-single">
                         <div className="row">
                             <div className="col-lg-4 col-md-5 xs-margin-30px-bottom">
@@ -736,8 +729,8 @@ const ProfileComponent = () => {
 
                             <div className="col-lg-8 col-md-7">
                                 <div className="team-single-text padding-50px-left sm-no-padding-left">
-                                    <h1>Welcome, {userDetails.username}</h1>
-                                    <h4 className="font-size38 sm-font-size32 xs-font-size30">{userDetails.name}</h4>
+                                    <h1 className="pb-4">Welcome, {userDetails.username}</h1>
+                                    {/* <h4 className="font-size38 sm-font-size32 xs-font-size30">{userDetails.name}</h4> */}
                                     <p className="no-margin-bottom">{profile.bio} </p>
                                     <div className="contact-info-section margin-40px-tb padding-left:10px">
                                         <ul className="list-style9 no-margin">
@@ -970,6 +963,8 @@ const ProfileComponent = () => {
                 </div>
             )}
             {/* buisness owner profile ends */}
+
+            {/* <FooterComponent></FooterComponent> */}
         </>
     );
 };
