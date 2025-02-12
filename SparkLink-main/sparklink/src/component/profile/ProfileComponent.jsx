@@ -47,6 +47,7 @@ const ProfileComponent = () => {
         console.log("PROF>>>>>", user_id);
         if (user) {
             try {
+                console.log("Fetching profile for user_id:", user_id);
                 const response = await axios.get("/profile", {
                     params: { user_id: user_id }
                 });
@@ -127,6 +128,43 @@ const ProfileComponent = () => {
     return (
         <>
             <MenuComponent />
+            {role === 'admin' && (
+            <div className="container">
+                <div className="team-single">
+                    <div className="row">
+                        <div className="col-lg-12 col-md-12">
+                            <div className="team-single-text text-center">
+                                <h1>Welcome, {userDetails.username}</h1>
+                                <h4 className="font-size38 sm-font-size32 xs-font-size30">{userDetails.name}</h4>
+                                <p className="no-margin-bottom">You are logged in as an **Administrator**.</p>
+
+                                <div className="contact-info-section margin-40px-tb">
+                                    <ul className="list-style9 no-margin">
+                                        <li>
+                                            <div className="row">
+                                                <div className="col-md-5 col-5">
+                                                    <i className="fas fa-envelope text-pink"></i>
+                                                    <strong className="margin-10px-left xs-margin-four-left text-pink">Email:</strong>
+                                                </div>
+                                                <div className="col-md-7 col-7">
+                                                    <p>{userDetails.email}</p>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <h2>Admin Actions:</h2>
+                                <div className="admin-actions">
+                                    <a href="/admin/dashboard" className="button">Go to Admin Dashboard</a>
+                                    <a href="/admin/viewusers" className="button" style={{ marginLeft: "10px" }}>View Users</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        )}
             {role === 'student' && (
                 <div className="container">
                     <div className="team-single">

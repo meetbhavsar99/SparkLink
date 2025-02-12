@@ -77,7 +77,7 @@ exports.register = async (req, res) => {
       },
     });
 
-    const confirmationLink = `http://localhost:3100/api/users/confirm-email?token=${confirmationToken}`;
+    const confirmationLink = `http://localhost:5100/api/users/confirm-email?token=${confirmationToken}`;
     await transporter.sendMail({
       from: process.env.EMAIL_USER,
       to: email,

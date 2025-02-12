@@ -1,6 +1,7 @@
 const { DataTypes } = require('sequelize');
 const bcrypt = require('bcrypt');
 const sequelize = require('../config/db');
+const Role = require('./role');
 
 const User = sequelize.define('User', {
   user_id: {
@@ -18,8 +19,12 @@ const User = sequelize.define('User', {
     allowNull: true,
   },
   role: {
-    type: DataTypes.STRING(50),
+    type: DataTypes.INTEGER,
     allowNull: false,
+    references: {
+      model: 't_rolesmst', // ✅ Use the correct table name
+      key: 'id',
+    },
   },
   name: {
     type: DataTypes.STRING(250),
@@ -93,5 +98,7 @@ User.prototype.validPassword = async function (password) {
   console.log(password + "Hashed password:" + this.password)
   return await bcrypt.compare(password, this.password);
 };
+
+User.belongsTo(Role, { foreignKey: 'role', as: 'roleDetails' });
 
 module.exports = User;
