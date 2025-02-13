@@ -21,7 +21,7 @@ import Kausar from './images/Kausar.jpg';
 // Your New Team Members (Replace with real images if needed)
 import Meet from './images/Meet.jpg';
 import Heet from './images/Heet.jpg';
-// import Meet from './images/Meet.jpg';
+import Chaitanya from './images/Chaitanya.jpg';
 import Vinit from './images/Vinit.jpg';
 
 const AboutComponent = () => {
@@ -40,7 +40,7 @@ const AboutComponent = () => {
         },
         {
             id: 2,
-            name: 'Heet',
+            name: 'Heet Patel',
             role: 'Frontend Developer',
             responsibilities: 'Responsible for UI/UX improvements.',
             image: Heet,
@@ -48,15 +48,15 @@ const AboutComponent = () => {
         },
         {
             id: 3,
-            name: 'Chaitanya',
+            name: 'Chaitanya  Parikh',
             role: 'Backend Developer',
             responsibilities: 'Handles API development and database management.',
-            image: Meet,
+            image: Chaitanya,
             LinkedIn: 'https://www.linkedin.com/in/chaitanyap310/',
         },
         {
             id: 4,
-            name: 'Vinit',
+            name: 'Vinit Vekariya',
             role: 'QA & Testing',
             responsibilities: 'Ensures software quality through rigorous testing.',
             image: Vinit,
