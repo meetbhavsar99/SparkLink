@@ -56,7 +56,7 @@ const AboutComponent = () => {
         },
         {
             id: 4,
-            name: 'Vinit Vekariya',
+            name: 'Vinit Vekaria',
             role: 'QA & Testing',
             responsibilities: 'Ensures software quality through rigorous testing.',
             image: Vinit,
