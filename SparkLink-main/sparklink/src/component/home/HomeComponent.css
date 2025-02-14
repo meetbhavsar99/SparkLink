@@ -23,7 +23,7 @@
 }
 
 .home_container {
-    padding: 2px 35px 35px 65px !important;
+    padding: 2px 35px 35px 35px !important;
 }
 
 .container-fluid.background {
@@ -242,6 +242,49 @@
     font-style: normal;
     color: #000 !important;
     font-size: large !important;
+}
+
+/* new ones */
+.button-container {
+    text-align: center;
+}
+
+.button-group {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.btn-primary {
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+
+.btn-secondary {
+    background-color: #f8f9fa;
+    color: #007BFF;
+    border: 1px solid #007BFF;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-secondary:hover {
+    background-color: #007BFF;
+    color: white;
 }
 
 .button-card {

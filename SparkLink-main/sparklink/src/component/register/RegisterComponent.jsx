@@ -26,39 +26,45 @@ const RegistrationForm = () => {
     e.preventDefault();
 
     if (password !== confirmPassword) {
-      setErrorMessage("Passwords do not match!");
-      return;
+        setErrorMessage("Passwords do not match!");
+        return;
     }
 
     if ((role === "3" || role === "4") && !email.endsWith("@uwindsor.ca")) {
-      setErrorMessage("Email should end with @uwindsor.ca");
-      return;
+        setErrorMessage("Email should end with @uwindsor.ca");
+        return;
     }
 
     try {
-      setLoading(true);
-      const response = await axios.post("/api/users/register", {
-        username,
-        email,
-        password,
-        confirmPassword,
-        name,
-        role,
-      });
+        setLoading(true);
+        const response = await axios.post("/api/users/register", {
+            username,
+            email,
+            password,
+            confirmPassword,
+            name,
+            role,
+        });
 
-      setSuccessMessage("Please check your email to confirm your account.");
-      setErrorMessage("");
+        setSuccessMessage("Registration successful! Please check your email to confirm your account.");
+
+        // Redirect to login page after 3 seconds
+        setTimeout(() => {
+            navigate("/login");
+        }, 3000);
+
+        setErrorMessage("");
     } catch (error) {
-      console.log(error);
-      setErrorMessage(
-        error.response?.data?.message ||
-          "Registration failed. Please try again."
-      );
-      setSuccessMessage("");
+        console.log(error);
+        setErrorMessage(
+            error.response?.data?.message || "Registration failed. Please try again."
+        );
+        setSuccessMessage("");
     } finally {
-      setLoading(false);
+        setLoading(false);
     }
-  };
+};
+
 
   return (
     <div className="main row-2">
@@ -190,6 +196,12 @@ const RegistrationForm = () => {
                   </button>
                   <Link to="/login" className="login-link">I am already a member</Link>
                 </div>
+
+                {/* Contact Us Button */}
+              <p className="small fw-bold mt-2 pt-1 mb-0">
+                  Need help?{" "}
+                  <a href="/contact" className="link-primary">Contact Us</a>
+              </p>
               </form>
             </div>
             {/* Image Section */}

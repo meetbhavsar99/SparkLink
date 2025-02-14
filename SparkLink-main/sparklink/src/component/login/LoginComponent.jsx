@@ -29,40 +29,31 @@ const LoginComponent = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    console.log("entered login");
     try {
-      const response = await axios.post(
-        "/api/users/login",
-        {
-          email: email,
-          password: password,
-        },
-        {
-          withCredentials: true, // Include credentials in the request
+        const response = await axios.post("/api/users/login", {
+            email: email.trim(),
+            password: password.trim(),
+        }, {
+            withCredentials: true,
+        });
+
+        if (response.data.is_confirmed === 0) {
+            setErrorMessage("Please confirm your email before logging in.");
+            return;
         }
-      );
 
-      // Optionally storing token if your backend returns one
-      localStorage.setItem("token", response.data.token);
-      setSuccessMessage("Login successful!");
-      setErrorMessage("");
-
-      setIsAuthenticated(true);
-
-      setUser(response.data.user);
-      // Redirect to the specified URL from the backend response
-      const redirectPath = localStorage.getItem("redirectAfterLogin") || "/";
-
-      console.log("the user logged in is redirect to " + redirectPath);
-
-      navigate(redirectPath, { replace: true });
+        localStorage.setItem("token", response.data.token);
+        setIsAuthenticated(true);
+        setUser(response.data.user);
+        navigate("/", { replace: true });
     } catch (error) {
-      setErrorMessage(
-        error.response?.data?.message || "Login failed. Please try again."
-      );
-      setSuccessMessage("");
+        // Always return a generic error message for invalid credentials
+        setErrorMessage("Invalid credentials. Please try again.");
     }
-  };
+};
+
+
+
 
   return (
     <section className="vh-100">
@@ -138,11 +129,16 @@ const LoginComponent = () => {
                 </a>
               </div>
               <p className="small fw-bold mt-2 pt-1 mb-0">
-                Don't have an account?{" "}
-                <a href="/register" className="link-danger">
-                  Register
-                </a>
+                  Don't have an account?{" "}
+                  <a href="/register" className="link-danger">Register</a>
               </p>
+
+              {/* Contact Us Button */}
+              <p className="small fw-bold mt-2 pt-1 mb-0">
+                  Need help?{" "}
+                  <a href="/contact" className="link-primary">Contact Us</a>
+              </p>
+
             </form>
           </div>
         </div>

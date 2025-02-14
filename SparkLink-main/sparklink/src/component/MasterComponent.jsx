@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import './MasterComponent.css';
 import sparklink_logo from '../assets/SparkLink_Logo_4.png';
+import sparklink_icon3 from '../assets/Sparklink_icon3.png';
 import { useAuth } from '../AuthContext';
 import Swal from 'sweetalert2';
 import axios from "axios";
@@ -49,6 +50,7 @@ const MasterComponent = () => {
                 <div className="ms-lg-5 ms-md-0 mt-2 row" style={{ paddingRight: 25 }}>
                     <div className="col-lg-5 col-md-5 px-5 col-sm-12 heading">
                         <Link to='/'>
+                            <img src={sparklink_icon3} alt="Logo" className="sparklink_logo px-2" />
                             <img src={sparklink_logo} alt="Logo" className="sparklink_logo" />
                         </Link>
                     </div>

@@ -27,6 +27,8 @@ import Vinit from './images/Vinit.jpg';
 const AboutComponent = () => {
     const [showCurrentTeam, setShowCurrentTeam] = useState(true);
     const [showPreviousTeam, setShowPreviousTeam] = useState(false);
+    const [showProfessor, setShowProfessor] = useState(false);
+
 
     // Your New Team Members
     const currentTeam = [
@@ -147,13 +149,41 @@ const AboutComponent = () => {
                     </p>
                 </section>
 
+                {/* Professor (Expandable) */}
+                <section className="mt-4">
+                    <h2 
+                        className="expandable-title"
+                        onClick={() => setShowProfessor(!showProfessor)} // Correct state toggle
+                    >
+                        Professor {showProfessor ? '▼' : '▶'}
+                    </h2>
+                    {showProfessor && (
+                        <div className="team-grid">
+                            <div className="team-card">
+                                <img src="" alt="Professor Olena Syrotkina" className="" />
+                                <h3>
+                                    <a href="https://www.linkedin.com/in/olena-syrotkina/" 
+                                    target="_blank" 
+                                    rel="noopener noreferrer" 
+                                    className="member-link">
+                                        Olena Syrotkina
+                                    </a>
+                                </h3>
+                                <p><strong>Supervised the entire project</strong></p>
+                            </div>
+                        </div>
+                    )}
+                </section>
+
+
+
                 {/* Current Team (Expandable) */}
                 <section className="mt-4">
                     <h2 
                         className="expandable-title"
                         onClick={() => setShowCurrentTeam(!showCurrentTeam)}
                     >
-                        Current Team {showCurrentTeam ? '▼' : '▶'}
+                        Current Team (Winter 2025) {showCurrentTeam ? '▼' : '▶'}
                     </h2>
                     {showCurrentTeam && (
                         <div className="team-grid">
@@ -179,7 +209,7 @@ const AboutComponent = () => {
                         className="expandable-title"
                         onClick={() => setShowPreviousTeam(!showPreviousTeam)}
                     >
-                        Previous Team {showPreviousTeam ? '▼' : '▶'}
+                        Previous Team (Fall 2024) {showPreviousTeam ? '▼' : '▶'}
                     </h2>
                     {showPreviousTeam && (
                         <div className="team-grid">

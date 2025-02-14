@@ -23,24 +23,30 @@ const ContactComponent = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch("http://localhost:3100/contact/submit", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
+        const response = await fetch("http://localhost:3100/contact/submit", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(formData),
+        });
 
-      const result = await response.json();
-      if (response.ok) {
-        setSubmissionStatus("✅ Your message has been sent successfully!");
-        setFormData({ name: "", email: "", message: "" });
-      } else {
-        setSubmissionStatus("❌ Failed to send message. Please try again.");
-      }
+        const result = await response.json();
+        if (response.ok) {
+            setSubmissionStatus(`✅ Your request has been submitted successfully! Token ID: ${result.tokenId}`);
+            
+            // Show success message with token ID
+            alert(`Your request has been submitted successfully!\nToken ID: ${result.tokenId}\nCheck your email for confirmation.`);
+
+            // Reset the form after successful submission
+            setFormData({ name: "", email: "", message: "" });
+        } else {
+            setSubmissionStatus("❌ Failed to send message. Please try again.");
+        }
     } catch (error) {
-      console.error("Error submitting form:", error);
-      setSubmissionStatus("❌ Something went wrong. Please try again.");
+        console.error("Error submitting form:", error);
+        setSubmissionStatus("❌ Something went wrong. Please try again.");
     }
-  };
+};
+
 
   return (
     <>
@@ -58,14 +64,12 @@ const ContactComponent = () => {
               <div className="mb-4">
                 <p>
                   <i className="fas fa-envelope text-primary"></i>{" "}
-                  support@sparklink.com
+                  support@sparklink.com(bhavsa35@uwindsor.ca)
                 </p>
                 <p>
-                  <i className="fas fa-phone text-success"></i> +1 123-456-7890
-                </p>
-                <p>
-                  <i className="fas fa-map-marker-alt text-danger"></i> 123
-                  SparkLink Ave, Windsor, ON
+                  <i className="fas fa-map-marker-alt text-danger"></i>{" "}
+                  University of Windsor <br/>
+                  401 Sunset Ave, Windsor, ON N9B 3P4
                 </p>
               </div>
 
@@ -82,7 +86,6 @@ const ContactComponent = () => {
                     required
                   />
                 </div>
-
                 <div className="mb-3">
                   <label className="form-label">Your Email</label>
                   <input

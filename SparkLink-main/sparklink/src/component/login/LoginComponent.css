@@ -157,3 +157,20 @@
   color: #2f5972;  /* Change color to red on hover */
   text-decoration: underline; /* Add underline on hover */
 }
+
+.btn-outline-primary {
+  border: 1px solid #007BFF;
+  color: #007BFF;
+  padding: 6px 12px;
+  font-size: 14px;
+  border-radius: 5px;
+  text-decoration: none;
+  transition: 0.3s ease-in-out;
+}
+
+.btn-outline-primary:hover {
+  background-color: #007BFF;
+  color: white;
+}
+
+
