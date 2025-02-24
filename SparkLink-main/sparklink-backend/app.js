@@ -61,7 +61,7 @@ app.use(session({
   secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
-  cookie: { secure: false , sameSite: 'Lax'} // Set `secure: true` if using HTTPS in production
+  cookie: { secure: false , sameSite: 'Lax'} // Set secure: true if using HTTPS in production
 }));
 
 // Passport middleware
@@ -121,7 +121,7 @@ app.use('/notify', notificationRouter);
 
 
 app.get("/status",(req,res) => {
-  console.log(`Inside status end point`);
+  console.log('Inside status end point');
   console.log(req.user);
   console.log(req.session);
   return req.user? res.send(req.user) : res.sendStatus(401);
@@ -130,6 +130,5 @@ app.get("/status",(req,res) => {
 // Start the server
 const PORT =  5100;
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+  console.log('Server is running on port ${PORT}');
 });
-
