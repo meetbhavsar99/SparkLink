@@ -130,5 +130,5 @@ app.get("/status",(req,res) => {
 // Start the server
 const PORT =  5100;
 app.listen(PORT, () => {
-  console.log('Server is running on port ${PORT}');
+  console.log(`Server is running on port ${PORT}`);
 });

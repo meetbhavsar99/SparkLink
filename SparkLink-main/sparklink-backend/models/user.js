@@ -50,6 +50,7 @@ const User = sequelize.define('User', {
   created_by: {
     type: DataTypes.INTEGER,
     allowNull: false,
+    defaultValue: 1, // ✅ Replace with actual user ID if available
   },
   created_on: {
     type: DataTypes.DATE,
@@ -59,6 +60,7 @@ const User = sequelize.define('User', {
   modified_by: {
     type: DataTypes.INTEGER,
     allowNull: false,
+    defaultValue: 1, // ✅ Replace with actual user ID if available
   },
   modified_on: {
     type: DataTypes.DATE,

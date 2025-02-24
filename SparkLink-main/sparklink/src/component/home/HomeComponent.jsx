@@ -19,6 +19,7 @@ import caption_6 from '../../assets/Caption_6.png';
 const HomeComponent = () => {
     return (
         <>
+        <MenuComponent></MenuComponent>
             <div className="page-container">
                 <div className="content-container">
                     <MasterComponent />

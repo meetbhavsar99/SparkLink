@@ -1,4 +1,5 @@
 require("dotenv").config();
+const Role = require("../models/role");  // ✅ Import Role model
 const User = require("../models/user");
 const SupervisorProfile = require("../models/supervisor_profile");
 const BusinessOwner = require("../models/owner_profile");
@@ -15,101 +16,53 @@ const  sequelize  = require("../config/db");
 
 exports.register = async (req, res) => {
   try {
-    const { username, email, password, confirmPassword, name, role } = req.body;
+    const { username, email, password, name, role } = req.body;
 
-    if( password !== confirmPassword){
-      return res.status(400).json({message: "Passwords do not match!"});
-    }
-    if ((role === '3' || role === '4') && !email.endsWith("@uwindsor.ca")) {
-      return res.status(400).json({ message: "Email should end with @uwindsor.ca" });
+    // Check if required fields are missing
+    if (!username || !email || !password || !name || !role) {
+      return res.status(400).json({ message: "All fields are required!" });
     }
 
-    // Check if the user already exists
+    // Check if email already exists
     const existingUser = await User.findOne({ where: { email } });
     if (existingUser) {
-      return res.status(400).json({ message: "User already exists" });
+      return res.status(400).json({ message: "Email already exists!" });
     }
 
-    // Hash the password
-    // const hashedPassword = await bcrypt.hash(password, 10);
+    // Check if username already exists
+    const existingUsername = await User.findOne({ where: { username } });
+    if (existingUsername) {
+      return res.status(400).json({ message: "Username already taken!" });
+    }
 
-    // Generate a unique confirmation token
-    const confirmationToken = crypto.randomBytes(32).toString("hex");
+    // Check if role exists in `t_rolesmst`
+    const roleExists = await Role.findOne({ where: { id: role } });
+    if (!roleExists) {
+      return res.status(400).json({ message: "Invalid role ID!" });
+    }
 
-    // Create a new user with is_active set to 'N' initially
+    // Hash password before storing
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Create new user
     const newUser = await User.create({
       username,
       email,
+      password: hashedPassword,
       name,
-      password: password,
-      role: role,
-      modified_by: role,
-      created_by: role,
-      confirmation_token: confirmationToken, // Save the token to the database
-    });
-    console.log(" entered");
-    if (role === '3') {
-      await SupervisorProfile.create({
-        user_id: newUser.user_id,
-        is_verified: false,
-        is_project_owner: false,
-      });
-    } else if (role === '2') {
-      await BusinessOwner.create({
-        user_id: newUser.user_id,
-      });
-    } else if (role === '4') {
-      console.log(" user is student ");
-      await StudentProfile.create({
-        user_id: newUser.user_id,
-      });
-    }
-    // Send a confirmation email with the link
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-      tls: {
-        // Do not fail on invalid certs
-        rejectUnauthorized: false,
-      },
-    });
-
-    const confirmationLink = `http://localhost:3100/api/users/confirm-email?token=${confirmationToken}`;
-    await transporter.sendMail({
-      from: process.env.EMAIL_USER,
-      to: email,
-      subject: "Confirm Your Email",
-      html: `
-        <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
-          <h2 style="color: #4CAF50;">Welcome to Our Platform!</h2>
-          <p>Thank you for signing up. Please confirm your email address by clicking the button below:</p>
-          <a 
-            href="${confirmationLink}" 
-            style="display: inline-block; padding: 10px 20px; margin: 10px 0; color: #fff; background-color: #4CAF50; text-decoration: none; border-radius: 5px;">
-            Confirm Email
-          </a>
-          <p>If the button above doesn't work, copy and paste the following link into your browser:</p>
-          <p style="word-break: break-word;">${confirmationLink}</p>
-          <hr style="border: none; border-top: 1px solid #ccc;">
-          <p style="font-size: 0.9em; color: #666;">
-            If you didn’t create an account, please ignore this email.
-          </p>
-        </div>
-      `,
+      role,
+      created_by: 1, // ✅ Replace with actual user ID if available
+      modified_by: 1, // ✅ Replace with actual user ID if available
     });
 
     res.status(201).json({
-      message:
-        "User registered successfully. Please check your email to confirm your account.",
+      message: "User registered successfully! Please confirm your email.",
+      user: newUser,
     });
+
   } catch (error) {
-    console.log(error.message);
-    res
-      .status(500)
-      .json({ message: "Error registering user", error: error.message });
+    console.error("❌ Registration error:", error);
+    res.status(500).json({ message: "Registration failed. Try again.", error: error.message });
   }
 };
 
