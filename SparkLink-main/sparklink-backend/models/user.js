@@ -52,6 +52,7 @@ const User = sequelize.define('User', {
     allowNull: false,
     defaultValue: 1, // ✅ Replace with actual user ID if available
   },
+
   created_on: {
     type: DataTypes.DATE,
     allowNull: false,

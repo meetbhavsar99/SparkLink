@@ -16,6 +16,9 @@ import ViewUserComponent from "./component/admin/viewUsers";
 import ResetPasswordComponent from "./component/resetpassword/ResetPasswordComponent"
 import ResetPasswordEmailComponent from "./component/resetpasswordemail/ResetPasswordEmailComponent";
 import ViewRecomendedProject from "./component/viewproject/ViewRecommendedProject"
+import AdminSystemSettings from "./component/admin/AdminSystemSettings";
+import AdminAnalytics from "./component/admin/AdminAnalytics";
+import AdminDashboard from "./component/admin/AdminDashboard";
 
 const AppRoutes = () => {
     let routes = useRoutes([
@@ -41,6 +44,9 @@ const AppRoutes = () => {
                 { path: "/profile", element: <ProfileComponent /> },
                 { path: "/editProfile", element: <EditProfileComponent /> },
                 { path:"/admin/viewusers", element: <ViewUserComponent/>},
+                { path:"/admin/settings", element: <AdminSystemSettings/>},
+                { path:"/admin/analytics-reports", element: <AdminAnalytics/>},
+                { path:"/admin/dashboard", element: <AdminDashboard/>},
             ],
         },
     ]);

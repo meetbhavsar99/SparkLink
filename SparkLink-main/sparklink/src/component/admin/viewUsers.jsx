@@ -33,6 +33,7 @@ const ViewUserComponent = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [role, setRole] = useState("All");
+  const [selectedUsers, setSelectedUsers] = useState([]); // For bulk actions
 
   // Fetch users from the backend API
 
@@ -47,25 +48,26 @@ const ViewUserComponent = () => {
     setSearchQuery("");
   };
 
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const response = await axios.get("/api/users/allusers");
-        const mappedUsers = response.data.map((user) => ({
-          ...user,
-          roleName: roleMapping[user.role], // Add a readable roleName
-          is_active: user.is_active === "Y", // Convert to boolean
-        }));
+  const fetchUsers = async () => {
+    try {
+      const response = await axios.get("/api/users/allusers");
+      const mappedUsers = response.data.map((user) => ({
+        ...user,
+        roleName: roleMapping[user.role], // Add a readable roleName
+        is_active: user.is_active === "Y", // Convert to boolean
+      }));
 
-        console.log(mappedUsers);
-        setAllUsers(mappedUsers.sort((a, b) => a.user_id - b.user_id)); // Store full user list
-        setFilteredUsers(mappedUsers.sort((a, b) => a.user_id - b.user_id)); // Initialize filtered list as full list
-        setLoading(false);
-      } catch (err) {
-        setError(err.message);
-        setLoading(false);
-      }
-    };
+      console.log(mappedUsers);
+      setAllUsers(mappedUsers.sort((a, b) => a.user_id - b.user_id)); // Store full user list
+      setFilteredUsers(mappedUsers.sort((a, b) => a.user_id - b.user_id)); // Initialize filtered list as full list
+      setLoading(false);
+    } catch (err) {
+      setError(err.message);
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchUsers();
   }, []);
 
@@ -79,41 +81,23 @@ const ViewUserComponent = () => {
 
   const handleDeleteClick = async (user) => {
     try {
-      // Send a PUT request to delete the user
       console.log("entered handle delete click");
-      const response = await axios.put(`/api/users/delete/${user.user_id}`);
-
-      // Assuming the API sends back success confirmation
+      const response = await axios.delete(`/api/users/delete/${user.user_id}`);
+  
       if (response.status === 200) {
-        alert("User successfully deleted!");
         Swal.fire({ title: 'Success', text: 'User successfully deleted!', icon: 'success', confirmButtonText: 'Ok' });
-        // Optionally, update the UI by removing the user from the state
-        setAllUsers((prevUsers) =>
-          prevUsers.map((existingUser) =>
-            existingUser.user_id === user.user_id
-              ? { ...existingUser, is_active: "N" }
-              : existingUser
-          )
-        );
-      } else {
-        Swal.fire({
-          title: 'Error',
-          text: 'Failed to delete the user. Please try again.',
-          icon: 'error',
-          confirmButtonText: 'Ok'
-        });
+  
+        // ✅ Remove user from state
+        setAllUsers((prevUsers) => prevUsers.filter((u) => u.user_id !== user.user_id));
+        setFilteredUsers((prevUsers) => prevUsers.filter((u) => u.user_id !== user.user_id));
       }
     } catch (error) {
-      // Handle any errors that occur
       console.error("Error deleting user:", error);
-      Swal.fire({
-        title: 'Error',
-        text: `error.response?.data?.message || "An error occurred. Please try again."`,
-        icon: 'error',
-        confirmButtonText: 'Ok'
-      });
+      Swal.fire({ title: 'Error', text: 'Failed to delete the user.', icon: 'error', confirmButtonText: 'Ok' });
     }
   };
+  
+  
 
   const handleSearch = (query) => {
     if (query === "") {
@@ -171,6 +155,57 @@ const ViewUserComponent = () => {
     }
   };
 
+  const handleBulkDelete = async () => {
+    if (selectedUsers.length === 0) {
+      Swal.fire("Warning", "No users selected for deletion.", "warning");
+      return;
+    }
+  
+    try {
+      const response = await axios.post("/api/users/bulk-delete", { user_ids: selectedUsers });
+  
+      if (response.status === 200) {
+        Swal.fire("Deleted!", "Selected users have been deleted.", "success");
+  
+        // ✅ Remove deleted users from state
+        setAllUsers((prevUsers) => prevUsers.filter((u) => !selectedUsers.includes(u.user_id)));
+        setFilteredUsers((prevUsers) => prevUsers.filter((u) => !selectedUsers.includes(u.user_id)));
+  
+        setSelectedUsers([]); // ✅ Clear selection after deletion
+      }
+    } catch (error) {
+      console.error("Bulk delete error:", error);
+      Swal.fire("Error", "Failed to delete users.", "error");
+    }
+  };
+  
+  
+  const handleExportCSV = () => {
+    const csvContent =
+      "data:text/csv;charset=utf-8," +
+      ["User ID,Username,Name,Email,Role,Status"]
+        .concat(
+          allUsers.map((user) =>
+            [
+              user.user_id,
+              user.username,
+              user.name,
+              user.email,
+              user.roleName,
+              user.is_active ? "Active" : "Inactive",
+            ].join(",")
+          )
+        )
+        .join("\n");
+
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "users.csv");
+    document.body.appendChild(link);
+    link.click();
+  };
+
   return (
     <div className="page-container">
       <div className="content-container">
@@ -180,6 +215,19 @@ const ViewUserComponent = () => {
             <MasterComponent/>
             <div className="usertable">
               <h1>User Management</h1>
+
+              <div className="bulk-actions">
+              <button
+                className="btn btn-danger mx-2"
+                onClick={handleBulkDelete}
+                disabled={selectedUsers.length === 0}
+              >
+                Bulk Delete
+              </button>
+              <button className="btn btn-success mx-2" onClick={handleExportCSV}>
+                Export CSV
+              </button>
+            </div>
 
               {loading && (
                 <p className="text-center text-info">Loading users...</p>
@@ -240,6 +288,7 @@ const ViewUserComponent = () => {
                 <table className="table table-bordered table-hover  table-striped ">
                   <thead className="thead-dark">
                     <tr>
+                      <th>Select</th>
                       <th>User ID</th>
                       <th>Username</th>
                       <th>Name</th>
@@ -252,6 +301,18 @@ const ViewUserComponent = () => {
                     {filteredUsers.length > 0 ? (
                       filteredUsers.map((user) => (
                         <tr key={user.user_id}>
+                          <td>
+                            <input
+                              type="checkbox"
+                              onChange={(e) =>
+                                setSelectedUsers((prev) =>
+                                  e.target.checked
+                                    ? [...prev, user.user_id]
+                                    : prev.filter((id) => id !== user.user_id)
+                                )
+                              }
+                            />
+                          </td>
                           <td>{user.user_id}</td>
                           <td>{user.username}</td>
                           <td>{user.name}</td>

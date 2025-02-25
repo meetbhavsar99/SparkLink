@@ -12,6 +12,7 @@ const session = require('express-session');
 const User = require('./models/user');
 
 // Routes
+
 const userRoutes = require('./routes/userRoutes');
 const roleRoutes = require('./routes/roleRoutes');
 const projectStatusRouter = require('./routes/projectStatusRoutes');
@@ -25,6 +26,9 @@ const projAllocationRouter = require('./routes/projectAllocationRoutes');
 const progressTrackerRouter = require('./routes/progressTrackerRoutes');
 const notificationRouter = require("./routes/notificationRoutes");
 const contactRoutes = require('./routes/contactRoutes');
+const systemSettingsRoutes = require("./routes/systemSettingsRoutes");
+const analyticsRoutes = require("./routes/analyticsRoutes");
+// const adminRoutes = require("./routes/adminRoutes");3
 
 const app = express();
 
@@ -93,6 +97,9 @@ app.use('/editProfile', EditProfileRouter);
 app.use('/contact', contactRoutes);
 //app.use('',userRouter);
 app.use('/progressTracker', progressTrackerRouter);
+app.use("/api/settings", systemSettingsRoutes);
+app.use("/api/analytics", analyticsRoutes);
+//app.use("/api/admin", adminRoutes);
 // Error handling middleware
 
 

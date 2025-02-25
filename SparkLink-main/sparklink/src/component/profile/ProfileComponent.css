@@ -245,6 +245,22 @@ a.text-lightred:hover {
 .bg-lightred {
     background-color: #ff5722
 }
+
+.btn {
+    padding: 12px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn i {
+    font-size: 18px;
+}
+
+
 .button {
     display: inline-block;
     padding: 10px 20px;

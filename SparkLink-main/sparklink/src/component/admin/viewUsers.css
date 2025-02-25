@@ -3,6 +3,18 @@
   text-align: center;
 }
 
+.bulk-actions {
+  margin-bottom: 15px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.usertable table th,
+.usertable table td {
+  text-align: center;
+}
+
+
 .button-edit {
   border-radius: 20px;
 }

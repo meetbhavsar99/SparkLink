@@ -23,4 +23,54 @@ router.get("/reset-password", verifyToken);
 router.post("/reset-password", resetPassword);
 // router.post('/reset-email-sent', sendResetEmail);
 
+router.delete("/delete/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+  
+      // Ensure user exists before deleting
+      const user = await User.findByPk(id);
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+  
+      await user.destroy(); // Delete the user
+      res.status(200).json({ message: "User deleted successfully" });
+  
+    } catch (error) {
+      console.error("Error deleting user:", error);
+      res.status(500).json({ error: "Failed to delete user" });
+    }
+  });
+  
+  
+  
+
+router.post("/bulk-delete", async (req, res) => {
+  try {
+    const { user_ids } = req.body;
+
+    if (!user_ids || user_ids.length === 0) {
+      return res.status(400).json({ error: "No users selected for deletion" });
+    }
+
+    // Find users to delete
+    const usersToDelete = await User.findAll({ where: { user_id: user_ids } });
+
+    if (usersToDelete.length === 0) {
+      return res.status(404).json({ error: "Users not found" });
+    }
+
+    await User.destroy({ where: { user_id: user_ids } });
+
+    res.status(200).json({ message: "Selected users deleted successfully" });
+
+  } catch (error) {
+    console.error("Error in bulk deleting users:", error);
+    res.status(500).json({ error: "Failed to delete selected users" });
+  }
+});
+
+  
+  
+
 module.exports = router;

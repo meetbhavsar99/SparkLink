@@ -130,35 +130,41 @@ const ProfileComponent = () => {
         <>
             <MenuComponent />
             {role === 'admin' && (
-    <div className="container pt-4">
-        <div className="shadow-lg p-4 text-center">
-            <h1 className="text-primary pb-4">Welcome, {userDetails.username}</h1>
-            {/* <h4 className="text-dark">{userDetails.name}</h4> */}
-            <p className="text-muted">You are logged in as an <strong>Administrator</strong>.</p>
+                <div className="container pt-4">
+                    <div className="shadow-lg p-4 text-center">
+                        <h1 className="text-primary pb-4">Welcome, {userDetails.username}</h1>
+                        <p className="text-muted">You are logged in as an <strong>Administrator</strong>.</p>
 
-            <div className="mt-4">
-                <h5 className="text-secondary">Contact Information</h5>
-                <div className="d-flex justify-content-center align-items-center gap-3">
-                    <i className="fas fa-envelope text-danger"></i>
-                    <p className="mb-0">{userDetails.email}</p>
+                        {/* Contact Information */}
+                        <div className="mt-4">
+                            <h5 className="text-secondary">Contact Information</h5>
+                            <div className="d-flex justify-content-center align-items-center gap-3">
+                                <i className="fas fa-envelope text-danger"></i>
+                                <p className="mb-0">{userDetails.email}</p>
+                            </div>
+                        </div>
+
+                        {/* Admin Actions */}
+                        <div className="mt-4">
+                            <h5 className="text-secondary">Admin Actions</h5>
+                            <div className="d-flex justify-content-center gap-3 flex-wrap">
+                                <a href="/admin/dashboard" className="btn btn-primary">
+                                    <i className="fas fa-tachometer-alt"></i> Admin Dashboard
+                                </a>
+                                <a href="/admin/viewusers" className="btn btn-secondary">
+                                    <i className="fas fa-users"></i> View Users
+                                </a>
+                                <a href="/admin/settings" className="btn btn-warning">
+                                    <i className="fas fa-cogs"></i> System Settings
+                                </a>
+                                <a href="/admin/analytics-reports" className="btn btn-info">
+                                    <i className="fas fa-chart-bar"></i> Analytics & Reports
+                                </a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-
-            <div className="mt-4">
-                <h5 className="text-secondary">Admin Actions</h5>
-                <div className="d-flex justify-content-center gap-3">
-                    <a href="/admin/dashboard" className="btn btn-primary">
-                        <i className="fas fa-tachometer-alt"></i> Admin Dashboard
-                    </a>
-                    <a href="/admin/viewusers" className="btn btn-secondary">
-                        <i className="fas fa-users"></i> View Users
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-)}
-
+            )}
             {role === 'student' && (
                 <div className="container pt-4">
                     <div className="team-single">
