@@ -1,324 +1,196 @@
-body{
+body {
     font-size: 16px;
     color: #6f6f6f;
     font-weight: 400;
     line-height: 28px;
     letter-spacing: 0.8px;
-    margin-top:20px;
-}
-.font-size38 {
-    font-size: 38px;
-}
-.team-single-text .section-heading h4,
-.section-heading h5 {
-    font-size: 36px
-}
-
-.team-single-text .section-heading.half {
-    margin-bottom: 20px
-}
-
-@media screen and (max-width: 1199px) {
-    .team-single-text .section-heading h4,
-    .section-heading h5 {
-        font-size: 32px
-    }
-    .team-single-text .section-heading.half {
-        margin-bottom: 15px
-    }
-}
-
-@media screen and (max-width: 991px) {
-    .team-single-text .section-heading h4,
-    .section-heading h5 {
-        font-size: 28px
-    }
-    .team-single-text .section-heading.half {
-        margin-bottom: 10px
-    }
-}
-
-@media screen and (max-width: 767px) {
-    .team-single-text .section-heading h4,
-    .section-heading h5 {
-        font-size: 24px
-    }
-}
-.container {
-    padding-top: 10px;
-}
-.submit {
-    display: block;
-    margin: 20px auto; /* Auto margin centers the button horizontally */
-    padding: 10px 20px;
-    border: 2px solid #6a6a6a;
-    border-radius: 5px;
-    cursor: pointer;
-}
-.team-single-icons ul li {
-    display: inline-block;
-    border: 1px solid #02c2c7;
+    margin-top: 20px;
+    background: linear-gradient(135deg, #f0f0f0, #f5f0ff);
+    font-family: 'Poppins', sans-serif;
+  }
+  
+  .container {
+    padding-top: 20px;
+  }
+  
+  .team-single {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+  }
+  
+  .team-single-img img {
     border-radius: 50%;
-    color: #86bc42;
-    margin-right: 8px;
-    margin-bottom: 5px;
-    -webkit-transition-duration: .3s;
-    transition-duration: .3s
-}
-
-.team-single-icons ul li a {
-    color: #02c2c7;
+    border: 4px solid #005596;
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
     display: block;
-    font-size: 14px;
-    height: 25px;
-    line-height: 26px;
-    text-align: center;
-    width: 25px
-}
+    margin: 0 auto;
+    width: fit-content;
 
-.team-single-icons ul li:hover {
-    background: #02c2c7;
-    border-color: #02c2c7
-}
-
-.team-single-icons ul li:hover a {
-    color: #fff
-}
-
-.team-social-icon li {
-    display: inline-block;
-    margin-right: 5px
-}
-
-.team-social-icon li:last-child {
-    margin-right: 0
-}
-
-.team-social-icon i {
-    width: 30px;
-    height: 30px;
-    line-height: 30px;
-    text-align: center;
-    font-size: 15px;
-    border-radius: 50px
-}
-
-.padding-30px-all {
-    padding: 30px;
-}
-.bg-light-gray {
+  }
+  
+  .bg-light-gray {
     background-color: #f7f7f7;
-}
-.text-center {
-    text-align: center!important;
-}
-.image {
-    max-width: 100%;
-    height: auto;
-    padding-left: 10px;
-}
-
-
-.list-style9 {
+    border-radius: 10px;
+    padding: 20px;
+    margin-top: 20px;
+  }
+  
+  .team-single-icons ul {
+    padding: 0;
     list-style: none;
-    padding: 0
-}
-
-.list-style9 li {
-    position: relative;
-    padding: 0 0 15px 0;
-    margin: 0 0 15px 0;
-    border-bottom: 1px dashed rgba(0, 0, 0, 0.1)
-}
-
-.list-style9 li:last-child {
-    border-bottom: none;
-    padding-bottom: 0;
-    margin-bottom: 0
-}
-
-
-.text-sky {
-    color: #02c2c7
-}
-
-.text-orange {
-    color: #e95601
-}
-
-.text-green {
-    color: #5bbd2a
-}
-
-.text-yellow {
-    color: #f0d001
-}
-
-.text-pink {
-    color: #ff48a4
-}
-
-.text-purple {
-    color: #9d60ff
-}
-
-.text-lightred {
-    color: #ff5722
-}
-
-a.text-sky:hover {
-    opacity: 0.8;
-    color: #02c2c7
-}
-
-a.text-orange:hover {
-    opacity: 0.8;
-    color: #e95601
-}
-
-a.text-green:hover {
-    opacity: 0.8;
-    color: #5bbd2a
-}
-
-a.text-yellow:hover {
-    opacity: 0.8;
-    color: #f0d001
-}
-
-a.text-pink:hover {
-    opacity: 0.8;
-    color: #ff48a4
-}
-
-a.text-purple:hover {
-    opacity: 0.8;
-    color: #9d60ff
-}
-
-a.text-lightred:hover {
-    opacity: 0.8;
-    color: #ff5722
-}
-
-.custom-progress {
-    height: 10px;
-    border-radius: 50px;
-    box-shadow: none;
-    margin-bottom: 25px;
-}
-.progress {
-    display: -ms-flexbox;
-    display: flex;
-    height: 1rem;
-    overflow: hidden;
-    font-size: .75rem;
-    background-color: #e9ecef;
-    border-radius: .25rem;
-}
-
-
-.bg-sky {
-    background-color: #02c2c7
-}
-
-.bg-orange {
-    background-color: #e95601
-}
-
-.bg-green {
-    background-color: #5bbd2a
-}
-
-.bg-yellow {
-    background-color: #f0d001
-}
-
-.bg-pink {
-    background-color: #ff48a4
-}
-
-.bg-purple {
-    background-color: #9d60ff
-}
-
-.bg-lightred {
-    background-color: #ff5722
-}
-
-.btn {
-    padding: 12px 20px;
-    font-size: 16px;
-    font-weight: bold;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.btn i {
-    font-size: 18px;
-}
-
-
-.button {
+  }
+  
+  .team-single-icons ul li {
     display: inline-block;
-    padding: 10px 20px;
+    margin-right: 10px;
+  }
+  
+  .team-single-icons ul li a {
+    color: #005596;
+    font-size: 18px;
+    transition: color 0.3s ease;
+  }
+  
+  .team-single-icons ul li a:hover {
+    color: #003366;
+  }
+  
+  .button {
+    background-color: #005596;
     color: #fff;
-    background-color: #007bff;
-    text-align: center;
-    text-decoration: none;
+    border: none;
+    padding: 10px 20px;
     border-radius: 5px;
-    transition: background-color 0.3s;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
   }
   
   .button:hover {
-    background-color: #0056b3;
+    background-color: #003366;
   }
-  /* Ensure default flex layout for progress-items */
-.progress-items  {
-    display: flex; /* Align items horizontally */
-    gap: 10px; /* Add spacing between items */
-}
-
-/* Add horizontal scrolling only when necessary */
-.scrollable {
-    overflow-x: auto; /* Enable horizontal scrolling */
-    white-space: nowrap; /* Prevent items from wrapping to a new row */
-    scrollbar-width: thin; /* Thin scrollbar for better aesthetics (Firefox) */
-}
-
-/* Optional: Customize scrollbar for WebKit browsers */
-.scrollable::-webkit-scrollbar {
-    height: 8px; /* Scrollbar height */
-}
-
-.scrollable::-webkit-scrollbar-thumb {
-    background-color: #888; /* Thumb color */
-    border-radius: 2px; /* Rounded scrollbar thumb */
-}
-
-.scrollable::-webkit-scrollbar-thumb:hover {
-    background-color: #555; /* Thumb hover color */
-}
-
-.progress-card {
-    flex: 0 0 auto; /* Prevent items from shrinking or wrapping */
-    width: 300px; /* Set a fixed width for each card */
-    background-color: #fff;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    overflow: hidden;
-   
-}
-
-.progress-title {
-    color: #555;
+  
+  .contact-info-section ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .contact-info-section ul li {
+    padding: 10px 0;
+    border-bottom: 1px dashed rgba(0, 0, 0, 0.1);
+  }
+  
+  .contact-info-section ul li:last-child {
+    border-bottom: none;
+  }
+  
+  .contact-info-section ul li i {
+    margin-right: 10px;
+    color: #005596;
+  }
+  
+  .progress-background-card {
+    background: #f7f7f7;
+    border-radius: 10px;
+    padding: 20px;
+    margin-top: 20px;
+  }
+  
+  .progress-card {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    margin-bottom: 15px;
+    transition: transform 0.3s ease;
+  }
+  
+  .progress-card:hover {
+    transform: translateY(-5px);
+  }
+  
+  .progress-image {
+    width: 100%;
+    height: 150px;
+    border-radius: 10px;
+    background-size: cover;
+    background-position: center;
+  }
+  
+  .progress-title {
+    font-size: 18px;
     font-weight: 600;
-    font-size: 17px;
-    margin-bottom: 10px;
-}
-.profile {
-    margin-left: 10px;
-    margin-right: 10PX;
-}  
+    color: #005596;
+    margin-top: 10px;
+  }
+  
+  .progress-bar-container {
+    margin-top: 10px;
+  }
+  
+  .progress-bar {
+    background: #e9ecef;
+    border-radius: 5px;
+    height: 10px;
+    overflow: hidden;
+  }
+  
+  .progress {
+    background: #005596;
+    height: 100%;
+    border-radius: 5px;
+  }
+  
+  .progress-text {
+    font-size: 14px;
+    color: #6f6f6f;
+    margin-top: 5px;
+  }
+  
+  .modal_text_header {
+    color: #005596;
+    font-weight: 600;
+  }
+  
+  .proj-details-header {
+    font-size: 20px;
+    font-weight: 600;
+    color: #005596;
+  }
+  
+  .proj-details-sub-header {
+    font-weight: 600;
+    color: #005596;
+  }
+  
+  .proj-details-data {
+    color: #6f6f6f;
+  }
+  
+  .stakeholder-button {
+    background: #005596;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 5px;
+    display: inline-block;
+    margin: 5px;
+  }
+  
+  .button-home {
+    background-color: #005596;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .button-home:hover {
+    background-color: #003366;
+  }
