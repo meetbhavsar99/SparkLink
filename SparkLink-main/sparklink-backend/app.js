@@ -7,8 +7,6 @@ const cors = require('cors');
 const sequelize = require('./config/db'); // Import the database connection
 const passport = require('./config/passportConfig'); 
 const session = require('express-session');
-
-
 const User = require('./models/user');
 
 // Routes
@@ -139,3 +137,4 @@ const PORT =  5100;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
+
