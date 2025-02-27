@@ -42,6 +42,10 @@
     transition: transform 0.2s, box-shadow 0.2s;
     overflow-y: auto;
   }
+
+  .form-container {
+    padding-left: 65px;
+  }
   
   .form_label {
     font-weight: 600 !important;
@@ -49,6 +53,13 @@
     font-size: 1.1rem;
     /* font-weight: 500; */
     color: #000;
+  }
+
+  .margin-down {
+    margin-bottom: 15px;
+  }
+  .margin-top {
+    margin-top: 15px;
   }
   
   @media (max-width: 768px) {
