@@ -16,27 +16,24 @@ const {
 } = require('../controllers/projectController');
 
 const {acceptProject, rejectProject}= require('../controllers/projAllocationController');
-const authenticateUser = require("../middleware/authenticateUser"); // Import the middleware
 
 const router = express.Router();
 
-router.post("/getUserRoleAccess", authenticateUser, getUserRoleAccess);
-router.post("/applyProject", authenticateUser, applyProject);
+router.post('/getUserRoleAccess', getUserRoleAccess);
+
+router.post('/applyProject', applyProject);
 
 //Search Filter project with Proj name
-router.get("/filter", authenticateUser, filterProject);
-
+router.get('/filter', filterProject);
 
 // GET route to fetch all projects
-router.get("/getAllProjects", authenticateUser, getAllProjects);
-
+router.get('/getAllProjects', getAllProjects);
 
 // POST route to create a new project
-router.post("/", authenticateUser, createProject); // Protect the project creation route
-
+router.post('/', createProject);
 
 //Update Project Details
-router.post("/updateProject", authenticateUser, UpdateProjDetails);
+router.post('/updateProject', UpdateProjDetails);
 
 //Delete Project
 router.post('/deleteProject', RemoveProject);

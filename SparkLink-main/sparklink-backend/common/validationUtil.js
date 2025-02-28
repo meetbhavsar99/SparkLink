@@ -13,12 +13,10 @@ function isValidString(input, minLength, maxLength) {
     return true;
 }
 
-function isEmptyString(input) {
-    if(input.trim().length === 0) {
-        return true;
-    }
-    return false;
-}
+isEmptyString = (input) => {
+    if (typeof input !== "string") return true; // Non-strings are considered "empty"
+    return input.trim() === ""; // Check for empty string after trimming
+  };
 
 function isStrongPassword(input) {
     const pattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;

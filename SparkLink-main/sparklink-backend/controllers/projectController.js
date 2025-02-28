@@ -16,80 +16,193 @@ const { skillQueue } = require("../queue/skillextraction");
 exports.createProject = async (req, res) => {
   const t = await sequelize.transaction(); // Start a transaction
   try {
+    console.log("Request received");
+    console.log(`req.body = ${req.body}`);
+    console.log(`req.body.user_id = ${req.body.user_id}`);
+    //console.log(`req.user = ${req.user}`);
+    //console.log(`req.req.body.user_id = ${req.req.body.user_id}`);
+    //console.log(`req.body.features = ${req.body.features}`);
+    const today = new Date().toISOString().split("T")[0];
+    // Destructure fields from the request body
     const {
       project_name,
       purpose,
       product,
-      min_budget,
-      max_budget,
-      description,
+      project_budget,
+      project_description,
       features,
-      deadline,
-      category,
+      project_deadline,
       image_url,
-      num_students,
-      skills_required,
-      reveal_details,
-      estimated_salary,
+      supervise,
+      userId = req.body.user_id
     } = req.body;
+    
 
     // Validate required fields
     if (
       !project_name ||
       !purpose ||
       !product ||
-      !min_budget ||
-      !max_budget ||
-      !description ||
-      !deadline ||
-      !category ||
-      !num_students ||
-      !skills_required
+      !project_budget ||
+      !project_description ||
+      !project_deadline
+      // !user_id
+      // !image_url
     ) {
-      return res.status(400).json({ message: "All fields are required." });
+      return res.status(400).json({
+        message:
+          "Please provide all required fields: project name, purpose, product, description, budget, and deadline",
+      });
     }
 
-    // Ensure min_budget is less than or equal to max_budget
-    if (parseInt(min_budget) > parseInt(max_budget)) {
-      return res.status(400).json({ message: "Minimum budget cannot exceed maximum budget." });
-    }
+    // Validations
+    const isValidPurpose = !ValidationUtil.isEmptyString(purpose) &&
+      !ValidationUtil.isConsecSplChar(purpose) &&
+      ValidationUtil.isValidString(purpose, 5, 250);
 
-    // Construct project data
-    const projectData = {
-      project_name,
-      purpose,
-      product,
-      min_budget,
-      max_budget,
-      description,
-      features,
-      end_date: deadline,
-      category,
-      image_url,
-      num_students,
-      skills_required,
-      reveal_details: reveal_details ? "Y" : "N", // Convert to 'Y'/'N' for the database
-      estimated_salary: reveal_details ? estimated_salary : null,
-      status: 1, // Default status
-      created_by: req.user.user_id,
-      user_id: req.user.user_id,
-      modified_by: req.user.user_id,
-    };
+    const isValidProduct = !ValidationUtil.isEmptyString(product) &&
+      !ValidationUtil.isConsecSplChar(product) &&
+      ValidationUtil.isValidString(product, 5, 250);
 
-    // Insert project into the database
-    const project = await Project.create(projectData, { transaction: t });
+    const isValidProjectName = !ValidationUtil.isEmptyString(project_name) &&
+      !ValidationUtil.isConsecSplChar(project_name) &&
+      ValidationUtil.isValidString(project_name, 5, 250);
 
-    // Commit transaction
-    await t.commit();
+    const isValidDescription = !ValidationUtil.isEmptyString(project_description) &&
+      !ValidationUtil.isConsecSplChar(project_description) &&
+      ValidationUtil.isValidString(project_description, 5, 250);
 
-    res.status(201).json({ message: "Project created successfully", project });
-  } catch (error) {
-    await t.rollback();
-    console.error("Error creating project:", error);
-    res.status(500).json({ message: "Error creating project", error: error.message });
-  }
+    // Example validation in backend
+const isValidFeature = (feature) => {
+  // Ensure feature is a non-empty string
+  if (typeof feature !== "string" || feature.trim() === "") return false;
+
+  // Reject features with consecutive special characters (e.g., "--" or "..")
+  const specialCharsRegex = /[\W_]{2,}/; // Matches two or more non-alphanumeric characters
+  return !specialCharsRegex.test(feature);
 };
 
+// Apply validation to features array
+const areValidFeatures = (features) => {
+  if (typeof features !== 'string' || features.trim() === '') {
+    return false; // Invalid if not a string or empty
+  }
+  const regex = /^[\w\s,.-]+$/; // Allows letters, numbers, spaces, commas, dots, and hyphens
+  return regex.test(features); // Returns true if valid
+};
+
+
+// In controller
+if (!areValidFeatures(req.body.features)) {
+  return res.status(400).json({ message: "Please enter valid Feature(s)" });
+}
+
+
+    const isValidDate = ValidationUtil.isValidDate(project_deadline);
+
+    if (!isValidDate) {
+      return res.status(400).json({ message: "Please select a valid date" });
+    } else if (!isValidProjectName) {
+      return res.status(400).json({ message: "Please enter a valid Project Name - You may not enter consecutive special characters" });
+    } else if (!isValidPurpose) {
+      return res.status(400).json({ message: "Please enter a valid Purpose - You may not enter consecutive special characters" });
+    } else if (!isValidProduct) {
+      return res.status(400).json({ message: "Please enter valid Product(s) - You may not enter consecutive special characters" });
+    } else if (!isValidDescription) {
+      return res.status(400).json({ message: "Please enter a valid Description - You may not enter consecutive special characters" });
+    } else if (!areValidFeatures(req.body.features)) {
+      return res.status(400).json({ message: "Please enter valid Feature(s) - You may not enter consecutive special characters" });    
+    } else if (project_budget < 0) {
+      return res.status(400).json({ message: "The project budget must be greater than or equal to zero." });
+    }
+
+    // if (project_name.length > 150) {
+    //   console.log("project_name length : " + project_name.length);
+    //   return res
+    //     .status(500)
+    //     .json({ message: "Project name should be less than 150 characters" });
+    // }
+    // if (project_budget < 0) {
+    //   return res
+    //     .status(500)
+    //     .json({
+    //       message: "The project budget must be greater than or equal to zero.",
+    //     });
+    // }
+
+    // if (project_deadline < today) {
+    //   return res
+    //     .status(500)
+    //     .json({ message: "The project deadline must be a future date." });
+    // }
+
+    const user = req.user;
+    //const user = req.body;
+
+    const projectData = {
+      project_name: project_name,
+      purpose: purpose,
+      product: product,
+      description: project_description,
+      features: features,
+      budget: project_budget,
+      end_date: project_deadline,
+      created_by: req.body.user_id,
+      status: 1,
+      user_id: req.body.user_id,
+      modified_by: req.body.user_id,
+      image_url: image_url,
+    };
+
+    // Create the project in the database
+    const project = await Project.create(projectData, { transaction: t });
+
+    // If supervise is true, insert two records with different roles (2 and 3)
+    if (supervise) {
+      // Insert the record with role 3
+      const projAllocationDataRole3 = {
+        proj_id: project.proj_id,
+        user_id: req.body.user_id,
+        role: 3,
+        created_by: req.body.user_id,
+        modified_by: req.body.user_id,
+      };
+
+      await ProjAllocation.create(projAllocationDataRole3, { transaction: t });
+    }
+
+    // Insert the record with role 2
+    const projAllocationDataRole2 = {
+      proj_id: project.proj_id,
+      user_id: req.body.user_id,
+      role: 2,
+      created_by: req.body.user_id,
+      modified_by: req.body.user_id,
+    };
+
+    // Create the project allocation record in the database with role 2
+    const allocation = await ProjAllocation.create(projAllocationDataRole2, { transaction: t });
+
+    // Commit the transaction
+    await t.commit();
+
+    await skillQueue.add({
+      projectId: project.proj_id,
+      projectDescription: project_description,
+    });
+   // Respond with success message and the created project data
+    res.status(201).json({ message: "Project created successfully", project, allocation });
+  } catch (error) {
+    // If any error occurs, roll back the transaction
+    await t.rollback();
+
+    // Log error and respond with error message
+    console.error(error);
+    res
+      .status(500)
+      .json({ message: "Error creating project", error: error.message });
+  }
+};
 
 // Get all projects
 /*exports.getAllProjects = async (req, res) => {
@@ -172,7 +285,7 @@ exports.createProject = async (req, res) => {
     res.status(200).json({
       projects,
       user: {
-        user_id: user.user_id,
+        user_id: req.body.user_id,
         username: user.username,
         email: user.email,
         role: user.role,
@@ -271,7 +384,7 @@ exports.getAllProjects = async (req, res) => {
     res.status(200).json({
       projects,
       user: {
-        user_id: user.user_id,
+        user_id: req.body.user_id,
         username: user.username,
         email: user.email,
         role: user.role,
@@ -537,7 +650,7 @@ exports.applyProject = async (req, res) => {
   try {
     const { proj_id } = req.body;
     const user = req.user;
-    const user_id = user.user_id;
+    const user_id = req.body.user_id;
     const role = Number(user.role);
     let supervisor_count = 0;
 
@@ -634,7 +747,7 @@ exports.getUserRoleAccess = async (req, res) => {
     const { proj_id } = req.body;
 
     const user = req.user;
-    const user_id = user.user_id;
+    const user_id = req.body.user_id;
     const role = Number(user.role);
 
     let supervisor_count = 0;
@@ -810,7 +923,7 @@ exports.removeStakeholder = async (req, res) => {
       if (supervisor_count === 0) {
         const status_update = await Project.update({
           status: 1,
-          modified_by: req.user.user_id
+          modified_by: req.req.body.user_id
         }, {
           where: {
             proj_id: removeData.proj_id
@@ -821,7 +934,7 @@ exports.removeStakeholder = async (req, res) => {
       if (student_count === 0 && supervisor_count > 0) {
         const status_update = await Project.update({
           status: 2,
-          modified_by: req.user.user_id
+          modified_by: req.req.body.user_id
         }, {
           where: {
             proj_id: removeData.proj_id
@@ -830,7 +943,7 @@ exports.removeStakeholder = async (req, res) => {
       } else if (student_count === 0 && supervisor_count === 0) {
         const status_update = await Project.update({
           status: 1,
-          modified_by: req.user.user_id
+          modified_by: req.req.body.user_id
         }, {
           where: {
             proj_id: removeData.proj_id
@@ -869,7 +982,7 @@ exports.reportProject = async (req, res) => {
 
     const report = await ProjReport.create({
       proj_id: proj_id,
-      reported_by: user.user_id,
+      reported_by: req.body.user_id,
       reason: reason,
       report_count: reportExists + 1
     });

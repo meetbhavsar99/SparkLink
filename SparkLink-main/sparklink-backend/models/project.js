@@ -26,7 +26,7 @@ const Project = sequelize.define('Project', {
     allowNull: false,
   },
   features: {
-    type: DataTypes.STRING(250),
+    type: DataTypes.JSON,
     allowNull: false,
   },
   skills_req: {
@@ -95,35 +95,6 @@ const Project = sequelize.define('Project', {
     validate: {
       isIn: [['Y', 'N']]
     }
-  },
-  min_budget: {
-    type: DataTypes.DECIMAL(10, 2),
-    allowNull: false,
-  },
-  max_budget: {
-    type: DataTypes.DECIMAL(10, 2),
-    allowNull: false,
-  },
-  category: {
-    type: DataTypes.STRING(50),
-    allowNull: false,
-  },
-  num_students: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-  },
-  skills_required: {
-    type: DataTypes.STRING(500),
-    allowNull: false,
-  },
-  reveal_details: {
-    type: DataTypes.CHAR(1),
-    allowNull: false,
-    defaultValue: "N",
-  },
-  estimated_salary: {
-    type: DataTypes.DECIMAL(10, 2),
-    allowNull: true,
   }
 }, {
   tableName: 't_project',

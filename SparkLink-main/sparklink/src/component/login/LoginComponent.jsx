@@ -11,8 +11,9 @@ const LoginComponent = () => {
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
-  const { isAuthenticated, setIsAuthenticated, user, setUser } = useAuth();
-  const [showPassword, setShowPassword] = useState(false);
+  const { isAuthenticated, setIsAuthenticated } = useAuth();
+  const { user, setUser } = useAuth();
+  const [showPassword, setShowPassword] = useState(false); 
   const navigate = useNavigate();
   const location = useLocation(); // Use useLocation to access query parameters
 
@@ -29,27 +30,30 @@ const LoginComponent = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("/api/users/login", {
-        email: email.trim(),
-        password: password.trim(),
-      }, {
-        withCredentials: true,
-      });
+        const response = await axios.post("/api/users/login", {
+            email: email.trim(),
+            password: password.trim(),
+        }, {
+            withCredentials: true,
+        });
 
-      if (response.data.is_confirmed === 0) {
-        setErrorMessage("Please confirm your email before logging in.");
-        return;
-      }
+        if (response.data.is_confirmed === 0) {
+            setErrorMessage("Please confirm your email before logging in.");
+            return;
+        }
 
-      localStorage.setItem("token", response.data.token); // Set token in localStorage
-      setIsAuthenticated(true);
-      setUser(response.data.user);
-      navigate("/", { replace: true });
+        localStorage.setItem("token", response.data.token);
+        setIsAuthenticated(true);
+        setUser(response.data.user);
+        navigate("/", { replace: true });
     } catch (error) {
-      // Always return a generic error message for invalid credentials
-      setErrorMessage("Invalid credentials. Please try again.");
+        // Always return a generic error message for invalid credentials
+        setErrorMessage("Invalid credentials. Please try again.");
     }
-  };
+};
+
+
+
 
   return (
     <section className="vh-100">
@@ -89,7 +93,7 @@ const LoginComponent = () => {
                 />
               </div>
 
-              <div data-mdb-input-init className="form-outline mb-4 position-relative">
+              <div data-mdb-input-init className="form-outline mb-4 position-relative ">
                 <input
                   type={showPassword ? "text" : "password"}  // Toggle input type between text and password
                   id="form3Example4"
@@ -105,30 +109,34 @@ const LoginComponent = () => {
                 ></i>
               </div>
 
-              <div className="d-flex justify-content-between align-items-center mt-4 pt-2">
-                <div className="text-center text-lg-start">
-                  <button
-                    type="submit"
-                    data-mdb-button-init
-                    data-mdb-ripple-init
-                    className="submit-button button_text button-card"
-                  >
-                    Login
-                  </button>
+
+
+
+
+              <div className="d-flex justify-content-between align-items-center  mt-4 pt-2">
+              <div className="text-center text-lg-start">
+                <button
+                  type="submit"
+                  data-mdb-button-init
+                  data-mdb-ripple-init
+                  className="submit-button button_text button-card"
+                >
+                  Login
+                </button>
                 </div>
-                <a href="/reset-password-email" className="text-end">
+                <a href="/reset-password-email" className=" text-end">
                   Forgot password?
                 </a>
               </div>
               <p className="small fw-bold mt-2 pt-1 mb-0">
-                Don't have an account?{" "}
-                <Link to="/register" className="link-danger">Register</Link>
+                  Don't have an account?{" "}
+                  <a href="/register" className="link-danger">Register</a>
               </p>
 
               {/* Contact Us Button */}
               <p className="small fw-bold mt-2 pt-1 mb-0">
-                Need help?{" "}
-                <Link to="/contact" className="link-primary">Contact Us</Link>
+                  Need help?{" "}
+                  <a href="/contact" className="link-primary">Contact Us</a>
               </p>
 
             </form>
