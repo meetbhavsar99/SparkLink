@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect} from "react";
 import { useDropzone } from "react-dropzone";
 import {
   // getStorage,
@@ -22,6 +22,7 @@ import Swal from "sweetalert2";
 const CreateProjectComponent = () => {
   const dateInputRef = useRef(null);
   const { updateNotifyCount } = useNotification();
+  
 
   // const [isOtherPurposeChecked, setIsOtherPurposeChecked] = useState(false);
   // const [isOtherProductChecked, setIsOtherProductChecked] = useState(false);
@@ -39,11 +40,14 @@ const CreateProjectComponent = () => {
   const [projectDescription, setProjectDescription] = useState("");
   // const [features, setFeatures] = useState("");
   const [features, setFeatures] = useState([]); // Each feature will have { id, text }
+  const [featuresNA, setFeaturesNA] = useState(false); // "N/A" for features
   const [projectDeadline, setProjectDeadline] = useState("");
   const [category, setCategory] = useState("");
   const [imageFile, setImageFile] = useState(null); // State for the image file
   const [numStudents, setNumStudents] = useState("");
+  const [numStudentsNA, setNumStudentsNA] = useState(false); // "N/A" for students
   const [skillsRequired, setSkillsRequired] = useState("");
+  const [skillsNA, setSkillsNA] = useState(false); // "N/A" for skills
   // const [previousImageUrl, setPreviousImageUrl] = useState(""); // Store previously uploaded image URL
 
   // States for success and error messages
@@ -164,11 +168,17 @@ const CreateProjectComponent = () => {
   const emptyForm = () => {
     setProjectName("");
     setPurpose([]);
+    setOtherPurpose("");
     setProduct([]);
+    setOtherProduct("");
     setProjectBudget("");
     setProjectDescription("");
-    setFeatures("");
+    setFeatures([]);
     setProjectDeadline("");
+    setCategory("");
+    setNumStudents("");
+    setSkillsRequired("");
+    setImageFile(null); // Clear uploaded file
   };
 
   // const imageNames = [
@@ -198,6 +208,22 @@ const CreateProjectComponent = () => {
     const newFeature = { id: tag.id || tag, text: tag.text || tag };
     console.log("Adding Feature:", newFeature);
     setFeatures([...features, newFeature]);
+  };
+
+  // Reset optional fields when "N/A" is selected
+  const handleNAChange = (field) => {
+    if (field === "features") {
+      setFeaturesNA(!featuresNA);
+      if (!featuresNA) setFeatures([]);
+    }
+    if (field === "students") {
+      setNumStudentsNA(!numStudentsNA);
+      if (!numStudentsNA) setNumStudents("");
+    }
+    if (field === "skills") {
+      setSkillsNA(!skillsNA);
+      if (!skillsNA) setSkillsRequired("");
+    }
   };
   
   
@@ -234,6 +260,16 @@ const CreateProjectComponent = () => {
     //   console.log("purpose --- > " + purpose);
     // }
 
+    // Validation for non-negative numbers
+    if (parseInt(numStudents) <= 0) {
+      setErrorMessage("Number of students must be greater than 0.");
+      return;
+    }
+    if (parseInt(projectBudget) <= 0) {
+      setErrorMessage("Budget must be greater than 0.");
+      return;
+    }
+
     // Basic form validation
     if (
       !projectName ||
@@ -257,9 +293,10 @@ const CreateProjectComponent = () => {
       project_description: projectDescription,
       category,
       features, // Convert features to an array of strings
+      features: featuresNA ? "N/A" : features,
       project_deadline: projectDeadline,
-      required_skills: skillsRequired,
-      number_of_students: numStudents,
+      required_skills: skillsNA ? "N/A" : skillsRequired,
+      number_of_students: numStudentsNA ? "N/A" : numStudents,
       image_url: imageFile ? imageFile.name : "",
       user_id: user.user_id  // Explicitly
     };
@@ -385,6 +422,7 @@ const CreateProjectComponent = () => {
                       name="purpose"
                       className="margin-down"
                       options={purposeOptions}
+                      value={purpose.map((p) => ({ value: p, label: p }))} // Tie value to state
                       onChange={(selected) =>
                         setPurpose(selected.map((s) => s.value))
                       }
@@ -409,6 +447,7 @@ const CreateProjectComponent = () => {
                       name="product"
                       className="margin-down"
                       options={productOptions}
+                      value={product.map((p) => ({ value: p, label: p }))} // Tie value to state
                       onChange={(selected) =>
                         setProduct(selected.map((s) => s.value))
                       }
@@ -435,7 +474,7 @@ const CreateProjectComponent = () => {
                       value={projectBudget}
                       onChange={(e) => setProjectBudget(e.target.value)}
                       placeholder="Enter your budget"
-                      min="0"
+                      min="1"
                       required
                     />
 
@@ -449,6 +488,7 @@ const CreateProjectComponent = () => {
                       value={projectDescription}
                       onChange={(e) => setProjectDescription(e.target.value)}
                       placeholder="Please enter the brief description for this project"
+                      style={{ height: "120px", width: "420px" }}
                       maxLength={250} // You can set a maximum length if needed
                       required
                     />
@@ -461,11 +501,14 @@ const CreateProjectComponent = () => {
                       options={categoryOptions}
                       name="project_category"
                       className="margin-down"
+                      value={category ? { value: category, label: category } : null} // Tie value to state
                       onChange={(selected) => setCategory(selected.value)}
                       required
                     />
 
                     {/* Features */}
+                    {user.role !== "2" || !featuresNA ? (
+                    <div>
                     <label className="form_label">
                     What are the main features or functionalities you want to include in the project?
                     {/* <span className="text-danger"></span> */}
@@ -479,12 +522,28 @@ const CreateProjectComponent = () => {
                     <textarea
                       id="features"
                       name="features"
-                      value={features} // This could be state-managed
-                      onChange={(e) => setFeatures(e.target.value)} // Update your state
+                      value={features}
+                      onChange={(e) =>
+                        setFeatures(e.target.value)
+                      }
                       placeholder="Enter features separated by commas (e.g., User login, Sign up)"
                       rows="4"
                       cols="50"
+                      disabled={featuresNA}
                     />
+                    {user.role === "2" && (
+                        <div>
+                          <input
+                            type="checkbox"
+                            id="featuresNA"
+                            checked={featuresNA}
+                            onChange={() => handleNAChange("features")}
+                          />
+                          <label htmlFor="featuresNA">N/A</label>
+                        </div>
+                      )}
+                    </div>
+                  ) : null}
 
 
 
@@ -507,7 +566,9 @@ const CreateProjectComponent = () => {
                     <label className="form_label">
                     Upload file(s) for reference...</label>
                     <div {...getRootProps()} className="dropzone">
-                      <input {...getInputProps()} />
+                      <input {...getInputProps()}
+                      accept=".jpg,.jpeg,.pdf,.png" // Restrict file types
+                       />
                       {imageFile ? (
                         <p>{imageFile.name}</p>
                       ) : (
@@ -516,6 +577,8 @@ const CreateProjectComponent = () => {
                     </div>
 
                     {/* Number of Students */}
+                    {user.role !== "2" || !numStudentsNA ? (
+                    <div>
                     <label className="form_label">
                     Please enter the number of student you want for this project? 
                     <span className="text-danger"> *</span>
@@ -525,11 +588,27 @@ const CreateProjectComponent = () => {
                       className="margin-down"
                       value={numStudents}
                       placeholder="Enter number of students..."
+                      min="1"
                       onChange={(e) => setNumStudents(e.target.value)}
-                      required
+                      disabled={numStudentsNA}
                     />
+                    {user.role === "2" && (
+                      <div>
+                        <input
+                          type="checkbox"
+                          id="numStudentsNA"
+                          checked={numStudentsNA}
+                          onChange={() => handleNAChange("students")}
+                        />
+                        <label htmlFor="numStudentsNA">N/A</label>
+                      </div>
+                    )}
+                  </div>
+                ) : null}
 
                     {/* Skills Required */}
+                    {user.role !== "2" || !skillsNA ? (
+                    <div>
                     <label className="form_label">
                     Please enter the required skills (technology) for this project?
                     <span className="text-danger"> *</span>
@@ -540,8 +619,21 @@ const CreateProjectComponent = () => {
                       style={{ width: '400px' }}
                       placeholder="Enter the skills, and add comma betweeen them..."
                       onChange={(e) => setSkillsRequired(e.target.value)}
-                      required
+                      disabled={skillsNA}
                     />
+                    {user.role === "2" && (
+                      <div>
+                        <input
+                          type="checkbox"
+                          id="skillsNA"
+                          checked={skillsNA}
+                          onChange={() => handleNAChange("skills")}
+                        />
+                        <label htmlFor="skillsNA">N/A</label>
+                      </div>
+                    )}
+                  </div>
+                ) : null}
 
 
 

@@ -83,10 +83,17 @@ const isValidFeature = (feature) => {
 };
 
 // Apply validation to features array
+// Apply validation to features array
 const areValidFeatures = (features) => {
   if (typeof features !== 'string' || features.trim() === '') {
     return false; // Invalid if not a string or empty
   }
+  
+  // Allow "N/A" explicitly
+  if (features === "N/A") {
+    return true; // Valid if "N/A"
+  }
+  
   const regex = /^[\w\s,.-]+$/; // Allows letters, numbers, spaces, commas, dots, and hyphens
   return regex.test(features); // Returns true if valid
 };
