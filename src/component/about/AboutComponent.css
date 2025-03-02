@@ -1,0 +1,43 @@
+.expandable-title {
+  cursor: pointer;
+  color: #007BFF;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.expandable-title:hover {
+  text-decoration: underline;
+}
+
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.team-card {
+  border: 1px solid #ccc;
+  padding: 15px;
+  border-radius: 5px;
+  text-align: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+}
+
+.team-image {
+  width: 100%;
+  height: 200px;
+  object-fit: contain;
+  border-radius: 5px;
+}
+
+.member-link {
+  text-decoration: none;
+  color: black;
+}
+
+.member-link:hover {
+  color: blue;
+}
