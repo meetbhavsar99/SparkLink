@@ -94,6 +94,7 @@ const ViewUserComponent = () => {
     } catch (error) {
       console.error("Error deleting user:", error);
       Swal.fire({ title: 'Error', text: 'Failed to delete the user.', icon: 'error', confirmButtonText: 'Ok' });
+      console.log(user.user_id);
     }
   };
   
@@ -176,6 +177,7 @@ const ViewUserComponent = () => {
     } catch (error) {
       console.error("Bulk delete error:", error);
       Swal.fire("Error", "Failed to delete users.", "error");
+      console.log(selectedUser);
     }
   };
   
