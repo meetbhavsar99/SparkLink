@@ -1,19 +1,13 @@
-import React, { useState, useRef, useEffect} from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useDropzone } from "react-dropzone";
-import {
-  // getStorage,
-  ref,
-  uploadBytes,
-  getDownloadURL,
-  deleteObject,
-} from "firebase/storage"; // Firebase imports
-import { storage } from "../../firebase_script"; // Your Firebase config file
+import { ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
+import { storage } from "../../firebase_script";
 import "./CreateProjectComponent.css";
 import MenuComponent from "../../component/menu/MenuComponent";
 import MasterComponent from '../MasterComponent';
 import FooterComponent from "../footer/FooterComponent";
-import Select from "react-select"; // Multi-select dropdown
-import { WithContext as ReactTags } from "react-tag-input"; // Tags input
+import Select from "react-select";
+import { WithContext as ReactTags } from "react-tag-input";
 import axios from "axios";
 import { useAuth } from '../../AuthContext';
 import { useNotification } from "../../notificationContext";
@@ -22,15 +16,10 @@ import Swal from "sweetalert2";
 const CreateProjectComponent = () => {
   const dateInputRef = useRef(null);
   const { updateNotifyCount } = useNotification();
-  
-
-  // const [isOtherPurposeChecked, setIsOtherPurposeChecked] = useState(false);
-  // const [isOtherProductChecked, setIsOtherProductChecked] = useState(false);
   const [otherPurposeText, setOtherPurposeText] = useState("");
   const [otherProductText, setOtherProductText] = useState("");
   const [loading, setLoading] = useState(false);
   const today = new Date().toISOString().split("T")[0];
-  // Form states
   const [projectName, setProjectName] = useState("");
   const [purpose, setPurpose] = useState([]);
   const [otherPurpose, setOtherPurpose] = useState("");
@@ -38,24 +27,19 @@ const CreateProjectComponent = () => {
   const [otherProduct, setOtherProduct] = useState("");
   const [projectBudget, setProjectBudget] = useState("");
   const [projectDescription, setProjectDescription] = useState("");
-  // const [features, setFeatures] = useState("");
-  const [features, setFeatures] = useState([]); // Each feature will have { id, text }
-  const [featuresNA, setFeaturesNA] = useState(false); // "N/A" for features
+  const [features, setFeatures] = useState([]);
+  const [featuresNA, setFeaturesNA] = useState(false);
   const [projectDeadline, setProjectDeadline] = useState("");
   const [category, setCategory] = useState("");
-  const [imageFile, setImageFile] = useState(null); // State for the image file
+  const [imageFile, setImageFile] = useState(null);
   const [numStudents, setNumStudents] = useState("");
-  const [numStudentsNA, setNumStudentsNA] = useState(false); // "N/A" for students
+  const [numStudentsNA, setNumStudentsNA] = useState(false);
   const [skillsRequired, setSkillsRequired] = useState("");
-  const [skillsNA, setSkillsNA] = useState(false); // "N/A" for skills
-  // const [previousImageUrl, setPreviousImageUrl] = useState(""); // Store previously uploaded image URL
-
-  // States for success and error messages
+  const [skillsNA, setSkillsNA] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const { isAuthenticated, user } = useAuth();
 
-  // Dropdown options
   const purposeOptions = [
     { value: "E-Commerce", label: "E-Commerce" },
     { value: "Social Media", label: "Social Media" },
@@ -78,92 +62,45 @@ const CreateProjectComponent = () => {
     { value: "Data Science", label: "Data Science" },
   ];
 
-  // Drag-and-Drop Image Upload
+  const customSelectStyles = {
+    control: (provided) => ({
+      ...provided,
+      borderRadius: '12px',
+      border: '1px solid rgba(106, 106, 106, 0.3)',
+      boxShadow: '0 4px 10px rgba(0, 0, 0, 0.05)',
+      padding: '5px',
+      background: 'rgba(255, 255, 255, 0.7)',
+      '&:hover': {
+        borderColor: '#6a85b6',
+      }
+    }),
+    option: (provided, state) => ({
+      ...provided,
+      backgroundColor: state.isSelected 
+        ? 'rgba(106, 133, 182, 0.9)' 
+        : state.isFocused 
+          ? 'rgba(106, 133, 182, 0.2)'
+          : 'transparent',
+      color: state.isSelected ? 'white' : '#333',
+    }),
+    menu: (provided) => ({
+      ...provided,
+      borderRadius: '12px',
+      overflow: 'hidden',
+      boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
+      background: 'rgba(255, 255, 255, 0.95)',
+      backdropFilter: 'blur(10px)',
+    }),
+  };
+
   const { getRootProps, getInputProps } = useDropzone({
     accept: "image/*",
     onDrop: (acceptedFiles) => setImageFile(acceptedFiles[0]),
   });
 
-
   useEffect(() => {
-    console.log("the user logged in is", user)
-  })
-
-  // const handlePurposeCheckBoxChange = (e) => {
-  //   const { checked, value } = e.target;
-  //   if (checked) {
-  //     if (value === "Other") {
-  //       setIsOtherPurposeChecked(checked);
-  //       return;
-  //     }
-  //     setPurpose([...purpose, value]);
-  //   } else {
-  //     if (value === "Other") {
-  //       setIsOtherPurposeChecked(false);
-  //       setPurpose((prevPurpose) =>
-  //         prevPurpose.filter((p) => p !== otherPurposeText) // Remove "Other" from purpose
-  //       );
-  //       setOtherPurposeText("");
-  //       return;
-  //     }
-  //     setPurpose(purpose.filter((p) => p !== value));
-  //   }
-  // };
-
-  // const handleOtherPurposetextChange = (e) => {
-  //   const text = e.target.value;
-  //   setOtherPurposeText(text);
-  //   if (setIsOtherPurposeChecked) {
-  //     setPurpose((prevPurpose) => {
-  //       const filteredPurpose = prevPurpose.filter(
-  //         (p) => p !== otherPurposeText
-  //       );
-  //       return [...filteredPurpose, text];
-  //     });
-  //   }
-  // };
-
-  // const handleProductCheckBoxChange = (e) => {
-  //   const { checked, value } = e.target;
-
-  //   if (checked) {
-  //     if (value === "Other") {
-  //       setIsOtherProductChecked(true);
-  //       return;
-  //     }
-  //     setProduct((prevProduct) => [...prevProduct, value]);
-  //   } else {
-  //     if (value === "Other") {
-  //       setIsOtherProductChecked(false);
-  //       setProduct((prevProduct) =>
-  //         prevProduct.filter((p) => p !== otherProductText)
-  //       );
-  //       setOtherProductText("");
-  //       return;
-  //     }
-  //     setProduct((prevProduct) => prevProduct.filter((p) => p !== value));
-  //   }
-  // };
-
-
-  // const handleOtherProducttextChange = (e) => {
-  //   const text = e.target.value;
-  //   setOtherProductText(text);
-  //   if (setIsOtherProductChecked) {
-  //     setProduct((prevProduct) => {
-  //       // Remove any existing "other" text first, then add the new one
-  //       const filteredProduct = prevProduct.filter(
-  //         (p) => p !== otherProductText
-  //       );
-  //       return [...filteredProduct, text];
-  //     });
-  //   }
-  // };
-
-  // Handle image change
-  // const handleImageChange = (e) => {
-  //   setImageFile(e.target.files[0]); // Set the selected image file
-  // };
+    console.log("The user logged in is", user);
+  }, [user]);
 
   const emptyForm = () => {
     setProjectName("");
@@ -178,39 +115,18 @@ const CreateProjectComponent = () => {
     setCategory("");
     setNumStudents("");
     setSkillsRequired("");
-    setImageFile(null); // Clear uploaded file
+    setImageFile(null);
   };
 
-  // const imageNames = [
-  //   "photo1",
-  //   "photo2",
-  //   "photo3",
-  //   "photo4",
-  //   "photo5",
-  //   "photo6",
-  //   "photo7",
-  //   "photo8",
-  //   "photo9",
-  //   "photo10",
-  // ];
-
-  // Function to get a random image name
-  // const getRandomImageName = () => {
-  //   const randomIndex = Math.floor(Math.random() * imageNames.length);
-  //   return randomIndex;
-  // };
-
-  // Tags Input Handlers
   const handleDeleteFeature = (index) => {
-    setFeatures(features.filter((_, i) => i !== index)); // Remove the feature at the given index
-  };    
+    setFeatures(features.filter((_, i) => i !== index));
+  };
+
   const handleAddFeature = (tag) => {
     const newFeature = { id: tag.id || tag, text: tag.text || tag };
-    console.log("Adding Feature:", newFeature);
     setFeatures([...features, newFeature]);
   };
 
-  // Reset optional fields when "N/A" is selected
   const handleNAChange = (field) => {
     if (field === "features") {
       setFeaturesNA(!featuresNA);
@@ -225,162 +141,63 @@ const CreateProjectComponent = () => {
       if (!skillsNA) setSkillsRequired("");
     }
   };
-  
-  
-  
-  
 
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    console.log("Features before submission:", features);
-
-    console.log("Form Data State:", {
-      projectName,
-      purpose,
-      product,
-      projectBudget,
-      projectDescription,
-      category,
-      features,
-      projectDeadline,
-      skillsRequired,
-      numStudents,
-      imageFile
-    });
-
-    // Clear previous messages
     setErrorMessage("");
     setSuccessMessage("");
-    setLoading(false);
-
-    // if (setIsOtherPurposeChecked) {
-    //   setPurpose((prevPurpose) => [...prevPurpose, otherPurposeText]);
-    //   console.log("purpose --- > " + purpose);
-    // }
-
-    // Validation for non-negative numbers
-    if (parseInt(numStudents) <= 0) {
-      setErrorMessage("Number of students must be greater than 0.");
-      return;
-    }
-    if (parseInt(projectBudget) <= 0) {
-      setErrorMessage("Budget must be greater than 0.");
-      return;
-    }
-
-    // Basic form validation
-    if (
-      !projectName ||
-      !purpose.length ||
-      !product.length ||
-      !projectBudget ||
-      !projectDescription ||
-      !features ||
-      !projectDeadline
-    ) {
-      setErrorMessage("Please fill in all required fields.");
-      setLoading(false);
-      return;
-    }
-
-    const form_data = {
-      project_name: projectName,
-      purpose: purpose.join(", "),
-      product: product.join(", "),
-      project_budget: projectBudget,
-      project_description: projectDescription,
-      category,
-      features, // Convert features to an array of strings
-      features: featuresNA ? "N/A" : features,
-      project_deadline: projectDeadline,
-      required_skills: skillsNA ? "N/A" : skillsRequired,
-      number_of_students: numStudentsNA ? "N/A" : numStudents,
-      image_url: imageFile ? imageFile.name : "",
-      user_id: user.user_id  // Explicitly
-    };
-    
-    
-    console.log("Form Data Submitted:", form_data);
-
-    console.log("Features Array:", features);
-
-    // Check if the user role is supervisor (role 3)
-    if (user.role === "3") {
-      const result = await Swal.fire({
-        title: "Supervise Project?",
-        text: "Do you want to supervise this project?",
-        icon: "question",
-        showCancelButton: true,    // Show the Cancel button
-        showDenyButton: true,      // Show the Deny (No) button
-        confirmButtonText: "Yes",  // Text for the Confirm button
-        denyButtonText: "No",      // Text for the Deny button
-        cancelButtonText: "Cancel", // Text for the Cancel button
-      });
-
-      // Handle user response
-      if (result.isConfirmed) {
-        form_data.supervise = true; // Add supervise field to form data
-        console.log("User opted to supervise the project.");
-      } else if (result.isDenied) {
-        form_data.supervise = false; // Add supervise = false if user clicked "No"
-        console.log("User declined to supervise the project.");
-      } else if (result.isDismissed) {
-        console.log("User canceled or closed the modal, stopping execution.");
-        return; // Stop execution if the modal was closed or canceled
-      }
-    }
-
-    // Proceed with the rest of the logic
-
-
-    // Proceed with loading state after SweetAlert decision
     setLoading(true);
 
     try {
-      console.log("Formatted Features Array:", form_data.features); // Expect ["React", "UserLogin"]
-      // Make the API request only if user confirmed to supervise or declined but not canceled
-      const response = await axios.post("/project", form_data);
+      const form_data = {
+        project_name: projectName,
+        purpose: purpose.join(", "),
+        product: product.join(", "),
+        project_budget: projectBudget,
+        project_description: projectDescription,
+        category,
+        features: featuresNA ? "N/A" : features,
+        project_deadline: projectDeadline,
+        required_skills: skillsNA ? "N/A" : skillsRequired,
+        number_of_students: numStudentsNA ? "N/A" : numStudents,
+        image_url: imageFile ? imageFile.name : "",
+        user_id: user.user_id,
+      };
 
+      const response = await axios.post("/project", form_data);
       if (response) {
-        const project = response.data;
-        Swal.fire({ title: 'Success', text: 'Project Created Successfully', icon: 'success', confirmButtonText: 'Ok' });
-        //setSuccessMessage("Project created successfully!");
-        updateNotifyCount();
-        console.log("Project created successfully:", project);
-        emptyForm(); // Reset form after successful submission
-      } else {
-        Swal.fire({
-          title: 'Error',
-          text: 'Failed to create project',
-          icon: 'error',
-          confirmButtonText: 'Ok'
+        Swal.fire({ 
+          title: 'Success', 
+          text: 'Project Created Successfully', 
+          icon: 'success', 
+          confirmButtonText: 'Ok',
+          confirmButtonColor: '#6a85b6',
+          customClass: {
+            popup: 'glass-swal-popup',
+            title: 'swal-title',
+            confirmButton: 'swal-confirm-button'
+          } 
         });
-        //setErrorMessage("Failed to create project");
+        updateNotifyCount();
+        emptyForm();
       }
     } catch (error) {
-      // setErrorMessage("Error submitting form: " + error.message);
-      if (error.response) {
-        Swal.fire({
-          title: 'Error',
-          text: error.response.data.message,
-          icon: 'error',
-          confirmButtonText: 'Ok'
-        });
-      } else {
-        Swal.fire({
-          title: 'Error',
-          text: error.message,
-          icon: 'error',
-          confirmButtonText: 'Ok'
-        });
-      }
+      Swal.fire({
+        title: 'Error',
+        text: error.response ? error.response.data.message : error.message,
+        icon: 'error',
+        confirmButtonText: 'Ok',
+        confirmButtonColor: '#6a85b6',
+        customClass: {
+          popup: 'glass-swal-popup',
+          title: 'swal-title',
+          confirmButton: 'swal-confirm-button'
+        }
+      });
     } finally {
-      setLoading(false); // Hide loading indicator after the operation completes
+      setLoading(false);
     }
   };
-
 
   return (
     <>
@@ -395,8 +212,6 @@ const CreateProjectComponent = () => {
                 <span>Tell us about your project</span>
               </div>
               <div className="createproject_layout">
-                {/* Display error and success messages */}
-
                 <div className="createproject_form">
                   <form onSubmit={handleSubmit}>
                     <label className="form_label">
@@ -412,20 +227,19 @@ const CreateProjectComponent = () => {
                       maxLength={150}
                       required
                     />
+
                     <label className="form_label">
                       What is the main purpose of the product?
                       <span className="text-danger"> *</span>
                     </label>
-                    <div className="radio_button_container">
                     <Select
                       isMulti
                       name="purpose"
                       className="margin-down"
                       options={purposeOptions}
-                      value={purpose.map((p) => ({ value: p, label: p }))} // Tie value to state
-                      onChange={(selected) =>
-                        setPurpose(selected.map((s) => s.value))
-                      }
+                      styles={customSelectStyles}
+                      value={purpose.map((p) => ({ value: p, label: p }))}
+                      onChange={(selected) => setPurpose(selected.map((s) => s.value))}
                     />
                     {purpose.includes("Other") && (
                       <input
@@ -436,21 +250,19 @@ const CreateProjectComponent = () => {
                         onChange={(e) => setOtherPurpose(e.target.value)}
                       />
                     )}
-                    </div>
+
                     <label className="form_label">
                       What type of product do you want to build?
                       <span className="text-danger"> *</span>
                     </label>
-
                     <Select
                       isMulti
                       name="product"
                       className="margin-down"
                       options={productOptions}
-                      value={product.map((p) => ({ value: p, label: p }))} // Tie value to state
-                      onChange={(selected) =>
-                        setProduct(selected.map((s) => s.value))
-                      }
+                      styles={customSelectStyles}
+                      value={product.map((p) => ({ value: p, label: p }))}
+                      onChange={(selected) => setProduct(selected.map((s) => s.value))}
                     />
                     {product.includes("Other") && (
                       <input
@@ -461,11 +273,9 @@ const CreateProjectComponent = () => {
                         onChange={(e) => setOtherProduct(e.target.value)}
                       />
                     )}
-                    
 
                     <label className="form_label">
-                      What is your estimated budget for this project (in
-                      CAD)?
+                      What is your estimated budget for this project (in CAD)?
                       <span className="text-danger"> *</span>
                     </label>
                     <input
@@ -483,70 +293,60 @@ const CreateProjectComponent = () => {
                       <span className="text-danger"> *</span>
                     </label>
                     <textarea
-                      type="text"
                       name="project_Description"
                       value={projectDescription}
                       onChange={(e) => setProjectDescription(e.target.value)}
                       placeholder="Please enter the brief description for this project"
-                      style={{ height: "120px", width: "420px" }}
-                      maxLength={250} // You can set a maximum length if needed
+                      style={{ height: "120px", width: "100%" }}
+                      maxLength={250}
                       required
                     />
 
                     <label className="form_label">
-                    Please select a category for this project?
-                    <span className="text-danger"> *</span>
+                      Please select a category for this project?
+                      <span className="text-danger"> *</span>
                     </label>
                     <Select
                       options={categoryOptions}
                       name="project_category"
                       className="margin-down"
-                      value={category ? { value: category, label: category } : null} // Tie value to state
+                      styles={customSelectStyles}
+                      value={category ? { value: category, label: category } : null}
                       onChange={(selected) => setCategory(selected.value)}
                       required
                     />
 
-                    {/* Features */}
-                    {user.role !== "2" || !featuresNA ? (
-                    <div>
-                    <label className="form_label">
-                    What are the main features or functionalities you want to include in the project?
-                    {/* <span className="text-danger"></span> */}
-                    </label>
-                    {/* <ReactTags
-                      tags={features} // `features` should be an array of objects with { id, text }
-                      handleDelete={handleDeleteFeature}
-                      handleAddition={handleAddFeature}
-                      placeholder="Add a feature and hit enter to add more..."
-                    /> */}
-                    <textarea
-                      id="features"
-                      name="features"
-                      value={features}
-                      onChange={(e) =>
-                        setFeatures(e.target.value)
-                      }
-                      placeholder="Enter features separated by commas (e.g., User login, Sign up)"
-                      rows="4"
-                      cols="50"
-                      disabled={featuresNA}
-                    />
-                    {user.role === "2" && (
-                        <div>
-                          <input
-                            type="checkbox"
-                            id="featuresNA"
-                            checked={featuresNA}
-                            onChange={() => handleNAChange("features")}
-                          />
-                          <label htmlFor="featuresNA">N/A</label>
-                        </div>
-                      )}
-                    </div>
-                  ) : null}
-
-
-
+{user.role !== "2" || !featuresNA ? (
+  <div className="feature-section">
+    <label className="form_label">
+      What are the main features or functionalities you want to include in the project?
+    </label>
+    <textarea
+      id="features"
+      name="features"
+      value={features}
+      onChange={(e) => setFeatures(e.target.value)}
+      placeholder="Enter features separated by commas (e.g., User login, Sign up)"
+      rows="4"
+      disabled={featuresNA}
+      className={`feature-textarea ${featuresNA ? "disabled-textarea" : ""}`}
+    />
+    {user.role === "2" && (
+      <div className="na-checkbox-container margin-top">
+        <input
+          type="checkbox"
+          id="featuresNA"
+          checked={featuresNA}
+          onChange={() => handleNAChange("features")}
+          className="na-checkbox"
+        />
+        <label htmlFor="featuresNA" className="na-checkbox-label">
+          N/A
+        </label>
+      </div>
+    )}
+  </div>
+                    ) : null}
 
                     <label className="form_label">
                       What is the expected timeline or deadline for the project completion?
@@ -562,93 +362,83 @@ const CreateProjectComponent = () => {
                       required
                     />
 
-                    {/* Image Upload */}
                     <label className="form_label">
-                    Upload file(s) for reference...</label>
+                      Upload file(s) for reference...
+                    </label>
                     <div {...getRootProps()} className="dropzone">
-                      <input {...getInputProps()}
-                      accept=".jpg,.jpeg,.pdf,.png" // Restrict file types
-                       />
+                      <input {...getInputProps()} accept=".jpg,.jpeg,.pdf,.png" />
                       {imageFile ? (
                         <p>{imageFile.name}</p>
                       ) : (
-                        <p className="margin-down">Drag & drop or click to upload</p>
+                        <p>Drag & drop or click to upload</p>
                       )}
                     </div>
 
-                    {/* Number of Students */}
                     {user.role !== "2" || !numStudentsNA ? (
-                    <div>
-                    <label className="form_label">
-                    Please enter the number of student you want for this project? 
-                    <span className="text-danger"> *</span>
-                    </label>
-                    <input
-                      type="number"
-                      className="margin-down"
-                      value={numStudents}
-                      placeholder="Enter number of students..."
-                      min="1"
-                      onChange={(e) => setNumStudents(e.target.value)}
-                      disabled={numStudentsNA}
-                    />
-                    {user.role === "2" && (
                       <div>
+                        <label className="form_label">
+                          Please enter the number of students you want for this project?
+                          <span className="text-danger"> *</span>
+                        </label>
                         <input
-                          type="checkbox"
-                          id="numStudentsNA"
-                          checked={numStudentsNA}
-                          onChange={() => handleNAChange("students")}
+                          type="number"
+                          className="margin-down"
+                          value={numStudents}
+                          placeholder="Enter number of students..."
+                          min="1"
+                          onChange={(e) => setNumStudents(e.target.value)}
+                          disabled={numStudentsNA}
                         />
-                        <label htmlFor="numStudentsNA">N/A</label>
+                        {user.role === "2" && (
+                          <div className="margin-top">
+                            <input
+                              type="checkbox"
+                              id="numStudentsNA"
+                              checked={numStudentsNA}
+                              onChange={() => handleNAChange("students")}
+                            />
+                            <label htmlFor="numStudentsNA">N/A</label>
+                          </div>
+                        )}
                       </div>
-                    )}
-                  </div>
-                ) : null}
+                    ) : null}
 
-                    {/* Skills Required */}
                     {user.role !== "2" || !skillsNA ? (
-                    <div>
-                    <label className="form_label">
-                    Please enter the required skills (technology) for this project?
-                    <span className="text-danger"> *</span>
-                    </label>
-                    <textarea
-                      value={skillsRequired}
-                      className="margin-down"
-                      style={{ width: '400px' }}
-                      placeholder="Enter the skills, and add comma betweeen them..."
-                      onChange={(e) => setSkillsRequired(e.target.value)}
-                      disabled={skillsNA}
-                    />
-                    {user.role === "2" && (
                       <div>
-                        <input
-                          type="checkbox"
-                          id="skillsNA"
-                          checked={skillsNA}
-                          onChange={() => handleNAChange("skills")}
+                        <label className="form_label">
+                          Please enter the required skills (technology) for this project?
+                          <span className="text-danger"> *</span>
+                        </label>
+                        <textarea
+                          value={skillsRequired}
+                          className="margin-down"
+                          style={{ width: '100%' }}
+                          placeholder="Enter the skills, and add comma between them..."
+                          onChange={(e) => setSkillsRequired(e.target.value)}
+                          disabled={skillsNA}
                         />
-                        <label htmlFor="skillsNA">N/A</label>
+                        {user.role === "2" && (
+                          <div className="margin-top">
+                            <input
+                              type="checkbox"
+                              id="skillsNA"
+                              checked={skillsNA}
+                              onChange={() => handleNAChange("skills")}
+                            />
+                            <label htmlFor="skillsNA">N/A</label>
+                          </div>
+                        )}
                       </div>
-                    )}
-                  </div>
-                ) : null}
-
-
+                    ) : null}
 
                     <div className="message">
-                      {errorMessage && (
-                        <div className="error-message">{errorMessage}</div>
-                      )}
-                      {successMessage && (
-                        <div className="success-message">{successMessage}</div>
-                      )}
+                      {errorMessage && <div className="error-message">{errorMessage}</div>}
+                      {successMessage && <div className="success-message">{successMessage}</div>}
                     </div>
                     <div className="row">
                       <div className="col-12 text-center">
-                        <button className="text-center button_text button-home" type="submit">
-                          Submit
+                        <button className="button-home" type="submit">
+                          Submit Project
                         </button>
                       </div>
                     </div>
@@ -658,22 +448,17 @@ const CreateProjectComponent = () => {
             </div>
           </div>
         </div>
-        {/* Loading overlay */}
         {loading && (
-          <div className="loading-overlay d-flex justify-content-center align-items-center">
+          <div className="loading-overlay">
             <div className="text-center">
-              <div
-                className="spinner-border text-light"
-                style={{ width: "5rem", height: "5rem" }}
-                role="status"
-              ></div>
-              <div className="text-light mt-2">Processing...</div>
+              <div className="spinner-border text-light" role="status"></div>
+              <div className="text-light mt-2">Processing your project...</div>
             </div>
           </div>
         )}
       </div>
       <div className="footer-fixed">
-        <FooterComponent></FooterComponent>
+        <FooterComponent />
       </div>
     </>
   );

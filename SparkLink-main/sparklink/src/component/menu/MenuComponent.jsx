@@ -12,7 +12,6 @@ import profile_icon from "../../assets/profile.png";
 import create_icon from "../../assets/create_project.png";
 import notification_icon from "../../assets/notification.png";
 import axios from "axios";
-import LoginComponent from "../login/LoginComponent";
 import { useNavigate } from "react-router-dom";
 import logout_icon from "../../assets/logout.png";
 import login_icon from "../../assets/login.png";
@@ -31,6 +30,7 @@ const MenuComponent = () => {
   const [searchParams] = useSearchParams();
   const user_id_param = searchParams.get('user_id');
   const { notifyCount, updateNotifyCount } = useNotification(); 
+  
   const getNavItemClass = (path) => {
     return location.pathname === path ? 'nav-item active' : 'nav-item';
   };
@@ -47,11 +47,6 @@ const MenuComponent = () => {
     }
   };
 
-  // const fetchApplications = async (req, res) => {
-  //   const response = await axios.post("/apply/getApps");
-  //   console.log(response.data);
-  // };
-
   const fetchNotifCount = async () => {
     try {
       updateNotifyCount();
@@ -65,7 +60,7 @@ const MenuComponent = () => {
     }
   }
 
-   useEffect(() => {
+  useEffect(() => {
     if (isAuthenticated) {
       fetchNotifCount();
     }
@@ -80,238 +75,215 @@ const MenuComponent = () => {
             onMouseLeave={() => setOpen(false)}
           >
             <nav
-              className={`navbar content ${open ? "navBackground_expanded" : "navBackground"
-                }`}
+              className={`navbar content menu-glassmorphism ${open ? "navBackground_expanded" : "navBackground"}`}
               style={{ position: "absolute" }}
             >
               {open ? (
                 <Collapse in={open}>
                   <div className="navBackground_expanded text-center">
-                    <br />
-                    <div className="logo text-center">
-                      <Link className="text-menu" to="/">
+                    <div className="logo-container">
+                      <Link className="text-menu logo-link" to="/">
                         <img
                           src={sparklink_icon}
-                          className="nav_menu_icon"
+                          className="nav_menu_icon pulse-animation"
                           alt=""
                         ></img>
                         <img
                           src={sparklink_logo}
                           alt="Logo"
-                          className="sparklink_logo"
-                          style={{ marginLeft: 15 }}
+                          className="sparklink_logo fade-in"
                         />
                       </Link>
                     </div>
-                    <ul className="nav navbar-nav mt-5">
+                    <ul className="nav navbar-nav mt-4">
                       <div className="text-menu-category text-start px-3">
-                        Home
+                        <span className="category-label">Home</span>
                       </div>
                       {isAuthenticated && (
-                        <>
-                         <li className={getNavItemClass("/profile")}>
-                         <span style={{ cursor: "pointer" }}>
-                           <Link
-                             className="text-menu"
-                             to={`/profile?user_id=${user.user_id}`} // Include user_id as a query parameter
-                           >
-                             <img
-                               src={profile_icon}
-                               className="nav_sub_menu_icon"
-                               alt=""
-                               style={{ marginLeft: 15 }}
-                             ></img>
-                             &nbsp;&nbsp;&nbsp;User Profile
-                           </Link>
-                         </span>
-                       </li>
-                       </>
+                        <li className={getNavItemClass("/profile")}>
+                          <span className="menu-item-wrapper">
+                            <Link
+                              className="text-menu nav-link-item"
+                              to={`/profile?user_id=${user.user_id}`}
+                            >
+                              <div className="icon-container">
+                                <img
+                                  src={profile_icon}
+                                  className="nav_sub_menu_icon"
+                                  alt=""
+                                ></img>
+                              </div>
+                              <span className="menu-text">User Profile</span>
+                            </Link>
+                          </span>
+                        </li>
                       )}
                      
-                      {role === "" && (
-                        <li className={getNavItemClass("/about")}>
-                          <span style={{ cursor: "pointer" }}>
-                            <Link className="text-menu" to="/about">
+                      <li className={getNavItemClass("/about")}>
+                        <span className="menu-item-wrapper">
+                          <Link className="text-menu nav-link-item" to="/about">
+                            <div className="icon-container">
                               <img
                                 src={about_icon}
                                 className="nav_sub_menu_icon"
                                 alt=""
-                                style={{ marginLeft: 15 }}
                               ></img>
-                              &nbsp;&nbsp;&nbsp;About Us
-                            </Link>
-                          </span>
-                        </li>
-                      )}
-                      {role === "" && (
-                        <li className={getNavItemClass("/contact")}>
-                          <span style={{ cursor: "pointer" }}>
-                            <Link
-                              style={{
-                                fontFamily: '"Poppins", sans-serif',
-                                fontWeight: 500,
-                                color: "#E6E6E6",
-                                fontStyle: "normal",
-                              }}
-                              to="/contact"
-                            >
+                            </div>
+                            <span className="menu-text">About Us</span>
+                          </Link>
+                        </span>
+                      </li>
+                      <li className={getNavItemClass("/contact")}>
+                        <span className="menu-item-wrapper">
+                          <Link
+                            className="text-menu nav-link-item"
+                            to="/contact"
+                          >
+                            <div className="icon-container">
                               <img
                                 src={contact_icon}
                                 className="nav_sub_menu_icon"
                                 alt=""
-                                style={{ marginLeft: 15 }}
                               ></img>
-                              &nbsp;&nbsp;&nbsp;Contact Us
-                            </Link>
-                          </span>
-                        </li>
-                      )}
-                    </ul>
-                    <ul className="nav navbar-nav mt-3">
-                      <div className="text-menu-category text-start px-3">
-                        Project
-                      </div>
-                      {isAuthenticated && user && (user.role === '2' ||  user.role === '3' || user.role === '1') && (
-                        <>
-                      <li className={getNavItemClass("/create-project")}>
-                        <span style={{ cursor: "pointer" }}>
-                          <Link className="text-menu" to="/create-project">
-                            <img
-                              src={create_icon}
-                              className="nav_sub_menu_icon"
-                              alt=""
-                              style={{ marginLeft: 15 }}
-                            ></img>
-                            &nbsp;&nbsp;&nbsp;Create Project
+                            </div>
+                            <span className="menu-text">Contact Us</span>
                           </Link>
                         </span>
                       </li>
-                      </>
-                      )}
-                      {isAuthenticated && (
-                        <>
+                    </ul>
+                    
+                    {isAuthenticated && (
+                      <ul className="nav navbar-nav mt-3">
+                        <div className="text-menu-category text-start px-3">
+                          <span className="category-label">Project</span>
+                        </div>
+                        
+                        {user && (user.role === '2' ||  user.role === '3' || user.role === '1') && (
+                          <li className={getNavItemClass("/create-project")}>
+                            <span className="menu-item-wrapper">
+                              <Link className="text-menu nav-link-item" to="/create-project">
+                                <div className="icon-container">
+                                  <img
+                                    src={create_icon}
+                                    className="nav_sub_menu_icon"
+                                    alt=""
+                                  ></img>
+                                </div>
+                                <span className="menu-text">Create Project</span>
+                              </Link>
+                            </span>
+                          </li>
+                        )}
+                        
                         <li className={getNavItemClass("/view-project")}>
-                          <span style={{ cursor: "pointer" }}>
-                            <Link className="text-menu" to="/view-project">
-                              <img
-                                src={view_icon}
-                                className="nav_sub_menu_icon"
-                                alt=""
-                                style={{ marginLeft: 15 }}
-                              ></img>
-                              &nbsp;&nbsp;&nbsp;View Project
+                          <span className="menu-item-wrapper">
+                            <Link className="text-menu nav-link-item" to="/view-project">
+                              <div className="icon-container">
+                                <img
+                                  src={view_icon}
+                                  className="nav_sub_menu_icon"
+                                  alt=""
+                                ></img>
+                              </div>
+                              <span className="menu-text">View Project</span>
                             </Link>
                           </span>
                         </li>
-                        </>
-                      )}
-                      
-                      {isAuthenticated &&  user && user.role === '4' &&  (
-                        <>
-                        <li className={getNavItemClass("/view-Recomended-project")}>
-                          <span style={{ cursor: "pointer" }}>
-                            <Link className="text-menu" to="/view-Recomended-project">
-                              <img
-                                src={view_icon}
-                                className="nav_sub_menu_icon"
-                                alt=""
-                                style={{ marginLeft: 15 }}
-                              ></img>
-                              &nbsp;&nbsp;&nbsp;Recommendations
-                            </Link>
-                          </span>
-                        </li>
-                        </>
-                      )}
-                      {role === "" && (
-                        <li className={getNavItemClass("/progress")}>
-                          <span style={{ cursor: "pointer" }}>
-                            <Link
-                              style={{
-                                fontFamily: '"Poppins", sans-serif',
-                                fontWeight: 500,
-                                color: "#E6E6E6",
-                                fontStyle: "normal",
-                              }}
-                              to="/progress"
-                            >
-                              <img
-                                src={milestone_icon}
-                                className="nav_sub_menu_icon"
-                                alt=""
-                                style={{ marginLeft: 15 }}
-                              ></img>
-                              &nbsp;&nbsp;&nbsp;Milestone Tracker
-                            </Link>
-                          </span>
-                        </li>
-                      )}
-                      {role === "" && (
-                        <li className={getNavItemClass("/projApplications")}>
-                          <span style={{ position: "relative", display: "inline-block", cursor: "pointer" }}>
-                            <Link
-                              style={{
-                                fontFamily: '"Poppins", sans-serif',
-                                fontWeight: 500,
-                                color: "#E6E6E6",
-                                fontStyle: "normal",
-                              }}
-                              to="/projApplications"
-                            >
-                              <img
-                                src={notification_icon}
-                                className="nav_sub_menu_icon"
-                                alt=""
-                                style={{ marginLeft: 15 }}
-                              ></img>
-                              &nbsp;&nbsp;&nbsp;Notifications
-                              {isAuthenticated && <span className="notifcation-badge-expand text-center">{notifyCount > 9 ? '9+' : notifyCount}</span>}
-                            </Link>
-                          </span>
-                        </li>
-                      )}
+                        
+                        {user && user.role === '4' && (
+                          <li className={getNavItemClass("/view-Recomended-project")}>
+                            <span className="menu-item-wrapper">
+                              <Link className="text-menu nav-link-item" to="/view-Recomended-project">
+                                <div className="icon-container">
+                                  <img
+                                    src={view_icon}
+                                    className="nav_sub_menu_icon"
+                                    alt=""
+                                  ></img>
+                                </div>
+                                <span className="menu-text">Recommendations</span>
+                              </Link>
+                            </span>
+                          </li>
+                        )}
+                        
+                        {role === "" && (
+                          <li className={getNavItemClass("/progress")}>
+                            <span className="menu-item-wrapper">
+                              <Link
+                                className="text-menu nav-link-item"
+                                to="/progress"
+                              >
+                                <div className="icon-container">
+                                  <img
+                                    src={milestone_icon}
+                                    className="nav_sub_menu_icon"
+                                    alt=""
+                                  ></img>
+                                </div>
+                                <span className="menu-text">Milestone Tracker</span>
+                              </Link>
+                            </span>
+                          </li>
+                        )}
+                        
+                        {role === "" && (
+                          <li className={getNavItemClass("/projApplications")}>
+                            <span className="menu-item-wrapper">
+                              <Link
+                                className="text-menu nav-link-item"
+                                to="/projApplications"
+                              >
+                                <div className="icon-container notification-icon-container">
+                                  <img
+                                    src={notification_icon}
+                                    className="nav_sub_menu_icon"
+                                    alt=""
+                                  ></img>
+                                  <span className="notifcation-badge-expand">{notifyCount > 9 ? '9+' : notifyCount}</span>
+                                </div>
+                                <span className="menu-text">Notifications</span>
+                              </Link>
+                            </span>
+                          </li>
+                        )}
+                      </ul>
+                    )}
 
+                    <ul className="nav navbar-nav mt-3">
                       {isAuthenticated ? (
                         <li className={getNavItemClass("/logout")}>
-                          <span style={{ cursor: "pointer" }}>
+                          <span className="menu-item-wrapper logout-item">
                             <span
-                              className="text-menu"
+                              className="text-menu nav-link-item"
                               onClick={logout}
-                              style={{
-                                marginLeft: 15,
-                                marginBottom: 15,
-                                position: "absolute",
-                                bottom: 0,
-                              }}
                             >
-                              <img
-                                src={logout_icon}
-                                className="nav_sub_menu_icon"
-                                alt="Logout Icon"
-                              ></img>
-                              &nbsp;&nbsp;&nbsp;Logout
+                              <div className="icon-container">
+                                <img
+                                  src={logout_icon}
+                                  className="nav_sub_menu_icon"
+                                  alt="Logout Icon"
+                                ></img>
+                              </div>
+                              <span className="menu-text">Logout</span>
                             </span>
                           </span>
                         </li>
                       ) : (
                         <li className={getNavItemClass("/login")}>
-                          <span style={{ cursor: "pointer" }}>
+                          <span className="menu-item-wrapper login-item">
                             <span
-                              className="text-menu"
+                              className="text-menu nav-link-item"
                               onClick={() => navigate("/login")}
-                              style={{
-                                marginLeft: 15,
-                                marginBottom: 15,
-                                position: "absolute",
-                                bottom: 0,
-                              }}
                             >
-                              <img
-                                src={login_icon} // Updated to login_icon
-                                className="nav_sub_menu_icon"
-                                alt="Login Icon"
-                              ></img>
-                              &nbsp;&nbsp;&nbsp;Login
+                              <div className="icon-container">
+                                <img
+                                  src={login_icon}
+                                  className="nav_sub_menu_icon"
+                                  alt="Login Icon"
+                                ></img>
+                              </div>
+                              <span className="menu-text">Login</span>
                             </span>
                           </span>
                         </li>
@@ -322,109 +294,114 @@ const MenuComponent = () => {
               ) : (
                 <Collapse in={!open}>
                   <div className="navBackground">
-                    <br />
-                    <div className="logo text-center">
+                    <div className="logo-container-collapsed">
                       <img
                         src={sparklink_icon}
-                        className="nav_collapsed_menu_icon"
+                        className="nav_collapsed_menu_icon bounce-animation"
                         alt=""
                       ></img>
                     </div>
-                    <ul className="nav navbar-nav mt-5">
-                      <li className="nav-item">
-                        <span style={{ cursor: "pointer" }}>
-                          <img
-                            src={profile_icon}
-                            className="nav_sub_menu_icon"
-                            alt=""
-                            style={{ marginLeft: 15 }}
-                          ></img>
-                        </span>
-                      </li>
-                      <li className="nav-item">
-                        <span style={{ cursor: "pointer" }}>
+                    
+                    <ul className="nav navbar-nav mt-4">
+                      {isAuthenticated && (
+                        <li className="nav-item collapsed-item">
+                          <span className="icon-only-container">
+                            <img
+                              src={profile_icon}
+                              className="nav_sub_menu_icon"
+                              alt=""
+                            ></img>
+                          </span>
+                        </li>
+                      )}
+                      <li className="nav-item collapsed-item">
+                        <span className="icon-only-container">
                           <img
                             src={about_icon}
                             className="nav_sub_menu_icon"
                             alt=""
-                            style={{ marginLeft: 15 }}
                           ></img>
                         </span>
                       </li>
-                      {role === "" && (
-                        <li className="nav-item">
-                          <span style={{ cursor: "pointer" }}>
-                            <img
-                              src={contact_icon}
-                              className="nav_sub_menu_icon"
-                              alt=""
-                              style={{ marginLeft: 15 }}
-                            ></img>
-                          </span>
-                        </li>
-                      )}
+                      <li className="nav-item collapsed-item">
+                        <span className="icon-only-container">
+                          <img
+                            src={contact_icon}
+                            className="nav_sub_menu_icon"
+                            alt=""
+                          ></img>
+                        </span>
+                      </li>
                     </ul>
 
-                    <ul className="nav navbar-nav">
-                      <li className="nav-item">
-                        <span style={{ cursor: "pointer" }}>
-                          <img
-                            src={create_icon}
-                            className="nav_sub_menu_icon"
-                            alt=""
-                            style={{ marginLeft: 15 }}
-                          ></img>
-                        </span>
-                      </li>
-                      <li className="nav-item">
-                        <span style={{ cursor: "pointer" }}>
-                          <img
-                            src={view_icon}
-                            className="nav_sub_menu_icon"
-                            alt=""
-                            style={{ marginLeft: 15 }}
-                          ></img>
-                        </span>
-                      </li>
-                      {role === "" && (
-                        <li className="nav-item">
-                          <span style={{ cursor: "pointer" }}>
+                    {isAuthenticated && (
+                      <ul className="nav navbar-nav">
+                        {user && (user.role === '2' || user.role === '3' || user.role === '1') && (
+                          <li className="nav-item collapsed-item">
+                            <span className="icon-only-container">
+                              <img
+                                src={create_icon}
+                                className="nav_sub_menu_icon"
+                                alt=""
+                              ></img>
+                            </span>
+                          </li>
+                        )}
+                        <li className="nav-item collapsed-item">
+                          <span className="icon-only-container">
                             <img
-                              src={milestone_icon}
+                              src={view_icon}
                               className="nav_sub_menu_icon"
                               alt=""
-                              style={{ marginLeft: 15 }}
+                            ></img>
+                          </span>
+                        </li>
+                        {role === "" && (
+                          <li className="nav-item collapsed-item">
+                            <span className="icon-only-container">
+                              <img
+                                src={milestone_icon}
+                                className="nav_sub_menu_icon"
+                                alt=""
+                              ></img>
+                            </span>
+                          </li>
+                        )}
+                        <li className="nav-item collapsed-item">
+                          <span className="icon-only-container notification-icon-container">
+                            <img
+                              src={notification_icon}
+                              className="nav_sub_menu_icon"
+                              alt=""
+                            ></img>
+                            <span className="notification-badge">{notifyCount > 9 ? '9+' : notifyCount}</span>
+                          </span>
+                        </li>
+                      </ul>
+                    )}
+
+                    <ul className="nav navbar-nav">
+                      {isAuthenticated ? (
+                        <li className="nav-item collapsed-item">
+                          <span className="icon-only-container logout-item-collapsed">
+                            <img
+                              src={logout_icon}
+                              className="nav_sub_menu_icon"
+                              alt=""
+                            ></img>
+                          </span>
+                        </li>
+                      ) : (
+                        <li className="nav-item collapsed-item">
+                          <span className="icon-only-container login-item-collapsed">
+                            <img
+                              src={login_icon}
+                              className="nav_sub_menu_icon"
+                              alt=""
                             ></img>
                           </span>
                         </li>
                       )}
-                      <li className="nav-item">
-                        <span style={{ position: "relative", display: "inline-block", cursor: "pointer" }}>
-                          <img
-                            src={notification_icon}
-                            className="nav_sub_menu_icon"
-                            alt=""
-                            style={{ marginLeft: 15 }}
-                          ></img>
-                          {isAuthenticated && <span className="notification-badge text-center">{notifyCount > 9 ? '9+' : notifyCount}</span>}
-                        </span>
-                      </li>
-
-                      <li className="nav-item">
-                        <span style={{ cursor: "pointer" }}>
-                          <img
-                            src={logout_icon}
-                            className="nav_sub_menu_icon"
-                            alt=""
-                            style={{
-                              marginLeft: 15,
-                              marginBottom: 15,
-                              position: "absolute",
-                              bottom: 0,
-                            }}
-                          ></img>
-                        </span>
-                      </li>
                     </ul>
                   </div>
                 </Collapse>
