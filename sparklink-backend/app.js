@@ -1,7 +1,6 @@
 // Load environment variables from .env
 // This should be the first thing to run
 // This will load the environment variables from the .env file into process.env
-// This is necessary for the database connection to work
 require('dotenv').config();
 
 const express = require('express');
