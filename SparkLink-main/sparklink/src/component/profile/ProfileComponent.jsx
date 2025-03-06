@@ -9,6 +9,7 @@ import { useAuth } from '../../AuthContext';
 import Modal from 'react-bootstrap/Modal';
 import Table from 'react-bootstrap/Table';
 import { useSearchParams } from 'react-router-dom';
+
 import photo1 from '../../assets/project_images/photo1.jpg';
 import photo2 from '../../assets/project_images/photo2.jpg';
 import photo3 from '../../assets/project_images/photo3.jpg';
@@ -25,11 +26,14 @@ import report_icon from '../../assets/report_icon.png';
 // Array of images
 const imageArray = [photo1, photo2, photo3, photo4, photo5, photo6, photo7, photo8, photo9, photo10];
 
+//const User = require('../models/user');
+
 const ProfileComponent = () => {
     const { user, isAuthenticated } = useAuth();
     const [role, setRole] = useState(null);
     const [profile, setProfile] = useState(null);
     const [userDetails, setUserDetails] = useState(null);
+    const [profileExists, setProfileExists] = useState(true);
     // const [projects, setProjects] = useState([]);
     const [projectDetails, setProjectDetails] = useState([]);
     const [selectedProjectDetails, setSelectedProjectDetails] = useState([]);
@@ -44,35 +48,42 @@ const ProfileComponent = () => {
     const [projectList, setProjectList] = useState([]);
 
     const fetchProfile = async (user_id) => {
-        //const user_id = user.user_id;
-        console.log("PROF>>>>>", user_id);
-        if (user) {
-            try {
-                console.log("Fetching profile for user_id:", user_id);
-                const response = await axios.get("/profile", {
-                    params: { user_id: user_id }
-                });
-                // console.log('profile data = ', response.data);
-                // setRole(response.data.role);
-                // setProfile(response.data.profile);
-                // setUserDetails(response.data.user_details);
-                // // setProjects(response.data.projects);
-                // setProjectDetails(response.data.project_details);
-                setRole(response.data.role);
-                setProfile(response.data.profile);
-                setUserDetails(response.data.user_details);
-                setProjectList(response.data.projects);
-                console.log("VOILA>>>>>", response.data);
-                // console.log("Is Array:", Array.isArray(projectDetails));
-                setLoading(false);
-            } catch (err) {
-                setError('Error fetching profile FE');
-                setLoading(false);
+        console.log("Fetching profile for user_id:", user_id);
+    
+        if (!user_id) {
+            setError("User ID is missing");
+            setLoading(false);
+            return;
+        }
+    
+        try {
+            const response = await axios.get("http://localhost:3100/profile", {
+                params: { user_id }
+            });
+    
+            console.log("Profile Response:", response.data);
+    
+            setRole(response.data.role || "student");  // Default to 'student' if missing
+            setProfile(response.data.profile || null);
+            setUserDetails(response.data.user_details || null);
+            setProfileExists(response.data.profileExists !== undefined ? response.data.profileExists : true);
+            setProjectList(response.data.projects || []);
+            setLoading(false);
+        } catch (error) {
+            console.error("Error fetching profile:", error.response?.data || error);
+    
+            if (error.response?.status === 404) {
+                console.warn("Profile not found. Allowing profile creation.");
+                setProfileExists(false);  // Enable profile creation form
+            } else {
+                setError("Error fetching profile. Please try again.");
             }
-        } else {
-            console.log('no user', user);
+    
+            setLoading(false);
         }
     };
+    
+    
 
     useEffect(() => {
         console.log("TEST PROJ FETCH>>>>>", projectDetails);
@@ -94,12 +105,6 @@ const ProfileComponent = () => {
     };
 
     useEffect(() => {
-        if (isAuthenticated) {
-            fetchProfile(user_id_param || user.user_id);
-        }
-    }, [user, user_id_param]);
-
-    useEffect(() => {
         console.log("projects count : ", projectDetails.length);
         setIsScrollable(projectDetails.length > 3);
     }, [projectDetails]);
@@ -118,6 +123,12 @@ const ProfileComponent = () => {
         // }
     }, [selectedProjectDetails]);
 
+    useEffect(() => {
+        if (isAuthenticated && user) {
+            fetchProfile(user_id_param || user.user_id);
+        }
+    }, [user, user_id_param]);
+
     if (loading) {
         return <div className="loading">Loading...</div>;
     }
@@ -125,6 +136,78 @@ const ProfileComponent = () => {
     if (error) {
         return <div className="error">{error}</div>;
     }
+
+    // **Handle Form Submission**
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+    
+        console.log("User Object:", user);
+        console.log("User Role Details:", user?.roleDetails);
+        console.log("User Role Desc:", user?.roleDetails?.role_desc);
+        console.log("User Role Desc:", user.role.roleDesc);
+        //console.log("User Role Desc:", roleDesc);
+    
+        if (!user) {
+            alert("User not found, please login again.");
+            return;
+        }
+
+        const roleMap = {
+            1: "admin",
+            2: "supervisor",
+            3: "business_owner",
+            4: "student"
+        };
+        
+    
+        const formData = new FormData(e.target);
+    
+        const profileData = {
+            user_id: user.user_id,
+            role: roleMap[user.role] || "unknown",
+            bio: formData.get("bio"),
+            skills: formData.get("skills"),
+            linkedin: formData.get("linkedin"),
+            github: formData.get("github"),
+            address: formData.get("address"),
+            phone_number: formData.get("phone_number"),
+        };
+
+    
+        try {
+            await axios.post("http://localhost:3100/profile/create-profile", profileData);
+            console.log("Profile Data Sent:", profileData);
+            console.log("Sending Profile Data:", JSON.stringify(profileData, null, 2));
+
+            alert("Profile created successfully!");
+            window.location.reload();
+        } catch (error) {
+            console.log("Sending Profile Data:", JSON.stringify(profileData, null, 2));
+
+            console.error("Error creating profile:", error.response?.data || error);
+            alert("Failed to create profile");
+        }
+    };
+    
+
+    // **If profile does not exist, show form to create profile**
+    if (profileExists === false) {  // Explicit check
+    return (
+        <div className="container pt-4">
+            <h1>Create Your Profile</h1>
+            <p>We couldn't find your profile. Please fill in the details to continue.</p>
+            <form onSubmit={handleSubmit}>
+                <input type="text" name="bio" placeholder="Bio" required />
+                <input type="text" name="skills" placeholder="Skills" required />
+                <input type="text" name="linkedin" placeholder="LinkedIn Profile" required />
+                <input type="text" name="github" placeholder="GitHub Profile" required />
+                <input type="text" name="address" placeholder="Address" required />
+                <input type="text" name="phone_number" placeholder="Phone Number" required />
+                <button type="submit">Create Profile</button>
+            </form>
+        </div>
+    );
+}
 
     return (
         <>

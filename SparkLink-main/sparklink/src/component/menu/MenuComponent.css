@@ -26,20 +26,20 @@
     height: 100vh;
     width: 250px;
     padding: 0;
-    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    transition: width 0.3s ease, opacity 0.3s ease;
+    opacity: 1;
+    display: flex;
+    flex-direction: column;
 }
 
 .navBackground {
     height: 100vh;
     width: 70px;
     padding: 0;
-    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-}
-
-.navBackground:hover {
-    width: 250px;
-    background-color: rgba(0, 85, 150, 0.9);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
+    transition: width 0.3s ease, opacity 0.3s ease;
+    opacity: 1;
+    display: flex;
+    flex-direction: column;
 }
 
 .navBackground,
@@ -163,6 +163,14 @@
     border-radius: 12px;
     transition: all 0.3s ease;
     width: 100%;
+    text-align: left;
+}
+
+.clickable-menu-item {
+    background: none;
+    border: none;
+    color: #ecf0f1;
+    width: 100%;
 }
 
 .icon-only-container {
@@ -248,8 +256,19 @@
     justify-content: center;
 }
 
+.collapsed-link {
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+    display: block;
+    text-decoration: none;
+    color: inherit;
+}
+
 /* Notification badge styling */
-.notification-badge {
+.notification-badge, .notifcation-badge-expand {
     position: absolute;
     top: -5px;
     right: -5px;
@@ -275,22 +294,34 @@
     100% { box-shadow: 0 0 0 0 rgba(255, 51, 0, 0); }
 }
 
-/* Special items */
-.logout-item, .login-item {
-    position: absolute;
-    bottom: 20px;
-    width: 90%;
-    left: 50%;
-    transform: translateX(-50%);
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    padding-top: 15px;
+/* Footer container for login/logout items */
+.menu-footer {
+    margin-top: auto !important;
+    padding: 15px 0;
+    margin-bottom: 20px;
+    width: 100%;
 }
 
-.logout-item-collapsed {
-    position: absolute;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
+.collapsed-menu-footer {
+    margin-top: auto !important;
+    padding: 15px 0;
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+/* Special items */
+.logout-item, .login-item {
+    width: 90%;
+    margin: 0 auto;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 15px;
+    padding-bottom: 5px;
+}
+
+.logout-item-collapsed, .login-item-collapsed {
+    margin: 0 auto;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 10px;
 }
 
 .nav_sub_menu_icon {

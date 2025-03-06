@@ -30,8 +30,6 @@ const analyticsRoutes = require("./routes/analyticsRoutes");
 
 const app = express();
 
-
-
 const allowedOrigins = [
   'http://localhost:3100', // React frontend
   'http://10.0.2.2:5100', // Flutter emulator
@@ -130,6 +128,44 @@ app.get("/status",(req,res) => {
   console.log(req.user);
   console.log(req.session);
   return req.user? res.send(req.user) : res.sendStatus(401);
+});
+
+app.post('/create-profile', async (req, res) => {
+  try {
+      const { user_id, bio, skills, linkedin, github, address, phone_number } = req.body;
+
+      if (!user_id) {
+          return res.status(400).json({ message: "User ID is required" });
+      }
+
+      let profile;
+
+      // Determine the user's role
+      const user = await User.findOne({ where: { user_id }, attributes: ['role'] });
+      if (!user) {
+          return res.status(404).json({ message: "User not found" });
+      }
+
+      const role = await Role.findOne({ where: { id: user.role } });
+      if (!role) {
+          return res.status(404).json({ message: "Role not found" });
+      }
+
+      if (role.role_desc === 'student') {
+          profile = await StudentProfile.create({ user_id, bio, skills, linkedin, github, address, phone_number });
+      } else if (role.role_desc === 'supervisor') {
+          profile = await SupervisorProfile.create({ user_id, bio, skills, linkedin, github, address, phone_number });
+      } else if (role.role_desc === 'business_owner') {
+          profile = await OwnerProfile.create({ user_id, bio, skills, linkedin, github, address, phone_number });
+      } else {
+          return res.status(400).json({ message: "Invalid role" });
+      }
+
+      res.status(201).json({ message: "Profile created successfully", profile });
+  } catch (error) {
+      console.error("Error creating profile:", error);
+      res.status(500).json({ message: "Error creating profile", error: error.message });
+  }
 });
 
 // Start the server

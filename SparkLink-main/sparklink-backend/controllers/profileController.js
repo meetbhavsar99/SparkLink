@@ -9,6 +9,45 @@ const Project = require('../models/project');
 const { Op } = require("sequelize");
 const sequelize = require('../config/db');
 
+// app.post('/create-profile', async (req, res) => {
+//   try {
+//       const { user_id, bio, skills, linkedin, github, address, phone_number } = req.body;
+
+//       if (!user_id) {
+//           return res.status(400).json({ message: "User ID is required" });
+//       }
+
+//       let profile;
+
+//       // Determine the user's role
+//       const user = await User.findOne({ where: { user_id }, attributes: ['role'] });
+//       if (!user) {
+//           return res.status(404).json({ message: "User not found" });
+//       }
+
+//       const role = await Role.findOne({ where: { id: user.role } });
+//       if (!role) {
+//           return res.status(404).json({ message: "Role not found" });
+//       }
+
+//       if (role.role_desc === 'student') {
+//           profile = await StudentProfile.create({ user_id, bio, skills, linkedin, github, address, phone_number });
+//       } else if (role.role_desc === 'supervisor') {
+//           profile = await SupervisorProfile.create({ user_id, bio, skills, linkedin, github, address, phone_number });
+//       } else if (role.role_desc === 'business_owner') {
+//           profile = await OwnerProfile.create({ user_id, bio, skills, linkedin, github, address, phone_number });
+//       } else {
+//           return res.status(400).json({ message: "Invalid role" });
+//       }
+
+//       res.status(201).json({ message: "Profile created successfully", profile });
+//   } catch (error) {
+//       console.error("Error creating profile:", error);
+//       res.status(500).json({ message: "Error creating profile", error: error.message });
+//   }
+// });
+
+
 exports.getProfile = async (req, res) => {
   try {
     const { user_id } = req.query;
@@ -17,16 +56,22 @@ exports.getProfile = async (req, res) => {
       return res.status(400).json({ message: "User ID is required" });
     }
 
-    // Fetch the user and their role
     const user = await User.findOne({
       where: { user_id },
-      attributes: ['role', 'email', 'name', 'username'],
+      include: [{ model: Role, as: 'roleDetails', attributes: ['role_desc'] }], // Ensure role is included
     });
-
+    
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
+    
+    // const roleDesc = user.roleDetails?.role_desc; // Extract role_desc from roleDetails
+    
+    // if (!roleDesc) {
+    //   return res.status(400).json({ message: "Invalid role" });
+    // }
 
+    console.log("User", user);
     console.log("Fetching role for user.role ID:", user.role);
 
     const role = await Role.findOne({
@@ -56,26 +101,44 @@ exports.getProfile = async (req, res) => {
           isAuthenticated: true,
         },
         role: roleDesc,
+        profileExists: true,
         profile: null,  // Admins may not have a dedicated profile table
         projects: [],
       });
     }
 
+    let bio, skills, linkedin, github, address, phone_number;
+
     // Fetch profile dynamically based on the role ID
-let profile;
-if (roleDesc === 'student') {
-  profile = await StudentProfile.findOne({ where: { user_id } });
-} else if (roleDesc === 'supervisor') {
-  profile = await SupervisorProfile.findOne({ where: { user_id } });
-} else if (roleDesc === 'business_owner') {
-  profile = await OwnerProfile.findOne({ where: { user_id } });
-} else {
-    return res.status(400).json({ message: "Invalid role" });
+    let profile;
+    if (roleDesc === 'student') {
+      profile = await StudentProfile.create({ user_id, bio, skills, linkedin, github, address, phone_number });
+    } else if (roleDesc === 'supervisor') {
+      profile = await SupervisorProfile.create({ user_id, bio, skills, linkedin, github, address, phone_number });
+    } else if (roleDesc === 'business_owner') {
+      profile = await OwnerProfile.create({ user_id, bio, skills, linkedin, github, address, phone_number });
+    } else {
+      return res.status(400).json({ message: "Invalid role" });
+    }
+
+// If profile does not exist, return profileExists: false
+if (!profile) {
+  return res.status(200).json({
+    message: "Profile not found",
+    user_details: {
+      user_id: user.user_id,
+      username: user.username,
+      email: user.email,
+      name: user.name,
+      isAuthenticated: true,
+    },
+    role: roleDesc,
+    profileExists: false, // Signal frontend to show form
+    profile: null,
+    projects: [],
+  });
 }
 
-if (!profile) {
-    return res.status(404).json({ message: "Profile not found" });
-}
 
   
 
@@ -106,6 +169,7 @@ if (!profile) {
         name: user.name,
         isAuthenticated: true,
       },
+      profileExists: true, // Profile exists
       profile,
       projects,
       role: roleDesc,
@@ -116,4 +180,32 @@ if (!profile) {
     res.status(500).json({ message: 'Error fetching profile and projects', error: err.message });
   }
 };
+
+exports.createProfile = async (req, res) => {
+  try {
+    const { user_id, role, bio, skills, linkedin, github, address, phone_number } = req.body;
+
+      const user = await User.findOne({ where: { user_id } });
+      if (!user) {
+          return res.status(404).json({ message: "User not found" });
+      }
+
+      let profile;
+      if (user.role_desc === 'student') {
+          profile = await StudentProfile.create({ user_id, bio, skills, linkedin, github, address, phone_number });
+      } else if (user.role_desc === 'supervisor') {
+          profile = await SupervisorProfile.create({ user_id, bio, skills, linkedin, github, address, phone_number });
+      } else if (user.role_desc === 'business_owner') {
+          profile = await OwnerProfile.create({ user_id, bio, skills, linkedin, github, address, phone_number });
+      } else {
+          return res.status(400).json({ message: "Invalid role" });
+      }
+
+      res.status(201).json({ message: "Profile created successfully", profile });
+
+  } catch (error) {
+      res.status(500).json({ message: "Error creating profile", error: error.message });
+  }
+};
+
 
