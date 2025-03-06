@@ -1,0 +1,176 @@
+/* Centering and styling the main login container */
+
+/* .login-backend { */
+/* margin: 0; */
+/* height: 100vh;  */
+/* background-color: "linear-gradient(to top, #5f7f9f, #2c3d5c)" !important; */
+/* background-color: #f8f9fa; */
+/* } */
+
+
+
+
+.divider:after,
+.divider:before {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: #eee;
+}
+.h-custom {
+  height: calc(100% - 73px);
+}
+@media (max-width: 450px) {
+  .h-custom {
+    height: 100%;
+  }
+}
+
+.login-page-container {
+  height: 100vh;
+  background: linear-gradient(to top, #5f7f9f, #2c3d5c);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.login-container {
+  max-width: 400px;
+  padding: 2rem;
+  margin: auto;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* .custom-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+} */
+
+/* Styling the title */
+.title {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+/* Message styles for success or error messages */
+.message {
+  margin-bottom: 1rem;
+}
+
+.error-message {
+  color: #dc3545;
+  text-align: center;
+}
+
+.success-message {
+  color: #28a745;
+  text-align: center;
+}
+
+/* Input group styling */
+.input-group {
+  display: flex;
+  align-items: stretch; /* Ensures icon and input align vertically */
+}
+
+.input-group .input-group-text {
+  width: 45px; /* Adjust width if needed */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #e9ecef; /* Background color for icon area */
+  border: 1px solid #ced4da;
+  border-right: none; /* Remove double border between icon and input */
+  border-radius: 0; /* Remove rounded corners */
+  height: 100%; /* Ensures the icon container matches the input height */
+  font-size: 1.2rem; /* Adjust font size of the icon if needed */
+}
+
+.input-group .form-control {
+  border-radius: 0; /* Remove rounding on input field */
+  border-left: none; /* Remove double border between icon and input */
+  height: calc(2.25rem + 2px); /* Match Bootstrap input height */
+}
+
+/* Button styling */
+.btn-block {
+  width: 100%;
+  padding: 0.5rem;
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+/* Signup text */
+.signup-text,
+.forgetpassword-text {
+  text-align: center;
+  margin-top: 1rem;
+  font-size: 0.9rem;
+}
+
+.btn.submit-button {
+  padding-left: 2.5rem;
+  padding-right: 2.5rem;
+  background-color: #2f5972; /* Custom background color */
+  border-color: #2f5972; /* Match border color with background */
+  color: #fff; /* Ensure text is visible */
+}
+
+/* Add hover effect for better user experience */
+.btn.submit-button:hover {
+  background-color:  #fff;
+  color: #244a5c; /* Ensure text is visible */
+}
+
+.form-title {
+  font-size: 50px; /* Adjust font size as needed */
+  /* font-weight: bold; */
+  align-items: center;
+  justify-content: center;
+  margin: 0; /* Remove any default margin */
+  text-align: center;
+  font-weight: 700;
+  /*  */
+}
+
+.heading-login {
+  padding: 20px 0 0 50px;
+  /* margin-right: 200px; */
+}
+
+.text-end {
+  display: block; 
+  text-align: right; /* Align text to the right */
+  font-size: 16px; /* Adjust font size */
+  color: #2f5972; /* Subtle gray color */
+  text-decoration: none; /* Remove underline */
+  font-weight: 700;
+}
+
+/* Add hover effect */
+.text-end:hover {
+  color: #2f5972;  /* Change color to red on hover */
+  text-decoration: underline; /* Add underline on hover */
+}
+
+.btn-outline-primary {
+  border: 1px solid #007BFF;
+  color: #007BFF;
+  padding: 6px 12px;
+  font-size: 14px;
+  border-radius: 5px;
+  text-decoration: none;
+  transition: 0.3s ease-in-out;
+}
+
+.btn-outline-primary:hover {
+  background-color: #007BFF;
+  color: white;
+}
+
+
