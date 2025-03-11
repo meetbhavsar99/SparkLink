@@ -144,6 +144,7 @@ const ViewProjectComponent = () => {
         for (let i = 0; i < projectList.length; i++) {
             if (projectList[i].proj_id === projId) {
                 filteredProj = projectList[i];
+                console.log("Selected Project Details:", filteredProj);
                 setProjDetailsList(filteredProj);
                 setTriggerModalFlag(true);
                 break;
@@ -590,6 +591,8 @@ const ViewProjectComponent = () => {
         return <div>Error: {error}</div>;
     }
 
+    console.log(projDetailsList);
+
     return (
         <>
             <div className="page-container">
@@ -787,7 +790,7 @@ const ViewProjectComponent = () => {
                                                     </td>}
                                                 </tr>
                                                 <tr>
-                                                    <td className="proj-details-sub-header">Product</td>
+                                                    <td className="proj-details-sub-header">Type of Product</td>
                                                     {!editFlag && <td className='proj-details-data'>{projDetailsList.product}</td>}
                                                     {editFlag && <td className='proj-details-data'>
                                                         <input
@@ -811,6 +814,21 @@ const ViewProjectComponent = () => {
                                                             name="description"
                                                             placeholder='e.g., This website is intended for MAC Faculty and Students'
                                                             value={projDetailsList.description || ""}
+                                                            onChange={(e) => handleUpdateProjDetailsChange(e)}
+                                                            required
+                                                        />
+                                                    </td>}
+                                                </tr>
+                                                <tr>
+                                                    <td className="proj-details-sub-header">Category</td>
+                                                    {!editFlag && <td className='proj-details-data'>{projDetailsList.category}</td>}
+                                                    {editFlag && <td className='proj-details-data'>
+                                                        <input
+                                                            type="text"
+                                                            className="milestone_input_text"
+                                                            name="features"
+                                                            placeholder='Category'
+                                                            value={projDetailsList.category || ""}
                                                             onChange={(e) => handleUpdateProjDetailsChange(e)}
                                                             required
                                                         />
@@ -847,6 +865,20 @@ const ViewProjectComponent = () => {
                                                         />
                                                     </td>}
                                                 </tr>
+                                                {/* Display both AI skills and submitted skills */}
+                                                {projDetailsList.skills_req || projDetailsList.submitted_skills ? (
+                                                    <tr>
+                                                        <td className="proj-details-sub-header">Skills</td>
+                                                        <td className="proj-details-data">
+                                                            {projDetailsList.submitted_skills && (
+                                                                <div><strong>Submitted:</strong> {projDetailsList.submitted_skills}</div>
+                                                            )}
+                                                            {projDetailsList.skills_req && (
+                                                                <div><strong>Suggested:</strong> {projDetailsList.skills_req}</div>
+                                                            )}
+                                                        </td>
+                                                    </tr>
+                                                ) : null}
                                                 <tr>
                                                     <td className='proj-details-sub-header'>Skill(s) Required</td>
                                                     {!editFlag && <td className='proj-details-data'>{projDetailsList.skills_req}</td>}
@@ -863,8 +895,12 @@ const ViewProjectComponent = () => {
                                                     </td>}
                                                 </tr>
                                                 <tr>
-                                                    <td className='proj-details-sub-header'>End Date</td>
-                                                    {!editFlag && <td className='proj-details-data'>{projDetailsList.end_date}</td>}
+                                                    <td className='proj-details-sub-header'>Deadline</td>
+                                                    {!editFlag && <td className='proj-details-data'>{new Date(projDetailsList.end_date).toLocaleDateString("en-US", {
+                                                        year: "numeric",
+                                                        month: "long",
+                                                        day: "numeric",
+                                                    })}</td>}
                                                     {editFlag && <td className='proj-details-data'>
                                                         <input
                                                             type="date"
@@ -920,6 +956,31 @@ const ViewProjectComponent = () => {
                                                     }
                                                     return null;
                                                 })}
+
+                                                {/* Display only if number of students is available */}
+                                                {projDetailsList.num_students && (
+                                                    <tr>
+                                                        <td className="proj-details-sub-header">Number of Students</td>
+                                                        <td className="proj-details-data">{projDetailsList.num_students}</td>
+                                                    </tr>
+                                                )}
+
+                                                {/* Display files if available */}
+                                                {projDetailsList.files && projDetailsList.files.length > 0 && (
+                                                    <tr>
+                                                        <td className="proj-details-sub-header">Files</td>
+                                                        <td className="proj-details-data">
+                                                            {projDetailsList.files.map((file, index) => (
+                                                                <div key={index}>
+                                                                    <a href={file.url} target="_blank" rel="noopener noreferrer">
+                                                                        {file.name || `File ${index + 1}`}
+                                                                    </a>
+                                                                </div>
+                                                            ))}
+                                                        </td>
+                                                    </tr>
+    )}
+                                                
 
 
 

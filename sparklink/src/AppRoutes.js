@@ -19,6 +19,7 @@ import ViewRecomendedProject from "./component/viewproject/ViewRecommendedProjec
 import AdminSystemSettings from "./component/admin/AdminSystemSettings";
 import AdminAnalytics from "./component/admin/AdminAnalytics";
 import AdminDashboard from "./component/admin/AdminDashboard";
+import AdminLogs from "./component/admin/AdminLogs";
 
 const AppRoutes = () => {
     let routes = useRoutes([
@@ -47,6 +48,7 @@ const AppRoutes = () => {
                 { path:"/admin/settings", element: <AdminSystemSettings/>},
                 { path:"/admin/analytics-reports", element: <AdminAnalytics/>},
                 { path:"/admin/dashboard", element: <AdminDashboard/>},
+                { path:"/admin/admin-logs", element: <AdminLogs/>},
             ],
         },
     ]);

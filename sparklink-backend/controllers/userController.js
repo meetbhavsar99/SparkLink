@@ -44,21 +44,51 @@ exports.register = async (req, res) => {
     // Hash password before storing
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    // Generate a unique confirmation token
+    const confirmation_token = crypto.randomBytes(32).toString("hex");
+
     // Create new user
     const newUser = await User.create({
       username,
       email,
-      password: hashedPassword,
+      password,
       name,
       role,
       created_by: 1, // ✅ Replace with actual user ID if available
       modified_by: 1, // ✅ Replace with actual user ID if available
+      confirmation_token, // ✅ Store token
+      is_active: "N", // Initially inactive
+      is_verified: 'N'
     });
+
+    // Send email with confirmation link
+    const confirmationLink = `http://localhost:5100/api/users/confirm-email?token=${confirmation_token}`;
+    
 
     res.status(201).json({
       message: "User registered successfully! Please confirm your email.",
       user: newUser,
     });
+
+    const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+    },
+});
+
+const mailOptions = {
+    from: process.env.EMAIL_USER,
+    to: email,
+    subject: "Confirm Your Email",
+    html: `<p>Click the link below to confirm your email:</p>
+             <a href="${confirmationLink}">${confirmationLink}</a>`,
+};
+
+await transporter.sendMail(mailOptions);
+console.log("Confirmation email sent!");
+
 
   } catch (error) {
     console.error("❌ Registration error:", error);
@@ -69,6 +99,9 @@ exports.register = async (req, res) => {
 exports.confirmEmail = async (req, res) => {
   try {
     const { token } = req.query;
+    if (!token) {
+      return res.status(400).json({ message: "Missing token" });
+    }
 
     // Find the user by confirmation token
     const user = await User.findOne({ where: { confirmation_token: token } });
@@ -77,6 +110,8 @@ exports.confirmEmail = async (req, res) => {
       return res.status(400).json({ message: "Invalid or expired token" });
     }
 
+    // Mark user as verified
+    user.is_verified = 'Y'
     // Activate the user account
     user.is_active = "Y";
     user.confirmation_token = null; // Clear the token after confirmation
@@ -107,7 +142,15 @@ exports.login = (req, res, next) => {
       return res
         .status(401)
         .json({ message: info.message || "Invalid credentials" });
+    };
+
+    // Check if email is verified before logging in
+    if (user.is_verified === 'N') {
+      return res.status(403).json({ message: "Please verify your email before logging in." });
     }
+
+    // Debugging: Log the stored hashed password for comparison
+    console.log("Stored Hashed Password:", user.password);
 
     req.logIn(user, (err) => {
       if (err) {

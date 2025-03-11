@@ -22,13 +22,13 @@ const profileRouter = require('./routes/profileRoutes');
 const EditProfileRouter = require('./routes/editProfileRoute');
 const projApplicationRouter = require('./routes/projectApplicationRoutes');
 const projAllocationRouter = require('./routes/projectAllocationRoutes');
-//const userRouter = require('./routes/userRoutes');
+const userRouter = require('./routes/userRoutes');
 const progressTrackerRouter = require('./routes/progressTrackerRoutes');
 const notificationRouter = require("./routes/notificationRoutes");
 const contactRoutes = require('./routes/contactRoutes');
 const systemSettingsRoutes = require("./routes/systemSettingsRoutes");
 const analyticsRoutes = require("./routes/analyticsRoutes");
-// const adminRoutes = require("./routes/adminRoutes");3
+//const adminRoutes = require("./routes/adminRoutes");
 
 const app = express();
 
@@ -110,8 +110,8 @@ function isAuthenticated(req, res, next) {
   }
   
 // Define routes
-app.use('/api/users', userRoutes);
-app.use('/api', roleRoutes);
+// app.use('/api/users', userRoutes);
+// app.use('/api', roleRoutes);
 app.use('/projectstatus',isAuthenticated,projectStatusRouter);
 app.use('/department', isAuthenticated,departmentRoutes);
 app.use('/project',projectRouter);

@@ -243,6 +243,9 @@ const ProfileComponent = () => {
                                 <a href="/admin/analytics-reports" className="btn btn-info">
                                     <i className="fas fa-chart-bar"></i> Analytics & Reports
                                 </a>
+                                <a href="/admin/admin-logs" className="btn btn-info">
+                                    <i className="fas fa-chart-bar"></i> View Logs
+                                </a>
                             </div>
                         </div>
                     </div>

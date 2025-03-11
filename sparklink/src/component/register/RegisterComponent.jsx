@@ -25,6 +25,10 @@ const RegistrationForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    console.log("Submitting registration form...");
+    console.log("Sending Data:", { username, email, password, confirmPassword, name, role });
+
+
     if (password !== confirmPassword) {
         setErrorMessage("Passwords do not match!");
         return;
