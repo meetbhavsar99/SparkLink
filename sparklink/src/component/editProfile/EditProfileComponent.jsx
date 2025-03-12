@@ -4,6 +4,10 @@ import axios from 'axios';
 import './EditProfileComponent.css';
 import MenuComponent from '../menu/MenuComponent';
 import { useAuth } from '../../AuthContext';
+import Modal from 'react-bootstrap/Modal';
+import Button from 'react-bootstrap/Button';
+import { FaEdit } from 'react-icons/fa';
+
 import '../createproject/CreateProjectComponent.css';
 
 
@@ -16,24 +20,68 @@ const EditProfileComponent = () => {
   const [error, setError] = useState(null);
   const [message, setMessage] = useState('');
   const navigate = useNavigate();
+  const [selectedAvatar, setSelectedAvatar] = useState(profile?.avatar ||
+"https://bootdey.com/img/Content/avatar/avatar7.png");
+const [showAvatarModal, setShowAvatarModal] = useState(false);
+
+// Predefined avatar options
+const avatars = [
+"https://bootdey.com/img/Content/avatar/avatar1.png",
+"https://bootdey.com/img/Content/avatar/avatar2.png",
+"https://bootdey.com/img/Content/avatar/avatar3.png",
+"https://bootdey.com/img/Content/avatar/avatar4.png",
+"https://bootdey.com/img/Content/avatar/avatar5.png",
+"https://bootdey.com/img/Content/avatar/avatar6.png",
+"https://bootdey.com/img/Content/avatar/avatar7.png"
+];
+
+const handleAvatarSelection = (avatar) => {
+setSelectedAvatar(avatar);
+setProfile((prevProfile) => ({
+...prevProfile,
+avatar: avatar
+}));
+};
+
+const handleOpenAvatarModal = () => {
+    setShowAvatarModal(true);
+};
+
+const handleCloseAvatarModal = () => {
+    setShowAvatarModal(false);
+};
+
 
   // Fetch Profile Data
-  const fetchProfile = async () => {
+const fetchProfile = async () => {
     if (!user) return;
     try {
-      const response = await axios.get('/editProfile');
-      setRole(response.data.role);
-      setProfile(response.data.profile);
-    } catch (err) {
-      setError('Error fetching profile.');
-    } finally {
-      setLoading(false);
-    }
-  };
+        const response = await axios.get('/editProfile');
+        setRole(response.data.role);
+        setProfile(response.data.profile);
 
-  useEffect(() => {
+        // Ensure avatar is set after fetching profile
+        if (response.data.profile?.avatar) {
+            setSelectedAvatar(response.data.profile.avatar);
+        }
+    } catch (err) {
+        setError('Error fetching profile.');
+    } finally {
+        setLoading(false);
+    }
+};
+
+// Use effect to fetch profile data
+useEffect(() => {
     fetchProfile();
-  }, [user]);
+}, [user]);
+
+// Ensure selectedAvatar updates when profile is fetched
+useEffect(() => {
+    if (profile) {
+        setSelectedAvatar(profile.avatar || "https://bootdey.com/img/Content/avatar/avatar7.png");
+    }
+}, [profile]);
 
   // Handle Input Changes
   const handleChange = (e) => {
@@ -47,8 +95,18 @@ const EditProfileComponent = () => {
   // Handle Form Submission
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const updatedProfileData = {
+    ...profile,
+    avatar: selectedAvatar, // Save selected avatar
+    };
+
     try {
-      const response = await axios.post('/editProfile', profile);
+      const response = await axios.post('/editProfile', updatedProfileData);
+      fetchProfile(); 
+      if (response.data.profile?.avatar) {
+            setSelectedAvatar(response.data.profile.avatar); // ✅ Update UI with saved avatar
+        }
+      alert("Profile updated successfully!");
       navigate(`/profile?user_id=${user.user_id}`);
     } catch (error) {
       setError(error.response?.data?.message || 'Failed to update profile FE.');
@@ -69,14 +127,33 @@ const EditProfileComponent = () => {
               <form className="form-horizontal" onSubmit={handleSubmit}>
                 {/* Avatar */}
                 <div className="panel panel-default">
-                  <div className="panel-body text-center">
-                    <img
-                      src="https://bootdey.com/img/Content/avatar/avatar7.png"
-                      className="img-circle profile-avatar"
-                      alt="User avatar"
-                    />
-                  </div>
+    <div className="panel-body text-center">
+        <img
+            src={selectedAvatar}
+            className="img-circle profile-avatar"
+            alt="User avatar"
+        />
+    </div>
                 </div>
+
+                {/* Avatar Selection UI */}
+                <div className="panel panel-default">
+                    <div className="panel-heading">
+                        <h4 className="panel-title">Select Your Avatar</h4>
+                    </div>
+                    <div className="panel-body avatar-grid">
+                        {avatars.map((avatar, index) => (
+                            <img 
+                                key={index} 
+                                src={avatar} 
+                                alt={`Avatar ${index + 1}`} 
+                                className={`avatar-option ${selectedAvatar === avatar ? 'selected' : ''}`} 
+                                onClick={() => handleAvatarSelection(avatar)}
+                            />
+                        ))}
+                    </div>
+                </div>
+
 
                 {/* User Info */}
                 <div className="panel panel-default">
@@ -173,14 +250,50 @@ const EditProfileComponent = () => {
               <form className="form-horizontal" onSubmit={handleSubmit}>
                 {/* Avatar */}
                 <div className="panel panel-default">
-                  <div className="panel-body text-center">
-                    <img
-                      src="https://bootdey.com/img/Content/avatar/avatar7.png"
-                      className="img-circle profile-avatar"
-                      alt="User avatar"
-                    />
-                  </div>
-                </div>
+    <div className="panel-body text-center position-relative">
+        <img
+            src={selectedAvatar}
+            className="img-circle profile-avatar"
+            alt="User avatar"
+        />
+        {/* Edit Button */}
+        <button 
+            className="avatar-edit-btn" 
+            onClick={handleOpenAvatarModal}
+        >
+            <FaEdit size={20} />
+        </button>
+    </div>
+</div>
+
+{/* Avatar Selection Modal */}
+<Modal show={showAvatarModal} onHide={handleCloseAvatarModal} centered>
+    <Modal.Header closeButton>
+        <Modal.Title>Select Your Avatar</Modal.Title>
+    </Modal.Header>
+    <Modal.Body>
+        <div className="avatar-grid">
+            {avatars.map((avatar, index) => (
+                <img 
+                    key={index} 
+                    src={avatar} 
+                    alt={`Avatar ${index + 1}`} 
+                    className={`avatar-option ${selectedAvatar === avatar ? 'selected' : ''}`} 
+                    onClick={() => handleAvatarSelection(avatar)}
+                />
+            ))}
+        </div>
+    </Modal.Body>
+    <Modal.Footer>
+        <Button variant="secondary" onClick={handleCloseAvatarModal}>
+            Cancel
+        </Button>
+        <Button variant="primary" onClick={handleCloseAvatarModal}>
+            Save Avatar
+        </Button>
+    </Modal.Footer>
+</Modal>
+
 
                 {/* Supervisor Info */}
                 <div className="panel panel-default">
@@ -279,13 +392,32 @@ const EditProfileComponent = () => {
                 {/* Avatar */}
                 <div className="panel panel-default">
                   <div className="panel-body text-center">
-                    <img
-                      src="https://bootdey.com/img/Content/avatar/avatar7.png"
-                      className="img-circle profile-avatar"
-                      alt="User avatar"
-                    />
+                      <img
+                          src={selectedAvatar}
+                          className="img-circle profile-avatar"
+                          alt="User avatar"
+                      />
                   </div>
-                </div>
+              </div>
+
+              {/* Avatar Selection UI */}
+              <div className="panel panel-default">
+                  <div className="panel-heading">
+                      <h4 className="panel-title">Select Your Avatar</h4>
+                  </div>
+                  <div className="panel-body avatar-grid">
+                      {avatars.map((avatar, index) => (
+                          <img 
+                              key={index} 
+                              src={avatar} 
+                              alt={`Avatar ${index + 1}`} 
+                              className={`avatar-option ${selectedAvatar === avatar ? 'selected' : ''}`} 
+                              onClick={() => handleAvatarSelection(avatar)}
+                          />
+                      ))}
+                  </div>
+              </div>
+
 
                 {/* Business Owner Info */}
                 <div className="panel panel-default">

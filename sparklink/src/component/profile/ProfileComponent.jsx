@@ -46,6 +46,22 @@ const ProfileComponent = () => {
     const [searchParams] = useSearchParams();
     const user_id_param = searchParams.get('user_id');
     const [projectList, setProjectList] = useState([]);
+    const [selectedAvatar, setSelectedAvatar] = useState(null); 
+
+    // Predefined avatar options
+const avatars = [
+    "https://bootdey.com/img/Content/avatar/avatar1.png",
+    "https://bootdey.com/img/Content/avatar/avatar2.png",
+    "https://bootdey.com/img/Content/avatar/avatar3.png",
+    "https://bootdey.com/img/Content/avatar/avatar4.png",
+    "https://bootdey.com/img/Content/avatar/avatar5.png",
+    "https://bootdey.com/img/Content/avatar/avatar6.png",
+    "https://bootdey.com/img/Content/avatar/avatar7.png"
+];
+
+const handleAvatarSelection = (avatar) => {
+    setSelectedAvatar(avatar);
+};
 
     const fetchProfile = async (user_id) => {
         console.log("Fetching profile for user_id:", user_id);
@@ -68,6 +84,9 @@ const ProfileComponent = () => {
             setUserDetails(response.data.user_details || null);
             setProfileExists(response.data.profileExists !== undefined ? response.data.profileExists : true);
             setProjectList(response.data.projects || []);
+
+            // Update avatar in state
+            setSelectedAvatar(response.data.profile?.avatar || "https://bootdey.com/img/Content/avatar/avatar7.png");
             setLoading(false);
         } catch (error) {
             console.error("Error fetching profile:", error.response?.data || error);
@@ -129,6 +148,12 @@ const ProfileComponent = () => {
         }
     }, [user, user_id_param]);
 
+    useEffect(() => {
+        if (profile?.avatar) {
+        setSelectedAvatar(profile.avatar);
+        }
+        }, [profile]);
+
     if (loading) {
         return <div className="loading">Loading...</div>;
     }
@@ -171,6 +196,7 @@ const ProfileComponent = () => {
             github: formData.get("github"),
             address: formData.get("address"),
             phone_number: formData.get("phone_number"),
+            avatar: selectedAvatar || profile?.avatar 
         };
 
     
@@ -179,7 +205,7 @@ const ProfileComponent = () => {
             console.log("Profile Data Sent:", profileData);
             console.log("Sending Profile Data:", JSON.stringify(profileData, null, 2));
 
-            alert("Profile created successfully!");
+            alert("Profile updated successfully!");
             window.location.reload();
         } catch (error) {
             console.log("Sending Profile Data:", JSON.stringify(profileData, null, 2));
@@ -191,23 +217,23 @@ const ProfileComponent = () => {
     
 
     // **If profile does not exist, show form to create profile**
-    if (profileExists === false) {  // Explicit check
-    return (
-        <div className="container pt-4">
-            <h1>Create Your Profile</h1>
-            <p>We couldn't find your profile. Please fill in the details to continue.</p>
-            <form onSubmit={handleSubmit}>
-                <input type="text" name="bio" placeholder="Bio" required />
-                <input type="text" name="skills" placeholder="Skills" required />
-                <input type="text" name="linkedin" placeholder="LinkedIn Profile" required />
-                <input type="text" name="github" placeholder="GitHub Profile" required />
-                <input type="text" name="address" placeholder="Address" required />
-                <input type="text" name="phone_number" placeholder="Phone Number" required />
-                <button type="submit">Create Profile</button>
-            </form>
-        </div>
-    );
-}
+//     if (profileExists === false) {  // Explicit check
+//     return (
+//         <div className="container pt-4">
+//             <h1>Create Your Profile</h1>
+//             <p>We couldn't find your profile. Please fill in the details to continue.</p>
+//             <form onSubmit={handleSubmit}>
+//                 <input type="text" name="bio" placeholder="Bio" required />
+//                 <input type="text" name="skills" placeholder="Skills" required />
+//                 <input type="text" name="linkedin" placeholder="LinkedIn Profile" required />
+//                 <input type="text" name="github" placeholder="GitHub Profile" required />
+//                 <input type="text" name="address" placeholder="Address" required />
+//                 <input type="text" name="phone_number" placeholder="Phone Number" required />
+//                 <button type="submit">Create Profile</button>
+//             </form>
+//         </div>
+//     );
+// }
 
     return (
         <>
@@ -256,24 +282,50 @@ const ProfileComponent = () => {
                     <div className="team-single">
                         <div className="row">
                             <div className="col-lg-4 col-md-5 xs-margin-30px-bottom">
-                                <div className="team-single-img">
+                                {/* <div className="team-single-img">
                                     <img
                                         className="image"
                                         src="https://bootdey.com/img/Content/avatar/avatar7.png"
                                         alt=""
                                     />
+                                </div> */}
+                                <div className="team-single-img">
+                                    <img 
+                                        className="image" 
+                                        src={profile?.avatar || selectedAvatar || "https://bootdey.com/img/Content/avatar/avatar7.png"} 
+                                        alt="Profile Avatar" 
+                                    />
                                 </div>
+
+
                                 <div className="bg-light-gray padding-30px-all md-padding-25px-all sm-padding-20px-all text-center">
-                                    <h4 className="margin-10px-bottom font-size24 md-font-size22 sm-font-size20 font-weight-600">
+                                    {/* <h4 className="margin-10px-bottom font-size24 md-font-size22 sm-font-size20 font-weight-600">
                                         Full Stack Developer
+                                    </h4> */}
+                                    {/* Dynamic Role instead of 'Full Stack Developer' */}
+                                    <h4 className="margin-10px-bottom font-size24 md-font-size22 sm-font-size20 font-weight-600">
+                                        {role.charAt(0).toUpperCase() + role.slice(1)}
                                     </h4>
                                     <p className="sm-width-95 sm-margin-auto">SKills : {profile.skills}</p>
-                                    <div className="margin-20px-top team-single-icons">
+                                    {/* <div className="margin-20px-top team-single-icons">
                                         <ul className="no-margin">
                                             <li><a href={profile.linkedin}><i className="fab fa-linkedin-in"></i></a></li>
                                             <li><a href={profile.github}><i className="fab fa-github"></i></a></li>
                                         </ul>
+                                    </div> */}
+
+                                    {/* Social Media Links with Validation */}
+                                    <div className="margin-20px-top team-single-icons">
+                                        <ul className="no-margin">
+                                            {profile.linkedin && profile.linkedin.includes("linkedin.com") && (
+                                                <li><a href={profile.linkedin} target="_blank" rel="noopener noreferrer"><i className="fab fa-linkedin-in"></i></a></li>
+                                            )}
+                                            {profile.github && profile.github.includes("github.com") && (
+                                                <li><a href={profile.github} target="_blank" rel="noopener noreferrer"><i className="fab fa-github"></i></a></li>
+                                            )}
+                                        </ul>
                                     </div>
+                                    
                                     {user_id_param ? (
                                         user.user_id === Number(user_id_param) && (
                                             <a href="/editProfile" className="button">Manage Profile</a>
@@ -517,18 +569,33 @@ const ProfileComponent = () => {
                     <div className="team-single">
                         <div className="row">
                             <div className="col-lg-4 col-md-5 xs-margin-30px-bottom">
-                                <div className="team-single-img">
+                                {/* <div className="team-single-img">
                                     <img className="image" src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="" />
+                                </div> */}
+                                <div className="team-single-img">
+                                    <img 
+                                        className="image" 
+                                        src={profile?.avatar || selectedAvatar || "https://bootdey.com/img/Content/avatar/avatar7.png"} 
+                                        alt="Profile Avatar" 
+                                    />
                                 </div>
+
+
                                 <div className="bg-light-gray padding-30px-all md-padding-25px-all sm-padding-20px-all text-center">
-                                    <h4 className="margin-10px-bottom font-size24 md-font-size22 sm-font-size20 font-weight-600">Full Stack Developer</h4>
+                                    {/* Dynamic Role instead of 'Full Stack Developer' */}
+                                    <h4 className="margin-10px-bottom font-size24 md-font-size22 sm-font-size20 font-weight-600">
+                                        {role.charAt(0).toUpperCase() + role.slice(1)}
+                                    </h4>
                                     <p className="sm-width-95 sm-margin-auto">{profile.skills}</p>
+                                    {/* Social Media Links with Validation */}
                                     <div className="margin-20px-top team-single-icons">
                                         <ul className="no-margin">
-                                            <li><a href={profile.linkedin}><i className="fab fa-linkedin-in"></i></a></li>
-                                            <li><a href={profile.github}><i className="fab fa-github"></i></a></li>
-                                            {/* <li><a href="javascript:void(0)"><i className="fab fa-google-plus-g"></i></a></li>
-                                            <li><a href="javascript:void(0)"><i className="fab fa-instagram"></i></a></li> */}
+                                            {profile.linkedin && profile.linkedin.includes("linkedin.com") && (
+                                                <li><a href={profile.linkedin} target="_blank" rel="noopener noreferrer"><i className="fab fa-linkedin-in"></i></a></li>
+                                            )}
+                                            {profile.github && profile.github.includes("github.com") && (
+                                                <li><a href={profile.github} target="_blank" rel="noopener noreferrer"><i className="fab fa-github"></i></a></li>
+                                            )}
                                         </ul>
                                     </div>
                                     {user_id_param ? (
@@ -799,16 +866,40 @@ const ProfileComponent = () => {
                     <div className="team-single">
                         <div className="row">
                             <div className="col-lg-4 col-md-5 xs-margin-30px-bottom">
-                                <div className="team-single-img">
+                                {/* <div className="team-single-img">
                                     <img className="image" src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="" />
+                                </div> */}
+                                <div className="team-single-img">
+                                    <img 
+                                        className="image" 
+                                        src={profile?.avatar || selectedAvatar || "https://bootdey.com/img/Content/avatar/avatar7.png"} 
+                                        alt="Profile Avatar" 
+                                    />
                                 </div>
+
+
                                 <div className="bg-light-gray padding-30px-all md-padding-25px-all sm-padding-20px-all text-center">
-                                    <h4 className="margin-10px-bottom font-size24 md-font-size22 sm-font-size20 font-weight-600">Full Stack Developer</h4>
+                                    {/* <h4 className="margin-10px-bottom font-size24 md-font-size22 sm-font-size20 font-weight-600">Full Stack Developer</h4> */}
+                                    {/* Dynamic Role instead of 'Full Stack Developer' */}
+                                    <h4 className="margin-10px-bottom font-size24 md-font-size22 sm-font-size20 font-weight-600">
+                                        {role.charAt(0).toUpperCase() + role.slice(1)}
+                                    </h4>
                                     <p className="sm-width-95 sm-margin-auto">{profile.skills}</p>
-                                    <div className="margin-20px-top team-single-icons">
+                                    {/* <div className="margin-20px-top team-single-icons">
                                         <ul className="no-margin">
                                             <li><a href={profile.linkedin}><i className="fab fa-linkedin-in"></i></a></li>
                                             <li><a href={profile.github}><i className="fab fa-github"></i></a></li>
+                                        </ul>
+                                    </div> */}
+                                    {/* Social Media Links with Validation */}
+                                    <div className="margin-20px-top team-single-icons">
+                                        <ul className="no-margin">
+                                            {profile.linkedin && profile.linkedin.includes("linkedin.com") && (
+                                                <li><a href={profile.linkedin} target="_blank" rel="noopener noreferrer"><i className="fab fa-linkedin-in"></i></a></li>
+                                            )}
+                                            {profile.github && profile.github.includes("github.com") && (
+                                                <li><a href={profile.github} target="_blank" rel="noopener noreferrer"><i className="fab fa-github"></i></a></li>
+                                            )}
                                         </ul>
                                     </div>
                                     {user_id_param ? (

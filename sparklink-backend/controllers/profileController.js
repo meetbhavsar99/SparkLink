@@ -1,6 +1,6 @@
 const StudentProfile = require('../models/student_profile');
 const SupervisorProfile = require('../models/supervisor_profile');
-const OwnerProfile = require('../models/owner_profile');
+const BusinessOwnerProfile = require('../models/owner_profile');
 const ProjAllocation = require("../models/proj_allocation");
 const ProjectStatus = require("../models/proj_status");
 const User = require('../models/user');
@@ -62,7 +62,7 @@ exports.getProfile = async (req, res) => {
     });
     
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({ error: "User not found" });
     }
     
     // const roleDesc = user.roleDetails?.role_desc; // Extract role_desc from roleDetails
@@ -73,6 +73,7 @@ exports.getProfile = async (req, res) => {
 
     console.log("User", user);
     console.log("Fetching role for user.role ID:", user.role);
+    console.log(`User Role: ${user.roleDetails.role_desc} (ID: ${user.role})`);
 
     const role = await Role.findOne({
       where: { id: user.role },
@@ -110,13 +111,52 @@ exports.getProfile = async (req, res) => {
     let bio, skills, linkedin, github, address, phone_number;
 
     // Fetch profile dynamically based on the role ID
-    let profile;
+    let profile = null;
+    let profileExists = true;
     if (roleDesc === 'student') {
-      profile = await StudentProfile.create({ user_id, bio, skills, linkedin, github, address, phone_number });
+      profile = await StudentProfile.findOne({ where: { user_id } });
+
+            if (!profile) {
+                profile = await StudentProfile.create({
+                    user_id,
+                    avatar: null,
+                    major: "",
+                    graduation_year: null,
+                    skills: "",
+                });
+                profileExists = false;
+            }
+      // profile = await StudentProfile.create({ user_id, bio, skills, linkedin, github, address, phone_number });
     } else if (roleDesc === 'supervisor') {
-      profile = await SupervisorProfile.create({ user_id, bio, skills, linkedin, github, address, phone_number });
+      profile = await SupervisorProfile.findOne({ where: { user_id } });
+            if (!profile) {
+                // If no profile exists, create a new one
+                profile = await SupervisorProfile.create({
+                    user_id,
+                    avatar: null,
+                    is_project_owner: false,
+                    is_verified: false,
+                });
+                profileExists = false; // Allow user to fill out profile dynamically
+            }
+      // profile = await SupervisorProfile.create({ user_id, bio, skills, linkedin, github, address, phone_number });
     } else if (roleDesc === 'business_owner') {
-      profile = await OwnerProfile.create({ user_id, bio, skills, linkedin, github, address, phone_number });
+      if (roleDesc === 'business_owner') {
+      profile = await BusinessOwnerProfile.findOne({ where: { user_id } });
+
+      if (!profile) {
+          profile = await BusinessOwnerProfile.create({
+              user_id,
+              avatar: null,
+              company_name: "",
+              industry: "",
+              is_verified: false,
+          });
+          profileExists = false;
+      }
+  }
+
+      // profile = await OwnerProfile.create({ user_id, bio, skills, linkedin, github, address, phone_number });
     } else {
       return res.status(400).json({ message: "Invalid role" });
     }
@@ -136,7 +176,9 @@ if (!profile) {
     profileExists: false, // Signal frontend to show form
     profile: null,
     projects: [],
-  });
+  })
+  
+  ;
 }
 
 
@@ -183,7 +225,7 @@ if (!profile) {
 
 exports.createProfile = async (req, res) => {
   try {
-    const { user_id, role, bio, skills, linkedin, github, address, phone_number } = req.body;
+    const { user_id, role, bio, skills, linkedin, github, address, phone_number, avatar } = req.body;
 
       const user = await User.findOne({ where: { user_id } });
       if (!user) {
@@ -192,11 +234,11 @@ exports.createProfile = async (req, res) => {
 
       let profile;
       if (user.role_desc === 'student') {
-          profile = await StudentProfile.create({ user_id, bio, skills, linkedin, github, address, phone_number });
+          profile = await StudentProfile.create({ user_id, bio, skills, linkedin, github, address, phone_number, avatar });
       } else if (user.role_desc === 'supervisor') {
-          profile = await SupervisorProfile.create({ user_id, bio, skills, linkedin, github, address, phone_number });
+          profile = await SupervisorProfile.create({ user_id, bio, skills, linkedin, github, address, phone_number, avatar });
       } else if (user.role_desc === 'business_owner') {
-          profile = await OwnerProfile.create({ user_id, bio, skills, linkedin, github, address, phone_number });
+          profile = await OwnerProfile.create({ user_id, bio, skills, linkedin, github, address, phone_number, avatar });
       } else {
           return res.status(400).json({ message: "Invalid role" });
       }

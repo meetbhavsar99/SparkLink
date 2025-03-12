@@ -79,8 +79,11 @@ exports.getProfile = async (req, res) => {
 exports.updateProfile = async (req, res) => {
   console.log("INSIDE UPDATE PROFILE");
   try {
-    const user_id = req.user.user_id;
-    const updatedProfileData = req.body;
+    // const user_id = req.user.user_id;
+    // const updatedProfileData = req.body;
+    const { user_id, bio, skills, linkedin, github, address, phone_number, avatar } = req.body;
+
+    console.log("Updating profile with data:", { bio, skills, linkedin, github, address, phone_number, avatar });
 
     if (!user_id) {
       return res.status(400).json({ message: "User ID is required" });
@@ -117,12 +120,22 @@ exports.updateProfile = async (req, res) => {
       return res.status(400).json({ message: "Invalid role" });
     }
 
-    const updatedProfile = await profileModel.update(updatedProfileData, {
+    // Fix: Ensure profile update uses `where` condition
+    const [updatedRows] = await profileModel.update(
+      { bio, skills, linkedin, github, address, phone_number, avatar }, 
+      { where: { user_id } } 
+    );
+
+    if (updatedRows === 0) {
+      return res.status(404).json({ message: "Profile update failed" });
+    }
+
+    const updatedProfile = await profileModel.findOne({
       where: { user_id },
     });
 
-    if (updatedProfile[0] === 0) {
-      return res.status(404).json({ message: "Profile update failed" });
+    if (!updatedProfile) {
+      return res.status(404).json({ message: "Profile not found after update" });
     }
 
     res.status(200).json({ message: "Profile updated successfully" });
