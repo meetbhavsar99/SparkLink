@@ -111,10 +111,9 @@ skills_required: {
   defaultValue: null,
 },
 skills_req: {
-  type: DataTypes.STRING(500), // AI-generated skills
-  allowNull: true,
-  defaultValue: null,
-}
+    type: DataTypes.STRING(250),
+    allowNull: true,
+  }
 }, {
   tableName: 't_project',
   timestamps: false,

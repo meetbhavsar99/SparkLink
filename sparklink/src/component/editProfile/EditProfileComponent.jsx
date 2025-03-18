@@ -43,6 +43,17 @@ avatar: avatar
 }));
 };
 
+// Function to open/close avatar modal
+const handleAvatarModal = (state) => {
+    setShowAvatarModal(state);
+};
+
+// Function to save the selected avatar
+const saveAvatarSelection = () => {
+    setProfile({ ...profile, avatar: selectedAvatar }); // Update the profile avatar
+    handleAvatarModal(false);
+};
+
 const handleOpenAvatarModal = () => {
     setShowAvatarModal(true);
 };
@@ -125,35 +136,57 @@ useEffect(() => {
           <div className="row">
             <div className="col-xs-6 col-sm-8 mx-auto">
               <form className="form-horizontal" onSubmit={handleSubmit}>
-                {/* Avatar */}
-                <div className="panel panel-default">
-    <div className="panel-body text-center">
+                 {/* Avatar display with edit button */}
+<div className="panel panel-default">
+    <div className="panel-body text-center position-relative">
         <img
             src={selectedAvatar}
             className="img-circle profile-avatar"
             alt="User avatar"
         />
+        {/* Edit Button beside avatar */}
+        <button 
+            className="avatar-edit-btn" 
+            onClick={() => handleAvatarModal(true)}
+        >
+            <FaEdit size={20} />
+        </button>
     </div>
-                </div>
+</div>
 
-                {/* Avatar Selection UI */}
-                <div className="panel panel-default">
-                    <div className="panel-heading">
-                        <h4 className="panel-title">Select Your Avatar</h4>
-                    </div>
-                    <div className="panel-body avatar-grid">
-                        {avatars.map((avatar, index) => (
-                            <img 
-                                key={index} 
-                                src={avatar} 
-                                alt={`Avatar ${index + 1}`} 
-                                className={`avatar-option ${selectedAvatar === avatar ? 'selected' : ''}`} 
-                                onClick={() => handleAvatarSelection(avatar)}
-                            />
-                        ))}
-                    </div>
-                </div>
+{/* // Avatar Selection Modal */}
+<Modal show={showAvatarModal} onHide={() => handleAvatarModal(false)} centered>
+    <Modal.Header closeButton>
+        <Modal.Title>Select Your Avatar</Modal.Title>
+    </Modal.Header>
+    <Modal.Body className="d-flex flex-wrap justify-content-center">
+        {avatars.map((avatar, index) => (
+            <img
+                key={index}
+                src={avatar}
+                alt={`Avatar ${index}`}
+                className={`avatar-option ${selectedAvatar === avatar ? "selected-avatar" : ""}`}
+                onClick={() => handleAvatarSelection(avatar)}
+                style={{ width: "80px", height: "80px", margin: "10px", cursor: "pointer" }}
+            />
+        ))}
+    </Modal.Body>
+    <Modal.Footer>
+        <Button 
+            variant="primary" 
+            onClick={() => {
+                setProfile((prevProfile) => ({
+                    ...prevProfile,
+                    avatar: selectedAvatar
+                }));
+                handleCloseAvatarModal();
+            }}
+        >
+            Save Avatar
+        </Button>
 
+    </Modal.Footer>
+</Modal>
 
                 {/* User Info */}
                 <div className="panel panel-default">
@@ -248,52 +281,46 @@ useEffect(() => {
           <div className="row">
             <div className="col-xs-12 col-sm-9">
               <form className="form-horizontal" onSubmit={handleSubmit}>
-                {/* Avatar */}
-                <div className="panel panel-default">
+                {/* Avatar display with edit button */}
+<div className="panel panel-default">
     <div className="panel-body text-center position-relative">
         <img
             src={selectedAvatar}
             className="img-circle profile-avatar"
             alt="User avatar"
         />
-        {/* Edit Button */}
+        {/* Edit Button beside avatar */}
         <button 
             className="avatar-edit-btn" 
-            onClick={handleOpenAvatarModal}
+            onClick={() => handleAvatarModal(true)}
         >
             <FaEdit size={20} />
         </button>
     </div>
 </div>
 
-{/* Avatar Selection Modal */}
-<Modal show={showAvatarModal} onHide={handleCloseAvatarModal} centered>
+{/* // Avatar Selection Modal */}
+<Modal show={showAvatarModal} onHide={() => handleAvatarModal(false)} centered>
     <Modal.Header closeButton>
         <Modal.Title>Select Your Avatar</Modal.Title>
     </Modal.Header>
-    <Modal.Body>
-        <div className="avatar-grid">
-            {avatars.map((avatar, index) => (
-                <img 
-                    key={index} 
-                    src={avatar} 
-                    alt={`Avatar ${index + 1}`} 
-                    className={`avatar-option ${selectedAvatar === avatar ? 'selected' : ''}`} 
-                    onClick={() => handleAvatarSelection(avatar)}
-                />
-            ))}
-        </div>
+    <Modal.Body className="d-flex flex-wrap justify-content-center">
+        {avatars.map((avatar, index) => (
+            <img
+                key={index}
+                src={avatar}
+                alt={`Avatar ${index}`}
+                className={`avatar-option ${selectedAvatar === avatar ? "selected-avatar" : ""}`}
+                onClick={() => handleAvatarSelection(avatar)}
+                style={{ width: "80px", height: "80px", margin: "10px", cursor: "pointer" }}
+            />
+        ))}
     </Modal.Body>
     <Modal.Footer>
-        <Button variant="secondary" onClick={handleCloseAvatarModal}>
-            Cancel
-        </Button>
-        <Button variant="primary" onClick={handleCloseAvatarModal}>
-            Save Avatar
-        </Button>
+        <button className="btn btn-secondary" onClick={() => handleAvatarModal(false)}>Cancel</button>
+        <button className="btn btn-primary" onClick={saveAvatarSelection}>Save Avatar</button>
     </Modal.Footer>
 </Modal>
-
 
                 {/* Supervisor Info */}
                 <div className="panel panel-default">
@@ -389,34 +416,46 @@ useEffect(() => {
           <div className="row">
             <div className="col-xs-12 col-sm-9">
               <form className="form-horizontal" onSubmit={handleSubmit}>
-                {/* Avatar */}
-                <div className="panel panel-default">
-                  <div className="panel-body text-center">
-                      <img
-                          src={selectedAvatar}
-                          className="img-circle profile-avatar"
-                          alt="User avatar"
-                      />
-                  </div>
-              </div>
+                {/* Avatar display with edit button */}
+<div className="panel panel-default">
+    <div className="panel-body text-center position-relative">
+        <img
+            src={selectedAvatar}
+            className="img-circle profile-avatar"
+            alt="User avatar"
+        />
+        {/* Edit Button beside avatar */}
+        <button 
+            className="avatar-edit-btn" 
+            onClick={() => handleAvatarModal(true)}
+        >
+            <FaEdit size={20} />
+        </button>
+    </div>
+</div>
 
-              {/* Avatar Selection UI */}
-              <div className="panel panel-default">
-                  <div className="panel-heading">
-                      <h4 className="panel-title">Select Your Avatar</h4>
-                  </div>
-                  <div className="panel-body avatar-grid">
-                      {avatars.map((avatar, index) => (
-                          <img 
-                              key={index} 
-                              src={avatar} 
-                              alt={`Avatar ${index + 1}`} 
-                              className={`avatar-option ${selectedAvatar === avatar ? 'selected' : ''}`} 
-                              onClick={() => handleAvatarSelection(avatar)}
-                          />
-                      ))}
-                  </div>
-              </div>
+{/* // Avatar Selection Modal */}
+<Modal show={showAvatarModal} onHide={() => handleAvatarModal(false)} centered>
+    <Modal.Header closeButton>
+        <Modal.Title>Select Your Avatar</Modal.Title>
+    </Modal.Header>
+    <Modal.Body className="d-flex flex-wrap justify-content-center">
+        {avatars.map((avatar, index) => (
+            <img
+                key={index}
+                src={avatar}
+                alt={`Avatar ${index}`}
+                className={`avatar-option ${selectedAvatar === avatar ? "selected-avatar" : ""}`}
+                onClick={() => handleAvatarSelection(avatar)}
+                style={{ width: "80px", height: "80px", margin: "10px", cursor: "pointer" }}
+            />
+        ))}
+    </Modal.Body>
+    <Modal.Footer>
+        <button className="btn btn-secondary" onClick={() => handleAvatarModal(false)}>Cancel</button>
+        <button className="btn btn-primary" onClick={saveAvatarSelection}>Save Avatar</button>
+    </Modal.Footer>
+</Modal>
 
 
                 {/* Business Owner Info */}

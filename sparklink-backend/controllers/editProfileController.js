@@ -123,10 +123,18 @@ exports.updateProfile = async (req, res) => {
     }
 
     // Fix: Ensure profile update uses `where` condition
-    const [updatedRows] = await profileModel.update(
-      { bio, skills, linkedin, github, address, phone_number, avatar }, 
-      { where: { user_id } } 
-    );
+    // const [updatedRows] = await profileModel.update(
+    //   { bio, skills, linkedin, github, address, phone_number, avatar }, 
+    //   { where: { user_id } } 
+    // );
+    const updateData = { bio, skills, linkedin, github, address, phone_number };
+
+    // Only update avatar if it's provided
+    if (avatar) {
+        updateData.avatar = avatar;
+    }
+
+    const [updatedRows] = await profileModel.update(updateData, { where: { user_id } });
 
     if (updatedRows === 0) {
       return res.status(404).json({ message: "Profile update failed" });

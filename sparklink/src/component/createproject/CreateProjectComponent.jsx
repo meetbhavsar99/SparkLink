@@ -158,7 +158,7 @@ const CreateProjectComponent = () => {
         category,
         features: featuresNA ? "N/A" : features,
         project_deadline: projectDeadline,
-        skills_required: skillsNA ? "N/A" : skillsRequired.trim() || null, // Handle empty input
+        skills_required: skillsNA ? "N/A" : skillsRequired, // Handle empty input
         num_students: numStudentsNA ? null : parseInt(numStudents, 10) || null, // Ensure it's a number
         image_url: imageFile ? imageFile.name : "",
         user_id: user.user_id,
@@ -176,7 +176,7 @@ const CreateProjectComponent = () => {
         });
         Swal.fire({ 
           title: 'Success', 
-          text: 'Project Created Successfully $ Emails Sent', 
+          text: 'Project Created Successfully & Emails Sent', 
           icon: 'success', 
           confirmButtonText: 'Ok',
           confirmButtonColor: '#6a85b6',

@@ -80,23 +80,73 @@ const ViewProjectComponent = () => {
     //     return () => window.removeEventListener('resize', handleResize);
     // }, []);
 
-    const fetchProjects = async () => {
-        setLoading(true);
-        try {
-            const response = await axios.get('/project/getAllProjects');
-            console.log(`API response: ${response.data}`);
-            setProjectList(response.data.projects);
-            setOriginalProjectList(response.data.projects);
-            if (isAuthenticated) {
-                setUserData(response.data.user);
+    // const fetchProjects = async () => {
+    //     setLoading(true);
+    //     try {
+    //         const response = await axios.get('/project/getAllProjects');
+    //         console.log(`API response: ${response.data}`);
+    //         setProjectList(response.data.projects);
+    //         setOriginalProjectList(response.data.projects);
+    //         if (isAuthenticated) {
+    //             setUserData(response.data.user);
+    //         }
+    //     } catch (err) {
+    //         Swal.fire({ title: 'Error', text: err.message, icon: 'error', confirmButtonText: 'Ok' });
+    //         //setError(err.message);
+    //     } finally {
+    //         setLoading(false);
+    //     }
+    // };
+
+//     const fetchProjects = async () => {
+//     setLoading(true);
+//     try {
+//         const token = localStorage.getItem("authToken"); // ✅ Get the token from localStorage
+//         const response = await axios.get('/project/getAllProjects', { 
+//             headers: { Authorization: `Bearer ${token}` } // ✅ Send Auth Header
+//         });
+
+//         console.log(`🟢 API response: ${response.data}`);
+//         setProjectList(response.data.projects);
+//         setOriginalProjectList(response.data.projects);
+        
+//         if (isAuthenticated) {
+//             setUserData(response.data.user);
+//         }
+//     } catch (err) {
+//         console.error("❌ Error fetching projects:", err);
+//         Swal.fire({ title: 'Error', text: err.response?.data?.message || err.message, icon: 'error', confirmButtonText: 'Ok' });
+//     } finally {
+//         setLoading(false);
+//     }
+// };
+
+const fetchProjects = async () => {
+    setLoading(true);
+    try {
+        console.log("🔵 Fetching all projects...");
+        
+        const response = await axios.get('/project/getAllProjects', {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`, // Ensure token is sent
             }
-        } catch (err) {
-            Swal.fire({ title: 'Error', text: err.message, icon: 'error', confirmButtonText: 'Ok' });
-            //setError(err.message);
-        } finally {
-            setLoading(false);
+        });
+
+        setProjectList(response.data.projects);
+        setOriginalProjectList(response.data.projects);
+
+        if (isAuthenticated) {
+            setUserData(response.data.user);
         }
-    };
+    } catch (err) {
+        console.error("❌ Error fetching projects:", err);
+        Swal.fire({ title: 'Error', text: err.message, icon: 'error', confirmButtonText: 'Ok' });
+    } finally {
+        setLoading(false);
+    }
+};
+
+
 
     useEffect(() => {
         fetchProjects();
@@ -301,9 +351,13 @@ const ViewProjectComponent = () => {
             if (result.isConfirmed) {
                 setLoading(true);
                 try {
+                    console.log("🔴 Sending delete request for project:", projDetailsList); 
+
                     const response = await axios.post('/project/deleteProject', {
                         projData: projDetailsList
                     });
+
+                    console.log("🟢 API Response:", response.data); // ✅ Log the response
 
                     if (response.status === 200) {
                         //fetchProjects();
@@ -487,30 +541,62 @@ const ViewProjectComponent = () => {
         });
     }
 
+    // const submitApplication = async () => {
+    //     setLoading(true);
+    //     try {
+    //         console.log("🟢 Applying for project:", projDetailsList.proj_id, "User:", user?.user_id);
+    //         const response = await axios.post('/project/applyProject', {
+    //             proj_id: projDetailsList.proj_id
+    //             // user_id: user?.user_id
+    //         });
+    //         console.log("✅ Apply API Response:", response.data);
+            
+    //         if (response.status === 200 && response.data.success) {
+    //             //fetchProjects();
+    //             closeModal();
+    //             Swal.fire({ title: 'Application Successful', text: response.data.message, icon: 'success', confirmButtonText: 'Ok' });
+    //             updateNotifyCount();
+    //         } else if (response.status === 200 && !response.data.success) {
+    //             //fetchProjects();
+    //             closeModal();
+    //             Swal.fire({ title: 'Application Unsuccessful', text: response.data.message, icon: 'error', confirmButtonText: 'Ok' });
+    //         }
+    //     } catch (error) {
+    //         Swal.fire({ title: 'Error', text: error.message, icon: 'error', confirmButtonText: 'Ok' });
+    //         //setError(error.message);
+    //     } finally {
+    //         fetchProjects();
+    //         //setLoading(false);
+    //     }
+    // }
     const submitApplication = async () => {
-        setLoading(true);
-        try {
-            const response = await axios.post('/project/applyProject', {
-                proj_id: projDetailsList.proj_id
-            });
-            if (response.status === 200 && response.data.success) {
-                //fetchProjects();
-                closeModal();
-                Swal.fire({ title: 'Application Successful', text: response.data.message, icon: 'success', confirmButtonText: 'Ok' });
-                updateNotifyCount();
-            } else if (response.status === 200 && !response.data.success) {
-                //fetchProjects();
-                closeModal();
-                Swal.fire({ title: 'Application Unsuccessful', text: response.data.message, icon: 'error', confirmButtonText: 'Ok' });
-            }
-        } catch (error) {
-            Swal.fire({ title: 'Error', text: error.message, icon: 'error', confirmButtonText: 'Ok' });
-            //setError(error.message);
-        } finally {
-            fetchProjects();
-            //setLoading(false);
+    setLoading(true);
+    try {
+        console.log("🟢 Applying for project:", projDetailsList.proj_id, "User:", user?.user_id);
+
+        const response = await axios.post('/project/applyProject', {
+            proj_id: projDetailsList.proj_id,
+            user_id: user?.user_id // ✅ Ensure user_id is sent
+        });
+
+        console.log("✅ Apply API Response:", response.data);
+
+        if (response.status === 200 && response.data.success) {
+            closeModal();
+            Swal.fire({ title: 'Application Successful', text: response.data.message, icon: 'success', confirmButtonText: 'Ok' });
+            updateNotifyCount();
+        } else if (response.status === 200 && !response.data.success) {
+            closeModal();
+            Swal.fire({ title: 'Application Unsuccessful', text: response.data.message, icon: 'error', confirmButtonText: 'Ok' });
         }
+    } catch (error) {
+        console.error("❌ Error applying for project:", error); // ✅ Log error details
+        Swal.fire({ title: 'Error', text: error.response?.data?.message || error.message, icon: 'error', confirmButtonText: 'Ok' });
+    } finally {
+        fetchProjects();
     }
+};
+
 
     const fetchUserRoles = async () => {
         setLoading(true);
@@ -899,7 +985,7 @@ const ViewProjectComponent = () => {
                                                         <td className="proj-details-sub-header">Skills</td>
                                                         <td className="proj-details-data">
                                                             {projDetailsList.skills_required && (
-                                                                <div><strong>Submitted:</strong> {projDetailsList.submitted_skills}</div>
+                                                                <div><strong>Submitted:</strong> {projDetailsList.skills_required}</div>
                                                             )}
                                                             {projDetailsList.skills_req && (
                                                                 <div><strong>Suggested:</strong> {projDetailsList.skills_req}</div>
@@ -907,21 +993,6 @@ const ViewProjectComponent = () => {
                                                         </td>
                                                     </tr>
                                                 ) : null}
-                                                <tr>
-                                                    <td className='proj-details-sub-header'>Skill(s) Required</td>
-                                                    {!editFlag && <td className='proj-details-data'>{projDetailsList.skills_req}</td>}
-                                                    {editFlag && <td className='proj-details-data'>
-                                                        <input
-                                                            type="text"
-                                                            className="milestone_input_text"
-                                                            name="skills_req"
-                                                            placeholder='e.g., Recommendation System'
-                                                            value={projDetailsList.skills_req || ""}
-                                                            onChange={(e) => handleUpdateProjDetailsChange(e)}
-                                                            required
-                                                        />
-                                                    </td>}
-                                                </tr>
                                                 <tr>
                                                 <td className='proj-details-sub-header'>Deadline</td>
                                                         {!editFlag && (

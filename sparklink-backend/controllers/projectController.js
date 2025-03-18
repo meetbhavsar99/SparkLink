@@ -9,6 +9,7 @@ const ProjReport = require('../models/proj_report');
 const ValidationUtil = require("../common/validationUtil");
 const { Op } = require("sequelize");
 const sequelize = require('../config/db');
+//const sendEmail = require('../utils/sendEmail');
 const SupervisorProfile = require("../models/supervisor_profile");
 const { skillQueue } = require("../queue/skillextraction");
 
@@ -321,7 +322,16 @@ if (!areValidFeatures(req.body.features)) {
 
 exports.getAllProjects = async (req, res) => {
   try {
+    console.log("🔵 Fetching all projects...");
+
+    // Ensure user is authenticated before accessing
+    if (!req.user || !req.user.user_id) {
+      console.error("❌ User data missing in request.");
+      return res.status(401).json({ message: "Unauthorized: User not found" });
+    }
+
     const user = req.user;
+    console.log("🟢 Authenticated User:", user);
 
     const projectsQuery = `
       SELECT pr.*, ps.status_desc
@@ -334,6 +344,8 @@ exports.getAllProjects = async (req, res) => {
     const projects = await sequelize.query(projectsQuery, {
       type: sequelize.QueryTypes.SELECT,
     });
+
+    console.log("🟢 Projects fetched successfully.");
 
     if (projects && projects.length > 0) {
       const projIds = projects.map(project => project.proj_id);
@@ -403,7 +415,7 @@ exports.getAllProjects = async (req, res) => {
       projects,
       user: {
         user_id: req.body.user_id,
-        username: user.username,
+        username: user.username| "Unknown", // ✅ Prevents undefined error
         email: user.email,
         role: user.role,
         isAuthenticated: true,
@@ -456,23 +468,113 @@ exports.updateProject = async (req, res) => {
 };
 
 // Delete a project by ID
-exports.deleteProject = async (req, res) => {
-  try {
-    const project = await Project.findOne({
-      where: { proj_id: req.params.id },
-    });
-    if (!project) {
-      return res.status(404).json({ message: "Project not found" });
-    }
+// exports.deleteProject = async (req, res) => {
+//   try {
+//     const project = await Project.findOne({
+//       where: { proj_id: req.params.id },
+//     });
+//     if (!project) {
+//       return res.status(404).json({ message: "Project not found" });
+//     }
 
-    await project.destroy();
-    res.status(204).json({ message: "Project deleted successfully" });
-  } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Error deleting project", error: error.message });
-  }
+//     await project.destroy();
+//     res.status(204).json({ message: "Project deleted successfully" });
+//   } catch (error) {
+//     res
+//       .status(500)
+//       .json({ message: "Error deleting project", error: error.message });
+//   }
+// };
+
+// exports.deleteProject = async (req, res) => {
+//     const { projData } = req.body;
+//     const projectId = projData.proj_id;
+
+//     console.log("🔴 Attempting to delete project:", projectId);
+
+//     const transaction = await sequelize.transaction(); // ✅ Start a transaction
+
+//     try {
+//         console.log("🔍 Checking project ID:", projectId);
+
+//         // 1️⃣ Delete from `t_milestone_counter`
+//         await sequelize.query(
+//             `DELETE FROM t_milestone_counter WHERE proj_id = :projectId`,
+//             { replacements: { projectId }, transaction }
+//         );
+//         console.log("✅ Deleted from t_milestone_counter");
+
+//         // 2️⃣ Delete from `t_proj_allocation`
+//         await sequelize.query(
+//             `DELETE FROM t_proj_allocation WHERE proj_id = :projectId`,
+//             { replacements: { projectId }, transaction }
+//         );
+//         console.log("✅ Deleted from t_proj_allocation");
+
+//         // 3️⃣ Delete from `t_proj_application`
+//         await sequelize.query(
+//             `DELETE FROM t_proj_application WHERE proj_id = :projectId`,
+//             { replacements: { projectId }, transaction }
+//         );
+//         console.log("✅ Deleted from t_proj_application");
+
+//         // 4️⃣ Delete from `t_proj_milestone`
+//         await sequelize.query(
+//             `DELETE FROM t_proj_milestone WHERE proj_id = :projectId`,
+//             { replacements: { projectId }, transaction }
+//         );
+//         console.log("✅ Deleted from t_proj_milestone");
+
+//         // 5️⃣ Delete from `t_proj_report`
+//         await sequelize.query(
+//             `DELETE FROM t_proj_report WHERE proj_id = :projectId`,
+//             { replacements: { projectId }, transaction }
+//         );
+//         console.log("✅ Deleted from t_proj_report");
+
+//         // 6️⃣ Finally, delete from `t_project`
+//         const [deleteResult] = await sequelize.query(
+//             `DELETE FROM t_project WHERE proj_id = :projectId`,
+//             { replacements: { projectId }, transaction }
+//         );
+
+//         console.log("🟢 Delete result:", deleteResult);
+
+//         await transaction.commit(); // ✅ Commit transaction
+
+//         console.log("✅ Project deleted successfully:", projectId);
+//         res.status(200).json({ message: "Project deleted successfully" });
+//     } catch (error) {
+//         await transaction.rollback(); // ❌ Rollback if any error occurs
+//         console.error("❌ Error deleting project:", error);
+//         res.status(500).json({ message: "Error deleting project", error: error.message });
+//     }
+// };
+
+exports.deleteProject = async (req, res) => {
+    const { projData } = req.body;
+    const projectId = projData.proj_id;
+
+    console.log("🔴 Attempting to delete project:", projectId);
+
+    try {
+        // 🚀 Directly delete from `t_project`
+        await sequelize.query(
+            `DELETE FROM t_project WHERE proj_id = :projectId`,
+            { replacements: { projectId } }
+        );
+
+        console.log("✅ Project deleted successfully:", projectId);
+        res.status(200).json({ message: "Project deleted successfully" });
+    } catch (error) {
+        console.error("❌ Error deleting project:", error);
+        res.status(500).json({ message: "Error deleting project", error: error.message });
+    }
 };
+
+
+
+
 
 exports.filterProject = async (req, res) => {
   try {
@@ -664,90 +766,185 @@ exports.DelayProject = async (req, res) => {
   }
 }
 
+// exports.applyProject = async (req, res) => {
+//   try {
+//     console.log("🔵 Processing project application...");
+//     console.log("Received request body:", req.body);
+
+//     const { proj_id } = req.body;
+//     const user = req.user;
+//     const user_id = req.body.user_id;
+//     const role = Number(user.role);
+
+//     if (!proj_id || !user_id) {
+//             console.error("❌ Missing proj_id or user_id");
+//             return res.status(400).json({ message: "Project ID and User ID are required" });
+//         }
+
+//         if (!user) {
+//             console.error("❌ User not found");
+//             return res.status(404).json({ message: "User not found" });
+//         }
+
+//         console.log("🟢 User Role:", role);
+
+//     let supervisor_count = 0;
+
+//     const allocationList = {
+//       proj_id: proj_id,
+//       user_id: user_id,
+//       role: role,
+//       created_by: user_id,
+//       modified_by: user_id
+//     }
+
+//     if (role === 3) {
+//       supervisor_count = await ProjAllocation.count({
+//         where: {
+//           proj_id: proj_id,
+//           role: role,
+//           is_active: 'Y'
+//         }
+//       });
+
+//       if (supervisor_count < 2) {
+//         const supervisor_exists = await ProjAllocation.count({
+//           where: {
+//             proj_id: proj_id,
+//             user_id: user_id,
+//             role: role,
+//             is_active: 'Y'
+//           }
+//         });
+
+//         if (supervisor_exists === 0) {
+//           const supervisor = await ProjAllocation.create(allocationList, {
+//             returning: ['proj_id', 'user_id', 'role', 'created_by', 'created_on', 'modified_by', 'modified_on']
+//           });
+//           const statusUpdate = await Project.update({
+//             status: 2,
+//             modified_by: user_id
+//           }, {
+//             where: {
+//               proj_id: proj_id
+//             }
+//           });
+
+//           return res.status(200).json({ success: true, message: "Project application successful", supervisor });
+//         } else {
+//           return res.status(200).json({ success: false, message: "You are already supervising this project" });
+//         }
+//       } else {
+//         return res.status(200).json({ success: false, message: "This project already has the maximum number of supervisors." });
+//       }
+//     } else if (role === 4) {
+//       const studentApplList = {
+//         proj_id: proj_id,
+//         user_id: user_id,
+//         role: role,
+//         created_by: user_id,
+//         modified_by: user_id,
+//         is_active: 'Y'
+//       }
+
+//       console.log("🟡 Creating project application entry:", studentApplList);
+
+//       const student = await ProjApplication.create(studentApplList);
+//       console.log("✅ Project application created successfully");
+//       //  student = await ProjAllocation.create(allocationList, {
+//       //   returning: ['proj_id', 'user_id', 'role', 'created_by', 'created_on', 'modified_by', 'modified_on']
+//       // });
+
+//       // const statusUpdate = await Project.update({
+//       //   status: 3,
+//       //   modified_by: user_id
+//       // }, {
+//       //   where: {
+//       //     proj_id: proj_id
+//       //   }
+//       // });
+
+//       // Fetch Supervisor Emails
+//         // const supervisors = await Stakeholder.findAll({
+//         //     where: { proj_id, role: 'supervisor' },
+//         //     include: [{ model: User, attributes: ['email'] }]
+//         // });
+
+//         // const supervisorEmails = supervisors.map(s => s.User.email);
+
+//         // Send Email to Student
+//         // try {
+//         // await sendEmail({
+//         //     to: user.email,
+//         //     subject: "Project Application Submitted",
+//         //     text: `Dear ${user.name},\n\nYour application for project ID: ${proj_id} has been submitted successfully.\n\nRegards,\nProject Management Team`
+//         // });
+//         // } catch (emailError) {
+//         //     console.error("❌ Error sending email:", emailError);
+//         // }
+
+//         // // Send Email to Supervisors
+//         // if (supervisorEmails.length > 0) {
+//         //     await sendEmail({
+//         //         to: supervisorEmails,
+//         //         subject: "New Student Application",
+//         //         text: `Dear Supervisor,\n\nA student (${user.name}) has applied for Project ID: ${proj_id}.\n\nPlease review the application in the system.\n\nRegards,\nProject Management Team`
+//         //     });
+//         // }
+
+//       return res.status(200).json({ success: true, message: "Project application successful", student });
+//     }
+//   } catch (error) {
+//     return res.status(500).json({ message: "Error creating a project application", error: error.message });
+//   }
+// }
 exports.applyProject = async (req, res) => {
-  try {
-    const { proj_id } = req.body;
-    const user = req.user;
-    const user_id = req.body.user_id;
-    const role = Number(user.role);
-    let supervisor_count = 0;
+    try {
+        console.log("🔵 Processing project application...");
+        console.log("Received request body:", req.body);
 
-    const allocationList = {
-      proj_id: proj_id,
-      user_id: user_id,
-      role: role,
-      created_by: user_id,
-      modified_by: user_id
-    }
+        const { proj_id, user_id } = req.body; // ✅ Extract user_id properly
 
-    if (role === 3) {
-      supervisor_count = await ProjAllocation.count({
-        where: {
-          proj_id: proj_id,
-          role: role,
-          is_active: 'Y'
+        if (!proj_id || !user_id) {
+            console.error("❌ Missing proj_id or user_id");
+            return res.status(400).json({ message: "Project ID and User ID are required" });
         }
-      });
 
-      if (supervisor_count < 2) {
-        const supervisor_exists = await ProjAllocation.count({
-          where: {
+        const user = await User.findOne({ where: { user_id } });
+
+        if (!user) {
+            console.error("❌ User not found");
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        const role = Number(user.role);
+        console.log("🟢 User Role:", role);
+
+        if (role !== 4) {
+            return res.status(403).json({ message: "Only students can apply for projects" });
+        }
+
+        const studentApplList = {
             proj_id: proj_id,
             user_id: user_id,
             role: role,
+            created_by: user_id,
+            modified_by: user_id,
             is_active: 'Y'
-          }
-        });
+        };
 
-        if (supervisor_exists === 0) {
-          const supervisor = await ProjAllocation.create(allocationList, {
-            returning: ['proj_id', 'user_id', 'role', 'created_by', 'created_on', 'modified_by', 'modified_on']
-          });
-          const statusUpdate = await Project.update({
-            status: 2,
-            modified_by: user_id
-          }, {
-            where: {
-              proj_id: proj_id
-            }
-          });
+        console.log("🟡 Creating project application entry:", studentApplList);
 
-          return res.status(200).json({ success: true, message: "Project application successful", supervisor });
-        } else {
-          return res.status(200).json({ success: false, message: "You are already supervising this project" });
-        }
-      } else {
-        return res.status(200).json({ success: false, message: "This project already has the maximum number of supervisors." });
-      }
-    } else if (role === 4) {
-      const studentApplList = {
-        proj_id: proj_id,
-        user_id: user_id,
-        role: role,
-        created_by: user_id,
-        modified_by: user_id,
-        is_active: 'Y'
-      }
-      const student = await ProjApplication.create(studentApplList);
-      //  student = await ProjAllocation.create(allocationList, {
-      //   returning: ['proj_id', 'user_id', 'role', 'created_by', 'created_on', 'modified_by', 'modified_on']
-      // });
+        const student = await ProjApplication.create(studentApplList);
 
-      // const statusUpdate = await Project.update({
-      //   status: 3,
-      //   modified_by: user_id
-      // }, {
-      //   where: {
-      //     proj_id: proj_id
-      //   }
-      // });
-
-      return res.status(200).json({ success: true, message: "Project application successful", student });
+        console.log("✅ Project application created successfully");
+        return res.status(200).json({ success: true, message: "Project application successful", student });
+    } catch (error) {
+        console.error("❌ Error applying for project:", error);
+        return res.status(500).json({ message: "Error creating project application", error: error.message });
     }
-  } catch (error) {
-    return res.status(500).json({ message: "Error creating a project application", error: error.message });
-  }
-}
+};
+
 
 /**
  * access_val === 'S' -> User has admin access can take every action on the Project

@@ -257,21 +257,21 @@ const handleAvatarSelection = (avatar) => {
                         <div className="mt-4">
                             <h5 className="text-secondary">Admin Actions</h5>
                             <div className="d-flex justify-content-center gap-3 flex-wrap">
-                                <a href="/admin/dashboard" className="btn btn-primary">
+                                {/* <a href="/admin/dashboard" className="btn btn-primary">
                                     <i className="fas fa-tachometer-alt"></i> Admin Dashboard
-                                </a>
+                                </a> */}
                                 <a href="/admin/viewusers" className="btn btn-secondary">
                                     <i className="fas fa-users"></i> View Users
                                 </a>
-                                <a href="/admin/settings" className="btn btn-warning">
+                                {/* <a href="/admin/settings" className="btn btn-warning">
                                     <i className="fas fa-cogs"></i> System Settings
-                                </a>
-                                <a href="/admin/analytics-reports" className="btn btn-info">
+                                </a> */}
+                                {/* <a href="/admin/analytics-reports" className="btn btn-info">
                                     <i className="fas fa-chart-bar"></i> Analytics & Reports
-                                </a>
-                                <a href="/admin/admin-logs" className="btn btn-info">
+                                </a> */}
+                                {/* <a href="/admin/admin-logs" className="btn btn-info">
                                     <i className="fas fa-chart-bar"></i> View Logs
-                                </a>
+                                </a> */}
                             </div>
                         </div>
                     </div>

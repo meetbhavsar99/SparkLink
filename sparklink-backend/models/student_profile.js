@@ -51,7 +51,11 @@ const Student_Profile = sequelize.define('Student_Profile', {
     course: {
         type: DataTypes.STRING(100),
         allowNull: true
-    }
+    },
+    avatar: {
+    type: DataTypes.STRING(250),
+    allowNull: true
+    },
 }, {
     tableName: 't_student_profile',  
     timestamps: false     
