@@ -16,6 +16,8 @@ const {
 } = require('../controllers/projectController');
 
 const {acceptProject, rejectProject}= require('../controllers/projAllocationController');
+const projectController = require("../controllers/projectController");
+
 
 const router = express.Router();
 
@@ -59,5 +61,7 @@ router.post('/reject', rejectProject);
 
 //Report Project
 router.post('/reportProject', reportProject);
+
+router.get("/getStudentApplications", projectController.getStudentApplications);
 
 module.exports = router;

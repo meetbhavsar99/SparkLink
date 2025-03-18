@@ -10,6 +10,8 @@ import LoginComponent from "./component/login/LoginComponent";
 import ProtectedRoute from "./component/ProtectedRoute";
 import ProjApplicationComponent from "./component/project-applications/projApplicationComponent";
 import ViewProjectComponent from "./component/viewproject/ViewProjectComponent";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import ApplicationComponent from "./component/viewproject/ApplicationComponent";
 import ProfileComponent from "./component/profile/ProfileComponent";
 import EditProfileComponent from "./component/editProfile/EditProfileComponent";
 import ViewUserComponent from "./component/admin/viewUsers";
@@ -51,7 +53,7 @@ const AppRoutes = () => {
                 { path:"/admin/dashboard", element: <AdminDashboard/>},
                 { path:"/admin/admin-logs", element: <AdminLogs/>},
                 { path:"/admin/logs", element: <LogsComponent/>},
-
+                { path:"/applications", element: <ApplicationComponent />},
             ],
         },
     ]);

@@ -7,39 +7,20 @@ import "./logs.css";
 
 const LogsComponent = () => {
   const [logs, setLogs] = useState([]);
-  const [filter, setFilter] = useState("");
+  const [selectedLogType, setSelectedLogType] = useState("all");
 
   useEffect(() => {
     fetchLogs();
-  }, []);
+  }, [selectedLogType]);
 
   const fetchLogs = async () => {
     try {
-      const response = await axios.get("/api/logs");
+      const response = await axios.get(`/api/logs/filter?log_type=${selectedLogType !== "all" ? selectedLogType : ""}`);
       setLogs(response.data);
     } catch (error) {
       console.error("Error fetching logs:", error);
     }
   };
-
-  const handleFilterChange = async (e) => {
-    const value = e.target.value;
-    setFilter(value);
-
-    try {
-      const response = await axios.get(`/api/logs/filter?action=${value}`);
-      setLogs(response.data);
-    } catch (error) {
-      console.error("Error fetching filtered logs:", error);
-    }
-  };
-
-  const [selectedLogType, setSelectedLogType] = useState("all");
-
-    const filteredLogs = logs.filter(log => {
-        if (selectedLogType === "all") return true;
-        return log.log_type === selectedLogType;
-    });
 
   return (
     <div className="page-container">
@@ -54,35 +35,37 @@ const LogsComponent = () => {
             <option value="user">User Logs</option>
             <option value="action">Action Logs</option>
             <option value="error">Error Logs</option>
-        </select>
+          </select>
 
           <div className="table-responsive">
             <table className="table table-striped">
-<thead>
+              <thead>
                 <tr>
-                    <th>Timestamp</th>
-                    <th>User ID</th>
-                    <th>Action</th>
-                    <th>Description</th>
-                    <th>Status</th>
+                  <th>Timestamp</th>
+                  <th>User ID</th>
+                  <th>Action</th>
+                  <th>Description</th>
+                  <th>Status</th>
                 </tr>
-            </thead>
-            <tbody>
-                {filteredLogs.map(log => (
+              </thead>
+              <tbody>
+                {logs.map(log => (
                     <tr key={log.log_id}>
                         <td>
-                        {log.created_at && Date.parse(log.created_at) 
-                            ? new Date(log.created_at).toLocaleString()
-                            : "Invalid Date"}
+                            {log.created_at && Date.parse(log.created_at) 
+                                ? new Date(log.created_at).toLocaleString()
+                                : "Invalid Date"}
                         </td>
-
                         <td>{log.user_id || "System"}</td>
                         <td>{log.action}</td>
                         <td>{log.details}</td>
-                        <td>{log.log_type.toUpperCase()}</td>
+                        <td className={`status-${log.log_type.toLowerCase()}`}>
+                            {log.log_type.toUpperCase()}
+                        </td>
                     </tr>
                 ))}
             </tbody>
+
             </table>
           </div>
         </div>

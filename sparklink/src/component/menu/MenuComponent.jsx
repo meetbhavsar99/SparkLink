@@ -10,6 +10,7 @@ import milestone_icon from "../../assets/Milestone_Tracker.png";
 import profile_icon from "../../assets/profile.png";
 import create_icon from "../../assets/create_project.png";
 import notification_icon from "../../assets/notification.png";
+import application_icon from "../../assets/application_icon.png";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import logout_icon from "../../assets/logout.png";
@@ -261,21 +262,31 @@ const MenuComponent = () => {
                       </span>
                     </li>
                     {user && user.role === '4' && (
-                      <li className={getNavItemClass("/view-Recomended-project")}>
-                        <span className="menu-item-wrapper">
-                          <Link className="text-menu nav-link-item" to="/view-Recomended-project">
-                            <div className="icon-container">
-                              <img
-                                src={view_icon}
-                                className="nav_sub_menu_icon"
-                                alt=""
-                              />
-                            </div>
-                            <span className="menu-text">Recommendations</span>
-                          </Link>
-                        </span>
-                      </li>
-                    )}
+  <>
+    <li className={getNavItemClass("/view-Recomended-project")}>
+      <span className="menu-item-wrapper">
+        <Link className="text-menu nav-link-item" to="/view-Recomended-project">
+          <div className="icon-container">
+            <img src={view_icon} className="nav_sub_menu_icon" alt="" />
+          </div>
+          <span className="menu-text">Recommendations</span>
+        </Link>
+      </span>
+    </li>
+
+    <li className={getNavItemClass("/applications")}>
+      <span className="menu-item-wrapper">
+        <Link className="text-menu nav-link-item" to="/applications">
+          <div className="icon-container">
+            <img src={view_icon} className="nav_sub_menu_icon" alt="" />
+          </div>
+          <span className="menu-text">Applications</span>
+        </Link>
+      </span>
+    </li>
+  </>
+)}
+
                     {role === "" && (
                       <li className={getNavItemClass("/progress")}>
                         <span className="menu-item-wrapper">

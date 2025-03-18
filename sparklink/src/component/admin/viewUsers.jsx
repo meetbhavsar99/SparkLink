@@ -224,7 +224,7 @@ const ViewUserComponent = () => {
 
               <div className="bulk-actions">
               <button
-                className="btn btn-danger pl-6 mr-2"
+                className="btn btn-danger pl-6 mr-2 bulk-btn"
                 onClick={handleBulkDelete}
                 disabled={selectedUsers.length === 0}
               >

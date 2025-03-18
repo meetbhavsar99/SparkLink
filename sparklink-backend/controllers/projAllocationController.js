@@ -1,6 +1,7 @@
 const project_allocation = require("../models/proj_allocation");
 const project_application = require("../models/proj_application");
 const Project = require("../models/project");
+const logsController = require("../controllers/logsController"); // Import logs controller
 
 const acceptProject = async (req, res) => {
   try {
@@ -56,6 +57,14 @@ const acceptProject = async (req, res) => {
         }
       });
     }
+
+    // ✅ LOG SUCCESSFUL APPROVAL
+        await logsController.createLog(
+          user.user_id, 
+          "Student Accepted",
+          `Supervisor ${user.user_id} accepted student ${user_id} for Project ID ${proj_id}`,
+          "action"
+        );
     
     // Respond with success
     res.status(200).json({
@@ -63,6 +72,14 @@ const acceptProject = async (req, res) => {
     });
   } catch (error) {
     console.error("Error accepting project:", error);
+    // ❌ LOG ERROR IF ACCEPTANCE FAILS
+        await logsController.createLog(
+          req.user?.user_id || "System",
+          "Application Acceptance Failed",
+          `Error: ${error.message} | Supervisor ${req.user?.user_id} failed to accept student ${req.body.user_id} for Project ID ${req.body.proj_id}.`,
+          "error"
+        );
+
     res.status(500).json({ error: "Failed to accept project application." });
   }
 };
@@ -103,11 +120,28 @@ const rejectProject = async (req, res) => {
       }
     );
 
+    // ✅ LOG SUCCESSFUL REJECTION
+        await logsController.createLog(
+          req.user?.user_id, 
+          "Student Rejected",
+          `Supervisor ${req.user?.user_id} rejected student ${user_id} for Project ID ${proj_id}`,
+          "action"
+        );
+
     res.status(200).json({
       message: "Project application rejected successfully",
     });
   } catch (error) {
     console.error("Error rejecting project:", error);
+    // ❌ LOG ERROR IF REJECTION FAILS
+        await logsController.createLog(
+          req.user?.user_id || "System",
+          "Application Rejection Failed",
+          `Error: ${error.message} | Supervisor ${req.user?.user_id} failed to reject student ${req.body.user_id} for Project ID ${req.body.proj_id}.`,
+          "error"
+        );
+    
+        
     res.status(500).json({ error: "Failed to reject project application" });
   }
 };

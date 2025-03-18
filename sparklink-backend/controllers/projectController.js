@@ -11,7 +11,9 @@ const { Op } = require("sequelize");
 const sequelize = require('../config/db');
 //const sendEmail = require('../utils/sendEmail');
 const SupervisorProfile = require("../models/supervisor_profile");
+const logsController = require("../controllers/logsController");
 const { skillQueue } = require("../queue/skillextraction");
+
 
 // Create a new project
 exports.createProject = async (req, res) => {
@@ -176,6 +178,15 @@ if (!areValidFeatures(req.body.features)) {
     // Create the project in the database
     const project = await Project.create(projectData, { transaction: t });
 
+    // ✅ LOG PROJECT CREATION
+        await logsController.createLog(
+          req.body.user_id, 
+          "Project Created", 
+          `Project '${project_name}' (ID: ${project.proj_id}) was created successfully by user ${req.body.user_id}.`,
+          "action"
+        );
+    
+
     // If supervise is true, insert two records with different roles (2 and 3)
     if (supervise) {
       // Insert the record with role 3
@@ -214,6 +225,14 @@ if (!areValidFeatures(req.body.features)) {
   } catch (error) {
     // If any error occurs, roll back the transaction
     await t.rollback();
+
+    // ❌ LOG ERROR IF PROJECT CREATION FAILS
+        await logsController.createLog(
+          req.body.user_id, 
+          "Project Creation Failed", 
+          `Error: ${error.message} | User ${req.body.user_id} tried to create project '${req.body.project_name}'.`,
+          "error"
+        );
 
     // Log error and respond with error message
     console.error(error);
@@ -554,6 +573,7 @@ exports.updateProject = async (req, res) => {
 exports.deleteProject = async (req, res) => {
     const { projData } = req.body;
     const projectId = projData.proj_id;
+    const userId = req.body.user_id;
 
     console.log("🔴 Attempting to delete project:", projectId);
 
@@ -564,9 +584,23 @@ exports.deleteProject = async (req, res) => {
             { replacements: { projectId } }
         );
 
+        await logsController.createLog(
+            userId, 
+            "Project Deleted", 
+            `Project ID ${projectId} was deleted by user ${userId}`, 
+            "action"
+        );
+
         console.log("✅ Project deleted successfully:", projectId);
         res.status(200).json({ message: "Project deleted successfully" });
     } catch (error) {
+      await logsController.createLog(
+            userId, 
+            "Project Deletion Failed", 
+            error.message, 
+            "error"
+        );
+
         console.error("❌ Error deleting project:", error);
         res.status(500).json({ message: "Error deleting project", error: error.message });
     }
@@ -669,7 +703,53 @@ exports.UpdateProjDetails = async (req, res) => {
       .status(500)
       .json({ message: "Error updating Project Details", error: error.message });
   }
-}
+};
+
+// Get all applications for a student
+exports.getStudentApplications = async (req, res) => {
+    try {
+        const { user_id } = req.query;
+
+        if (!user_id) {
+            return res.status(400).json({ message: "User ID is required" });
+        }
+
+        console.log(`🔵 Fetching applications for user: ${user_id}`);
+
+        const applications = await ProjApplication.findAll({
+            where: { user_id },
+            include: [
+                {
+                    model: Project,
+                    as: "project",
+                    attributes: ["project_name", "description", "purpose", "product"],
+                },
+            ],
+            order: [["created_on", "DESC"]], // ✅ Use 'created_on' instead of 'created_at'
+        });
+
+        if (!applications.length) {
+            return res.status(200).json([]); // No applications found
+        }
+
+        const formattedApplications = applications.map((app) => ({
+            project_name: app.project?.project_name || "Unknown",
+            description: app.project?.description || "No description available",
+            purpose: app.project?.purpose || "N/A",
+            product: app.project?.product || "N/A",
+            applied_on: app.created_on, // ✅ Ensure we use 'created_on'
+            status: app.is_approved === "Y" ? "Accepted" : app.is_rejected === "Y" ? "Rejected" : "Pending",
+        }));
+
+        res.status(200).json(formattedApplications);
+    } catch (error) {
+        console.error("❌ Error fetching student applications:", error);
+        res.status(500).json({ message: "Error fetching applications", error: error.message });
+    }
+};
+
+
+
 
 exports.RemoveProject = async (req, res) => {
   try {
@@ -937,10 +1017,23 @@ exports.applyProject = async (req, res) => {
 
         const student = await ProjApplication.create(studentApplList);
 
+        await logsController.createLog(
+            user_id, 
+            "Project Application", 
+            `Student ${user_id} applied for Project ID ${proj_id}`, 
+            "action"
+        );
+
         console.log("✅ Project application created successfully");
         return res.status(200).json({ success: true, message: "Project application successful", student });
     } catch (error) {
         console.error("❌ Error applying for project:", error);
+        await logsController.createLog(
+            req.body.user_id, 
+            "Project Application Failed", 
+            error.message, 
+            "error"
+        );
         return res.status(500).json({ message: "Error creating project application", error: error.message });
     }
 };

@@ -1,0 +1,51 @@
+.application-title {
+    text-align: center;
+    font-size: 24px;
+    margin: 20px 0;
+}
+
+.application-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px auto;
+    background: white;
+    margin-left: 70px;
+}
+
+.application-table th,
+.application-table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+}
+
+.application-table th {
+    background: #585858;
+    color: #FFCE00;
+}
+
+.status-pending {
+    color: orange;
+    font-weight: bold;
+}
+
+.status-accepted {
+    color: green;
+    font-weight: bold;
+}
+
+.status-rejected {
+    color: red;
+    font-weight: bold;
+}
+
+.loading,
+.no-applications {
+    text-align: center;
+    font-size: 18px;
+    margin-top: 20px;
+}
+
+.refresh-button {
+    margin-left: 70px;
+}

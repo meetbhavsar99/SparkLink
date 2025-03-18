@@ -43,13 +43,29 @@ exports.getAllLogs = async (req, res) => {
 };
 
 // Function to log user activity
-exports.createLog = async (user_id, action, details, log_type) => {
+// exports.createLog = async (user_id, action, details, log_type) => {
+//     try {
+//         await Log.create({
+//             user_id,
+//             action,
+//             details,
+//             log_type,
+//             created_at: new Date()
+//         });
+//         console.log(`✅ Log saved: ${action} (${log_type})`);
+//     } catch (error) {
+//         console.error("❌ Error saving log:", error);
+//     }
+// };
+
+// Function to log system activity (success and error logs)
+exports.createLog = async (user_id = null, action, details, log_type) => {
     try {
         await Log.create({
             user_id,
             action,
             details,
-            log_type,
+            log_type, // Can be "user", "action", or "error"
             created_at: new Date()
         });
         console.log(`✅ Log saved: ${action} (${log_type})`);
@@ -58,23 +74,26 @@ exports.createLog = async (user_id, action, details, log_type) => {
     }
 };
 
+
 // Function to fetch logs based on filters
 exports.getFilteredLogs = async (req, res) => {
-  try {
-    const { action, user_id } = req.query;
-    let whereCondition = {};
+    try {
+        const { action, user_id, log_type } = req.query;
+        let whereCondition = {};
 
-    if (action) whereCondition.action = action;
-    if (user_id) whereCondition.user_id = user_id;
+        if (action) whereCondition.action = action;
+        if (user_id) whereCondition.user_id = user_id;
+        if (log_type) whereCondition.log_type = log_type;
 
-    const logs = await Log.findAll({
-      where: whereCondition,
-      order: [["timestamp", "DESC"]],
-    });
+        const logs = await Log.findAll({
+            where: whereCondition,
+            order: [["created_at", "DESC"]],
+        });
 
-    res.status(200).json(logs);
-  } catch (error) {
-    console.error("Error fetching filtered logs:", error);
-    res.status(500).json({ error: "Failed to retrieve logs." });
-  }
+        res.status(200).json(logs);
+    } catch (error) {
+        console.error("Error fetching filtered logs:", error);
+        res.status(500).json({ error: "Failed to retrieve logs." });
+    }
 };
+
