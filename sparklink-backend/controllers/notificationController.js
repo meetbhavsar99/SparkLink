@@ -1,3 +1,4 @@
+const nodemailer = require("nodemailer");
 const ProjApplication = require("../models/proj_application");
 const ProjAllocation = require("../models/proj_allocation");
 const User = require("../models/user");
@@ -476,5 +477,52 @@ exports.NotificationOkay = async (req, res) => {
       message: "Error updating notification",
       error: error.message,
     });
+  }
+};
+
+exports.sendProjectCreatedEmails = async (req, res) => {
+  try {
+    const { project_name, supervisor_email } = req.body;
+
+    // Fetch all students' emails
+    const students = await User.findAll({
+      where: { role: 4 }, // Assuming '4' is the role ID for students
+      attributes: ["email"],
+    });
+
+    const studentEmails = students.map((student) => student.email);
+
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
+
+    // Email to Students
+    const studentMailOptions = {
+      from: process.env.EMAIL_USER,
+      to: studentEmails,
+      subject: "New Project Available",
+      html: `<p>A new project "<b>${project_name}</b>" has been created. Check it out in the projects section.</p>`,
+    };
+
+    // Email to Supervisor (Project Creator)
+    const supervisorMailOptions = {
+      from: process.env.EMAIL_USER,
+      to: supervisor_email,
+      subject: "Project Created Successfully",
+      html: `<p>Your project "<b>${project_name}</b>" has been successfully created.</p>`,
+    };
+
+    // Send emails
+    await transporter.sendMail(studentMailOptions);
+    await transporter.sendMail(supervisorMailOptions);
+
+    res.status(200).json({ message: "Emails sent successfully" });
+  } catch (error) {
+    console.error("❌ Error sending emails:", error);
+    res.status(500).json({ message: "Error sending emails", error: error.message });
   }
 };

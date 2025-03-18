@@ -1,0 +1,21 @@
+/* logs.css */
+.logs-container {
+    padding: 20px;
+}
+
+.logs-container h1 {
+    font-size: 24px;
+    margin-bottom: 15px;
+}
+
+.table-responsive {
+    overflow-x: auto;
+}
+
+.text-success {
+    color: green;
+}
+
+.text-danger {
+    color: red;
+}

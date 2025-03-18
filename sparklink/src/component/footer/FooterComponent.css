@@ -1,38 +1,61 @@
-.footer-fixed {
-    position: relative;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    width: 100%;
-}
-
+/* Footer container */
 .footer-container {
-    padding: 0 0 0 45px !important;
-    /* background: linear-gradient(to bottom, #8EC5FC, #3A539B); */
+    padding: 0 0 0 70px;
+    /* Adjust padding to account for the sidebar */
     background: #005596;
-    z-index: 1000;
+    z-index: -1;
+    position: relative;
+    width: 100%;
+    box-sizing: border-box;
 }
 
+/* Footer background */
 .container-fluid.footer-background {
-    /* background: linear-gradient(to bottom, #8EC5FC, #3A539B); */
     background: #005596;
     color: #fff;
     font-weight: 500;
-    font-size: large;
+    font-size: 1.1rem;
     padding: 20px;
-    box-shadow: 11px 11px 16px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.2);
 }
 
+/* UWindsor logo */
+.UWindsor-footer-logo {
+    max-width: 150px;
+    height: auto;
+    margin: 0 auto;
+    display: block;
+}
+
+/* Text styling */
+.text-footer {
+    font-size: 1rem;
+    line-height: 1.6;
+    text-align: center;
+    margin: 10px 0;
+}
+
+/* Responsive adjustments */
 @media (min-width: 769px) {
+    .footer-container {
+        padding-left: 250px;
+        /* Adjust for expanded sidebar */
+    }
+
     .UWindsor-footer-logo {
-        padding-left: 27%;
+        padding-left: 0;
+    }
+
+    .text-footer {
+        text-align: left;
     }
 }
 
 @media (max-width: 768px) {
     .footer-container {
-        text-align: center;
         padding: 20px;
+        /* Reset padding for mobile */
+        text-align: center;
     }
 
     .row {
@@ -74,4 +97,3 @@
         margin-bottom: 5px;
     }
 }
-

@@ -8,6 +8,8 @@ import delete_icon from "../../assets/delete_icon.png";
 import "./viewUsers.css";
 import Swal from "sweetalert2";
 import { Modal, Button, Form } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
+
 
 const roleMapping = {
   1: "Admin",
@@ -34,6 +36,8 @@ const ViewUserComponent = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [role, setRole] = useState("All");
   const [selectedUsers, setSelectedUsers] = useState([]); // For bulk actions
+  const navigate = useNavigate();
+
 
   // Fetch users from the backend API
 
@@ -229,6 +233,10 @@ const ViewUserComponent = () => {
               <button className="btn btn-success mx-2" onClick={handleExportCSV}>
                 Export CSV
               </button>
+              <button className="btn btn-info" onClick={() => navigate("/admin/logs")}>
+                View Logs
+              </button>
+
             </div>
 
               {loading && (

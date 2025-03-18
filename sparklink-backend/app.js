@@ -10,6 +10,7 @@ const sequelize = require('./config/db'); // Import the database connection
 const passport = require('./config/passportConfig'); 
 const session = require('express-session');
 const User = require('./models/user');
+const Log = require("./models/logs");  // Import Log model
 
 // Routes
 
@@ -28,6 +29,7 @@ const notificationRouter = require("./routes/notificationRoutes");
 const contactRoutes = require('./routes/contactRoutes');
 const systemSettingsRoutes = require("./routes/systemSettingsRoutes");
 const analyticsRoutes = require("./routes/analyticsRoutes");
+const logRoutes = require("./routes/logs");
 //const adminRoutes = require("./routes/adminRoutes");
 
 const app = express();
@@ -97,6 +99,8 @@ app.use('/contact', contactRoutes);
 app.use('/progressTracker', progressTrackerRouter);
 app.use("/api/settings", systemSettingsRoutes);
 app.use("/api/analytics", analyticsRoutes);
+app.use("/api", logRoutes);
+app.use("/api/notifications", notificationRouter);
 //app.use("/api/admin", adminRoutes);
 // Error handling middleware
 

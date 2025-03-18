@@ -12,6 +12,9 @@ const { Op } = require("sequelize");
 const { getTop5RecommendedProjects } = require("../queue/skillextraction");
 const  sequelize  = require("../config/db");
 
+
+const { createLog } = require("../controllers/logsController");
+
 // Register a new user with role
 
 exports.register = async (req, res) => {
@@ -60,6 +63,9 @@ exports.register = async (req, res) => {
       is_active: "N", // Initially inactive
       is_verified: 'N'
     });
+
+    // Log user registration
+    await createLog(newUser.user_id, "User Registration", `User ${newUser.username} registered with role ${roleExists.role_desc}.`, "user");
 
     // Send email with confirmation link
     const confirmationLink = `http://localhost:5100/api/users/confirm-email?token=${confirmation_token}`;
@@ -131,14 +137,15 @@ exports.confirmEmail = async (req, res) => {
 exports.registerSupervisor = async (req, res) => {};
 
 // Login user with role
-exports.login = (req, res, next) => {
-  passport.authenticate("local", (err, user, info) => {
+exports.login = async (req, res, next) => {
+  passport.authenticate("local", async (err, user, info) => {
     if (err) {
       return res
         .status(500)
         .json({ message: "Authentication error", error: err });
     }
     if (!user) {
+      await createLog(null, "Failed Login", `Attempted login for ${req.body.username}`, "error");
       return res
         .status(401)
         .json({ message: info.message || "Invalid credentials" });
@@ -152,10 +159,14 @@ exports.login = (req, res, next) => {
     // Debugging: Log the stored hashed password for comparison
     console.log("Stored Hashed Password:", user.password);
 
-    req.logIn(user, (err) => {
+    req.logIn(user, async (err) => {
       if (err) {
         return res.status(500).json({ message: "Login failed", error: err });
       }
+
+      // ✅ Log user login
+      await createLog(user.user_id, "User Login", `User ${user.username} logged in successfully.`, "user");
+
 
       // Send success message, user data, and redirect URL in the response
       return res.status(200).json({
@@ -286,6 +297,10 @@ exports.forgotPassword = async (req, res) => {
       <p>Regards,<br>Your Team</p>
     `,
     });
+
+    // ✅ Log password reset request
+    await createLog(user.user_id, "Password Reset Requested", `User ${user.username} requested a password reset.`, "action");
+
     res
       .status(200)
       .json({ message: "Password reset link sent. Check your email." });
@@ -354,6 +369,9 @@ exports.resetPassword = async (req, res) => {
 
     await user.save();
 
+    // ✅ Log successful password reset
+    await createLog(user.user_id, "Password Reset Success", `User ${user.username} successfully reset their password.`, "action");
+
     res.status(200).json({ message: "Password has been successfully reset." });
   } catch (error) {
     res
@@ -396,6 +414,8 @@ exports.updateuser = async (req, res) => {
         .json({ message: "User not found or no changes made." });
     }
 
+    await createLog(id, "Profile Update", `User ${username} updated their profile`, "action");
+
     // Return the updated user
     const updatedUser = await User.findByPk(id);
     res.status(200).json(updatedUser);
@@ -421,6 +441,9 @@ exports.deleteUser = async (req, res) => {
 
     // Mark the user as inactive or delete them
     await User.update({ is_active: "N" }, { where: { user_id: id } });
+
+    // Log user deletion
+    await createLog(user.user_id, "User Deletion", `User ${user.username} was deleted (marked inactive).`, "action");
 
     res.status(200).json({ message: "User successfully deleted (marked inactive)." });
   } catch (error) {

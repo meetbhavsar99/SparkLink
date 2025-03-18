@@ -19,6 +19,8 @@ exports.createProject = async (req, res) => {
     console.log("Request received");
     console.log(`req.body = ${req.body}`);
     console.log(`req.body.user_id = ${req.body.user_id}`);
+    console.log("Category received in request:", req.body.category);
+
     //console.log(`req.user = ${req.user}`);
     //console.log(`req.req.body.user_id = ${req.req.body.user_id}`);
     //console.log(`req.body.features = ${req.body.features}`);
@@ -32,6 +34,9 @@ exports.createProject = async (req, res) => {
       project_description,
       features,
       project_deadline,
+      category,
+      num_students,
+      skills_required,
       image_url,
       supervise,
       userId = req.body.user_id
@@ -45,7 +50,10 @@ exports.createProject = async (req, res) => {
       !product ||
       !project_budget ||
       !project_description ||
-      !project_deadline
+      !project_deadline ||
+      !category
+      // !numStudents ||
+      // !skillsRequired
       // !user_id
       // !image_url
     ) {
@@ -152,6 +160,9 @@ if (!areValidFeatures(req.body.features)) {
       product: product,
       description: project_description,
       features: features,
+      category: category || "Uncategorized", // Defaults if missing
+      num_students: num_students === "N/A" ? null : num_students, // Store NULL if N/A
+      skills_required: skills_required === "N/A" ? null : skills_required.trim(),
       budget: project_budget,
       end_date: project_deadline,
       created_by: req.body.user_id,
@@ -751,20 +762,42 @@ exports.applyProject = async (req, res) => {
 
 exports.getUserRoleAccess = async (req, res) => {
   try {
-    const { proj_id } = req.body;
+    // const { proj_id } = req.body;
 
-    const user = req.user;
-    const user_id = req.body.user_id;
-    const role = Number(user.role);
+    // const user = req.user;
+    // const user_id = req.body.user_id;
+    // const role = Number(user.role);
 
-    let supervisor_count = 0;
+    // let supervisor_count = 0;
+
+    // const projStatus = await Project.findOne({
+    //   where: {
+    //     proj_id: proj_id
+    //   },
+    //   attributes: ['proj_id', 'status']
+    // });
+    const { proj_id, user_id } = req.body;
+
+    if (!proj_id || !user_id) {
+      return res.status(400).json({ message: "Project ID and User ID are required" });
+    }
+
+    const user = await User.findOne({ where: { user_id } });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
 
     const projStatus = await Project.findOne({
-      where: {
-        proj_id: proj_id
-      },
-      attributes: ['proj_id', 'status']
+      where: { proj_id },
+      attributes: ["proj_id", "status"],
     });
+
+    if (!projStatus) {
+      return res.status(404).json({ message: "Project not found" });
+    }
+
+    const role = Number(user.role);
+    let supervisor_count = 0;
 
     if (role === 3) { //Managing Supervisor Access
       supervisor_count = await ProjAllocation.count({
@@ -830,7 +863,7 @@ exports.getUserRoleAccess = async (req, res) => {
         return res.status(200).json({ success: false, message: "Invalid User", access_val: 'I' });
       }
     } else if (role === 4) { //Managing Student Access
-      const student = await ProjAllocation.count({
+      const isStudent = await ProjAllocation.count({
         where: {
           proj_id: proj_id,
           user_id: user_id,
@@ -838,6 +871,10 @@ exports.getUserRoleAccess = async (req, res) => {
           is_active: 'Y'
         }
       });
+
+      if (isStudent === 1) {
+        return res.status(200).json({ success: true, message: "Valid User", access_val: "M" });
+      }
 
       const student_appl = await ProjApplication.count({
         where: {
@@ -854,7 +891,7 @@ exports.getUserRoleAccess = async (req, res) => {
         return res.status(200).json({ success: false, message: "Invalid User", access_val: 'I' });
       }
 
-      if (student === 0) {
+      if (isStudent === 0) {
         if (projStatus.status === 1 || projStatus.status === 2 || projStatus.status === 3 || projStatus.status === 4) {
           return res.status(200).json({ success: true, message: "Valid User", access_val: 'A' });
         } else {

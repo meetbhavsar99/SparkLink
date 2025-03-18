@@ -60,6 +60,13 @@ const ViewProjectComponent = () => {
     const [userData, setUserData] = useState({});
     const [accessVal, setAccessVal] = useState('');
     const today = new Date().toISOString().split("T")[0];
+    const [currentPage, setCurrentPage] = useState(1);
+    const projectsPerPage = 8; // Change for more/less projects per page  
+
+    const indexOfLastProject = currentPage * projectsPerPage;
+    const indexOfFirstProject = indexOfLastProject - projectsPerPage;
+    const currentProjects = projectList.slice(indexOfFirstProject, indexOfLastProject);
+
 
     // useEffect(() => {
     //     const handleResize = () => {
@@ -77,7 +84,7 @@ const ViewProjectComponent = () => {
         setLoading(true);
         try {
             const response = await axios.get('/project/getAllProjects');
-            console.log(response.data);
+            console.log(`API response: ${response.data}`);
             setProjectList(response.data.projects);
             setOriginalProjectList(response.data.projects);
             if (isAuthenticated) {
@@ -120,6 +127,19 @@ const ViewProjectComponent = () => {
             setSuggestions([]);
         }
     };
+    // const handleInputChange = (inputValue) => {
+    //     setSearchQuery(inputValue);
+        
+    //     if (inputValue.trim() === '') {
+    //         setProjectList(originalProjectList);
+    //     } else {
+    //         const filteredProjects = originalProjectList.filter((project) =>
+    //             project.project_name.toLowerCase().startsWith(inputValue.toLowerCase())
+    //         );
+    //         setProjectList(filteredProjects);
+    //     }
+    // };
+    
 
     const handleSelectChange = (selectedOption) => {
         setSelectedOption(selectedOption);
@@ -139,35 +159,30 @@ const ViewProjectComponent = () => {
     };
 
     const openProjectDetails = (projId) => {
-        let filteredProj = null;
+    let filteredProj = null;
 
-        for (let i = 0; i < projectList.length; i++) {
-            if (projectList[i].proj_id === projId) {
-                filteredProj = projectList[i];
-                console.log("Selected Project Details:", filteredProj);
-                setProjDetailsList(filteredProj);
-                setTriggerModalFlag(true);
-                break;
+    for (let i = 0; i < projectList.length; i++) {
+        if (projectList[i].proj_id === projId) {
+            filteredProj = projectList[i];
+
+            // Ensure stakeholders are mapped correctly
+            if (filteredProj.stakeholder && Array.isArray(filteredProj.stakeholder)) {
+                filteredProj.stakeholder = filteredProj.stakeholder.map(stakeholder => ({
+                    ...stakeholder,
+                    name: stakeholder.name || "Unknown Name", // Handle missing names
+                }));
             }
+
+            setProjDetailsList(filteredProj);
+            console.log("Selected Project Details:", filteredProj); // Debugging Stakeholder Data
+            console.log("Stakeholder Data:", filteredProj.stakeholder); // Log Stakeholder Array
+            setTriggerModalFlag(true);
+            break;
         }
     }
+};
 
-    // useEffect(() => {
-    //     if (projDetailsList && triggerModalFlag) {
-    //         let splitDesc = projDetailsList.proj_desc.split(";");
-    //         let filterDesc = [];
-    //         for (let i = 0; i < splitDesc.length; i++) {
-    //             filterDesc[i] = splitDesc[i].trim().split(":");
-    //         }
-    //         setProjDescList(filterDesc);
-    //     }
-    // }, [projDetailsList, triggerModalFlag]);
 
-    // useEffect(() => {
-    //     if (projDescList.length > 0) {
-    //         fetchUserRoles();
-    //     }
-    // }, [projDescList]);
 
     useEffect(() => {
         if (triggerModalFlag && projDetailsList && projDetailsList.proj_id) {
@@ -501,14 +516,17 @@ const ViewProjectComponent = () => {
         setLoading(true);
         try {
             const response = await axios.post('/project/getUserRoleAccess', {
-                proj_id: projDetailsList.proj_id
+                proj_id: projDetailsList.proj_id,
+                user_id: user?.user_id // Ensure user_id is sent
             });
             if (response.status === 200) {
                 setTriggerDetails(true);
+                setAccessVal(response.data.access_val);
             }
-            setAccessVal(response.data.access_val);
+            //setAccessVal(response.data.access_val);
         } catch (error) {
-            Swal.fire({ title: 'Error', text: error.message, icon: 'error', confirmButtonText: 'Ok' });
+            console.error("Error fetching user role access:", error);
+            Swal.fire({ title: 'Error', text: error.response?.data?.message || "Error fetching access permissions", icon: 'error', confirmButtonText: 'Ok' });
             //setError(error.message);
         } finally {
             setLoading(false);
@@ -591,8 +609,6 @@ const ViewProjectComponent = () => {
         return <div>Error: {error}</div>;
     }
 
-    console.log(projDetailsList);
-
     return (
         <>
             <div className="page-container">
@@ -605,58 +621,69 @@ const ViewProjectComponent = () => {
                                 <div className="col-lg-1 col-md-1 col-sm-3"></div>
                                 <div className="col-lg-11 col-md-11 col-sm-9">
                                     <div className="progress-tracker">
-                                        <div className="search-container">
-                                            <Select
-                                                value={selectedOption}
-                                                onChange={handleSelectChange}
-                                                onInputChange={handleInputChange}
-                                                options={suggestions}
-                                                placeholder="Search by Project name"
-                                                isClearable
-                                                className="search-select-text search-select search-input"
+                                    <div className="search-container">
+                                            <input 
+                                                type="text" 
+                                                className="search-input"
+                                                placeholder="🔍 Search for a project..." 
+                                                value={searchQuery}
+                                                onChange={(e) => handleInputChange(e.target.value)}
                                             />
                                         </div>
-
+                
                                         <div className="progress-background-card">
-                                            <div className="row progress-card-layout">
-                                                {projectList.map((item, index) => {
-                                                    let projectProgress = item.progress;
-                                                    if (item.progress > 1 && item.progress === 100 && item.status !== 5) {
-                                                        projectProgress = item.progress - 1;
-                                                    }
-
-                                                    return (
-                                                        <div className="col-8 col-md-4 col-sm-10 col-lg-2 px-4 progress-card mb-4 mt-3" title={item.project_name}
-                                                            key={index} onClick={() => openProjectDetails(item.proj_id)}>
-
-                                                            <div className="progress-image"
-                                                                style={{
-                                                                    backgroundImage: `url(${imageArray[Number(item.image_url)] || ''})`,
-                                                                    backgroundSize: 'cover',
-                                                                    backgroundPosition: 'center'
-
-                                                                }}
-                                                                loading="lazy">
-                                                            </div>
-                                                            <div className="progress-content">
-                                                                {/* <span className="progress-category">{item.project_name}</span> */}
-                                                                {/* <span className="progress-category">Software</span> */}
-                                                                <div className="progress-title">{item.project_name.length > 15
-                                                                    ? `${item.project_name.slice(0, 18)}...`
-                                                                    : item.project_name}</div>
-                                                                <div className="progress-bar-container">
-                                                                    <div className="progress-bar">
-                                                                        <div className="progress" style={{ width: `${item.progress}%` }}></div>
-                                                                    </div>
-                                                                    {/* <span className="progress-text">{item.progress}%</span> */}
-                                                                    <span className="progress-text">{projectProgress}%</span>
+                                        <div className="row progress-card-layout">
+                                            {currentProjects.map((item, index) => {
+                                                return (
+                                                    <div className="col-8 col-md-4 col-sm-10 col-lg-2 px-4 progress-card mb-4 mt-3" 
+                                                        title={item.project_name}
+                                                        key={index} 
+                                                        onClick={() => openProjectDetails(item.proj_id)}
+                                                    >
+                                                        <div className="progress-image"
+                                                            style={{
+                                                                backgroundImage: `url(${imageArray[Number(item.image_url)] || ''})`,
+                                                                backgroundSize: 'cover',
+                                                                backgroundPosition: 'center'
+                                                            }}
+                                                            loading="lazy">
+                                                        </div>
+                                                        <div className="progress-content">
+                                                            <div className="progress-title">{item.project_name.length > 15
+                                                                ? `${item.project_name.slice(0, 18)}...`
+                                                                : item.project_name}</div>
+                                                            <div className="progress-bar-container">
+                                                                <div className="progress-bar">
+                                                                    <div className="progress" style={{ width: `${item.progress}%` }}></div>
                                                                 </div>
+                                                                <span className="progress-text">{item.progress}%</span>
                                                             </div>
                                                         </div>
-                                                    )
-                                                })}
-                                            </div>
+                                                    </div>
+                                                );
+                                            })}
                                         </div>
+                                    </div>
+                                    <div className="pagination-container">
+                                        <button 
+                                            className="ms-3 text-center button-text button-main button-main:disabled"  
+                                            onClick={() => setCurrentPage(currentPage - 1)} 
+                                            disabled={currentPage === 1}
+                                        >
+                                            ◀ Previous
+                                        </button>
+
+                                        <span className="pagination-text"> Page {currentPage} of {Math.ceil(projectList.length / projectsPerPage)} </span>
+
+                                        <button 
+                                            className="ms-3 text-center button-text button-main" 
+                                            onClick={() => setCurrentPage(currentPage + 1)} 
+                                            disabled={currentPage >= Math.ceil(projectList.length / projectsPerPage)}
+                                        >
+                                            Next ▶
+                                        </button>
+                                    </div>
+
                                     </div>
                                 </div>
                             </div>
@@ -821,12 +848,12 @@ const ViewProjectComponent = () => {
                                                 </tr>
                                                 <tr>
                                                     <td className="proj-details-sub-header">Category</td>
-                                                    {!editFlag && <td className='proj-details-data'>{projDetailsList.category}</td>}
+                                                    {!editFlag && <td className='proj-details-data'>{projDetailsList.category || "N/A"}</td>} {/* ✅ Handle undefined */}
                                                     {editFlag && <td className='proj-details-data'>
                                                         <input
                                                             type="text"
                                                             className="milestone_input_text"
-                                                            name="features"
+                                                            name="category"
                                                             placeholder='Category'
                                                             value={projDetailsList.category || ""}
                                                             onChange={(e) => handleUpdateProjDetailsChange(e)}
@@ -834,6 +861,7 @@ const ViewProjectComponent = () => {
                                                         />
                                                     </td>}
                                                 </tr>
+
                                                 <tr>
                                                     <td className="proj-details-sub-header">Features</td>
                                                     {!editFlag && <td className='proj-details-data'>{projDetailsList.features}</td>}
@@ -850,7 +878,7 @@ const ViewProjectComponent = () => {
                                                     </td>}
                                                 </tr>
                                                 <tr>
-                                                    <td className="proj-details-sub-header">Budget</td>
+                                                    <td className="proj-details-sub-header">Budget (in Dollars)</td>
                                                     {!editFlag && <td className='proj-details-data'>{Math.trunc(projDetailsList.budget)}</td>}
                                                     {editFlag && <td className='proj-details-data'>
                                                         <input
@@ -865,12 +893,12 @@ const ViewProjectComponent = () => {
                                                         />
                                                     </td>}
                                                 </tr>
-                                                {/* Display both AI skills and submitted skills */}
+                                                                                                {/* Display both AI skills and submitted skills */}
                                                 {projDetailsList.skills_req || projDetailsList.submitted_skills ? (
                                                     <tr>
                                                         <td className="proj-details-sub-header">Skills</td>
                                                         <td className="proj-details-data">
-                                                            {projDetailsList.submitted_skills && (
+                                                            {projDetailsList.skills_required && (
                                                                 <div><strong>Submitted:</strong> {projDetailsList.submitted_skills}</div>
                                                             )}
                                                             {projDetailsList.skills_req && (
@@ -895,92 +923,94 @@ const ViewProjectComponent = () => {
                                                     </td>}
                                                 </tr>
                                                 <tr>
-                                                    <td className='proj-details-sub-header'>Deadline</td>
-                                                    {!editFlag && <td className='proj-details-data'>{new Date(projDetailsList.end_date).toLocaleDateString("en-US", {
-                                                        year: "numeric",
-                                                        month: "long",
-                                                        day: "numeric",
-                                                    })}</td>}
-                                                    {editFlag && <td className='proj-details-data'>
-                                                        <input
-                                                            type="date"
-                                                            className="milestone_input_date milestone_datepicker"
-                                                            name="end_date"
-                                                            min={today}
-                                                            value={projDetailsList.end_date || ""}
-                                                            onChange={(e) => handleUpdateProjDetailsChange(e)}
-                                                            required
-                                                        />
-                                                    </td>}
+                                                <td className='proj-details-sub-header'>Deadline</td>
+                                                        {!editFlag && (
+                                                            <td className='proj-details-data'>
+                                                                {new Date(projDetailsList.end_date).toLocaleDateString('en-US', {
+                                                                    year: 'numeric',
+                                                                    month: 'long',
+                                                                    day: 'numeric'
+                                                                })}
+                                                            </td>
+                                                        )}
+                                                        {editFlag && (
+                                                            <td className='proj-details-data'>
+                                                                <input
+                                                                    type="date"
+                                                                    className="milestone_input_date milestone_datepicker"
+                                                                    name="end_date"
+                                                                    min={today}
+                                                                    value={projDetailsList.end_date ? projDetailsList.end_date.split('T')[0] : ""}
+                                                                    onChange={(e) => handleUpdateProjDetailsChange(e)}
+                                                                    required
+                                                                />
+                                                            </td>
+                                                        )}
                                                 </tr>
-                                                <tr>
-                                                    <td className="proj-details-sub-header">Status</td>
-                                                    <td className="proj-details-data">{projDetailsList.status_desc}</td>
-                                                </tr>
-                                                {["business_owner", "supervisor", "student"].map(role => {
-                                                    const stakeholdersByRole = (projDetailsList?.stakeholder || []).filter(
-                                                        stakeholder => stakeholder.role === role
-                                                    );
-
-                                                    if (stakeholdersByRole.length > 0) {
-                                                        return (
-                                                            <tr key={role}>
-                                                                <td className="proj-details-sub-header">
-                                                                    {role === "business_owner" && "Business Owner"}
-                                                                    {role === "supervisor" && "Supervisor(s)"}
-                                                                    {role === "student" && "Student(s)"}
-                                                                </td>
-                                                                <td className="proj-details-data">
-                                                                    {stakeholdersByRole.map(({ name, user_id, proj_id }, index) => (
-                                                                        <div
-                                                                            key={`${role}-${user_id}`}
-                                                                            className="stakeholder-button"
-                                                                            onClick={!editFlag ? () => fetchUserProfile(user_id) : undefined}
-                                                                        >
-                                                                            {name}
-                                                                            {editFlag &&
-                                                                                (((accessVal === "E" || accessVal === "SB") && role === "student") ||
-                                                                                    (accessVal === "S" && role !== "business_owner")) && (
-                                                                                    <img
-                                                                                        src={remove_icon}
-                                                                                        onClick={() => removeStakeholder(proj_id, role, user_id)}
-                                                                                        className="remove_icon"
-                                                                                        alt=""
-                                                                                    />
-                                                                                )}
-                                                                        </div>
-                                                                    ))}
-                                                                </td>
-                                                            </tr>
-                                                        );
-                                                    }
-                                                    return null;
-                                                })}
-
                                                 {/* Display only if number of students is available */}
-                                                {projDetailsList.num_students && (
-                                                    <tr>
-                                                        <td className="proj-details-sub-header">Number of Students</td>
-                                                        <td className="proj-details-data">{projDetailsList.num_students}</td>
-                                                    </tr>
-                                                )}
-
-                                                {/* Display files if available */}
-                                                {projDetailsList.files && projDetailsList.files.length > 0 && (
-                                                    <tr>
-                                                        <td className="proj-details-sub-header">Files</td>
-                                                        <td className="proj-details-data">
-                                                            {projDetailsList.files.map((file, index) => (
-                                                                <div key={index}>
-                                                                    <a href={file.url} target="_blank" rel="noopener noreferrer">
-                                                                        {file.name || `File ${index + 1}`}
-                                                                    </a>
-                                                                </div>
-                                                            ))}
-                                                        </td>
-                                                    </tr>
-    )}
+                                                                     {projDetailsList.num_students && (
+                                                                         <tr>
+                                                                             <td className="proj-details-sub-header">Number of Students</td>
+                                                                             <td className="proj-details-data">{projDetailsList.num_students}</td>
+                                                                         </tr>
+                                                                     )}
+                     
+                                                                     {/* Display files if available */}
+                                                                     {projDetailsList.files && projDetailsList.files.length > 0 && (
+                                                                         <tr>
+                                                                             <td className="proj-details-sub-header">Files</td>
+                                                                             <td className="proj-details-data">
+                                                                                 {projDetailsList.files.map((file, index) => (
+                                                                                     <div key={index}>
+                                                                                         <a href={file.url} target="_blank" rel="noopener noreferrer">
+                                                                                             {`file.name || File ${index + 1}`}
+                                                                                         </a>
+                                                                                     </div>
+                                                                                 ))}
+                                                                             </td>
+                                                                         </tr>
+                         )}
                                                 
+{["admin", "business_owner", "supervisor", "student"].map(role => {
+    const stakeholdersByRole = (projDetailsList?.stakeholder || []).filter(
+        stakeholder => stakeholder.role === role
+    );
+
+    if (stakeholdersByRole.length > 0) {
+        return (
+            <tr key={role}>
+                <td className="proj-details-sub-header">
+                    {role === "admin" && "Admin"}
+                    {role === "business_owner" && "Business Owner"}
+                    {role === "supervisor" && "Supervisor(s)"}
+                    {role === "student" && "Student(s)"}
+                </td>
+                <td className="proj-details-data">
+                    {stakeholdersByRole.map(({ name, user_id, proj_id }, index) => (
+                        <div
+                            key={`${role}-${user_id}`}
+                            className="stakeholder-button"
+                            onClick={() => fetchUserProfile(user_id)} // Navigate to profile on click
+                        >
+                            {name}
+                            {editFlag &&
+                                (((accessVal === "E" || accessVal === "SB") && role === "student") ||
+                                    (accessVal === "S" && role !== "business_owner")) && (
+                                    <img
+                                        src={remove_icon}
+                                        onClick={() => removeStakeholder(proj_id, role, user_id)}
+                                        className="remove_icon"
+                                        alt=""
+                                    />
+                                )}
+                        </div>
+                    ))}
+                </td>
+            </tr>
+        );
+    }
+    return null;
+})}
 
 
 
@@ -1000,13 +1030,14 @@ const ViewProjectComponent = () => {
                             <Modal.Footer>
                                 <div className="row">
                                     <div className="col-12 text-center">
-                                        <button className="text-center button_text button-home"
+                                        <button className="ms-3 text-center button_text button-main"
                                             onClick={closeModal}>Close</button>
-                                        {editFlag && <button className="ms-3 text-center button_text button-home"
+                                        {editFlag && <button className="ms-3 text-center button_text button-main"
                                             onClick={UpdateProjDetails}>Save Changes</button>}
-                                        {(accessVal === 'A' || accessVal === 'SBA') && <button className="ms-3 text-center button_text button-home"
+                                        {(accessVal === 'A' || accessVal === 'SBA') && <button className="ms-3 text-center button_text button-main"
                                             onClick={submitApplication}>Click to Apply</button>}
-                                        {(accessVal === 'S' || accessVal === 'E' || accessVal === 'M' || accessVal === 'B' || accessVal === 'SB') && <button className="ms-3 text-center button_text button-home"
+                                        {(accessVal === 'S' || accessVal === 'E' || accessVal === 'M' || accessVal === 'B' || accessVal === 'SB') && <button className="ms-3 text-center button_text button-main
+                                        "
                                             onClick={viewMilestones}>View Milestones</button>}
                                         {(accessVal === 'S' || accessVal === 'B' || accessVal === 'SB' || accessVal === 'SBA') && <button className="ms-3 text-center button_text button-delete"
                                             onClick={deleteProject}>Delete Project</button>}
@@ -1017,16 +1048,17 @@ const ViewProjectComponent = () => {
                     </div>
                 </div>
 
-                {/* Loading overlay */}
-                {loading && (
-                    <div className="loading-overlay d-flex justify-content-center align-items-center">
-                        <div className="text-center">
-                            <div className="spinner-border text-light" style={{ width: "5rem", height: "5rem" }} role="status">
+                                {loading && (
+                    <div className="loading-overlay">
+                        <div className="loading-spinner">
+                            <div className="spinner-icon">
+                                <div className="spinner-border" role="status"></div>
                             </div>
-                            <div className="text-light mt-2">Processing...</div>
+                            <div className="loading-text">⏳ Please wait, we’re processing your request...</div>
                         </div>
                     </div>
                 )}
+
 
                 <div className="footer-fixed">
                     <FooterComponent />

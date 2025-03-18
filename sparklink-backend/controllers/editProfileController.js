@@ -5,6 +5,8 @@ const User = require('../models/user');
 const Role = require('../models/role');
 const Project = require('../models/project');
 
+const { createLog } = require("../controllers/logsController");
+
 exports.getProfile = async (req, res) => {
   try {
     const user_id = req.user.user_id;
@@ -139,6 +141,11 @@ exports.updateProfile = async (req, res) => {
     }
 
     res.status(200).json({ message: "Profile updated successfully" });
+
+    // Log profile update
+        await createLog(user_id, "Profile Updated", "User updated their profile.", "action");
+
+        res.status(200).json({ message: "Profile updated successfully" });
   } catch (err) {
     console.error("Error updating profile:", err);
     res.status(500).json({ message: 'Error updating profile', error: err.message });

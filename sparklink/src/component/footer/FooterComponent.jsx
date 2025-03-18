@@ -16,11 +16,11 @@ const FooterComponent = () => {
                             <br />
                             with UWindsor SparkLink
                         </div>
-                        {/* <div className="col-lg-4 col-md-4 col-sm-12 text-end px-5">
+                        <div className="col-lg-4 col-md-4 col-sm-12 text-end px-5">
                             <div className="text-footer">Home</div>
                             <div className="text-footer mt-2">About Us</div>
                             <div className="text-footer mt-2">Contact Us</div>
-                        </div> */}
+                        </div>
                     </div>
                 </div>
             </div>

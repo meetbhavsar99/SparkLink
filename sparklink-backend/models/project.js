@@ -29,10 +29,10 @@ const Project = sequelize.define('Project', {
     type: DataTypes.JSON,
     allowNull: false,
   },
-  skills_req: {
-    type: DataTypes.STRING(250),
-    allowNull: true,
-  },
+  // skills_req: {
+  //   type: DataTypes.STRING(250),
+  //   allowNull: true,
+  // },
   budget: {
     type: DataTypes.DECIMAL(10, 2), // ✅ Fixed NUMERIC issue
     allowNull: false,
@@ -47,11 +47,11 @@ const Project = sequelize.define('Project', {
     onUpdate: "CASCADE",
     onDelete: "CASCADE",
   },
-  start_date: {
-    type: DataTypes.DATE,
-    allowNull: true,
-    defaultValue: null, // ✅ Ensure null default is valid in MySQL
-  },
+  // start_date: {
+  //   type: DataTypes.DATE,
+  //   allowNull: true,
+  //   defaultValue: null, // ✅ Ensure null default is valid in MySQL
+  // },
   end_date: {
     type: DataTypes.DATE,
     allowNull: true,
@@ -95,7 +95,26 @@ const Project = sequelize.define('Project', {
     validate: {
       isIn: [['Y', 'N']]
     }
-  }
+  },
+  category: {
+  type: DataTypes.STRING(250),  // Ensure it matches frontend input type
+  allowNull: true,  // Should be able to store NULL if needed
+},
+num_students: {
+  type: DataTypes.INTEGER,
+  allowNull: true, // Allow NULL for "N/A"
+  defaultValue: null,
+},
+skills_required: {
+  type: DataTypes.STRING(500),
+  allowNull: true, // Allow empty values
+  defaultValue: null,
+},
+skills_req: {
+  type: DataTypes.STRING(500), // AI-generated skills
+  allowNull: true,
+  defaultValue: null,
+}
 }, {
   tableName: 't_project',
   timestamps: false,

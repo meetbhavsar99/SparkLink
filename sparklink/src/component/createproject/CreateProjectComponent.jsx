@@ -158,17 +158,25 @@ const CreateProjectComponent = () => {
         category,
         features: featuresNA ? "N/A" : features,
         project_deadline: projectDeadline,
-        required_skills: skillsNA ? "N/A" : skillsRequired,
-        number_of_students: numStudentsNA ? "N/A" : numStudents,
+        skills_required: skillsNA ? "N/A" : skillsRequired.trim() || null, // Handle empty input
+        num_students: numStudentsNA ? null : parseInt(numStudents, 10) || null, // Ensure it's a number
         image_url: imageFile ? imageFile.name : "",
         user_id: user.user_id,
       };
 
       const response = await axios.post("/project", form_data);
+      console.log("Received Category:", category);
+      console.log("Received skills:", skillsRequired);
+      console.log("Received students number:", numStudents);
       if (response) {
+        // Send email notifications
+        await axios.post("/api/notifications/project-created", {
+          project_name: projectName,
+          supervisor_email: user.email, // Supervisor's email
+        });
         Swal.fire({ 
           title: 'Success', 
-          text: 'Project Created Successfully', 
+          text: 'Project Created Successfully $ Emails Sent', 
           icon: 'success', 
           confirmButtonText: 'Ok',
           confirmButtonColor: '#6a85b6',
