@@ -478,8 +478,22 @@ exports.updateProject = async (req, res) => {
     }
     console.log("updateProjectData>>>>>", req.body);
     await project.update(req.body);
+
+    await logsController.createLog(
+      req.body.user_id, 
+      "Project Updated", 
+      `Project ID ${req.params.id} was updated by user ${req.body.user_id}.`, 
+      "action"
+    );
+
     res.status(200).json(project);
   } catch (error) {
+    await logsController.createLog(
+      req.body.user_id, 
+      "Project Update Failed.", 
+      `Error: ${error.message} | User '${req.body.user_id || "Unknown"} attempted to update the profile '${req.params.id || "Unknown"}'.`, "error"
+    );
+
     res
       .status(500)
       .json({ message: "Error updating project", error: error.message });
@@ -595,9 +609,9 @@ exports.deleteProject = async (req, res) => {
         res.status(200).json({ message: "Project deleted successfully" });
     } catch (error) {
       await logsController.createLog(
-            userId, 
+            userId || "System", 
             "Project Deletion Failed", 
-            error.message, 
+            `Error: ${error.message} | User ${userId || "Unknown"} attempted to delete project ID ${projectId}.`,
             "error"
         );
 

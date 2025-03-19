@@ -78,12 +78,23 @@ exports.createLog = async (user_id = null, action, details, log_type) => {
 // Function to fetch logs based on filters
 exports.getFilteredLogs = async (req, res) => {
     try {
-        const { action, user_id, log_type } = req.query;
+        const { action, user_id, log_type, date } = req.query;
         let whereCondition = {};
 
-        if (action) whereCondition.action = action;
+        //if (action) whereCondition.action = action;
+        if (action) whereCondition.action = { [Op.like]: `%${action}%` }; // Case-insensitive search
         if (user_id) whereCondition.user_id = user_id;
         if (log_type) whereCondition.log_type = log_type;
+
+        if (date) {
+            whereCondition.created_at = {
+                [Op.between]: [
+                    new Date(date + " 00:00:00"),
+                    new Date(date + " 23:59:59"),
+                ],
+            };
+        }
+
 
         const logs = await Log.findAll({
             where: whereCondition,
