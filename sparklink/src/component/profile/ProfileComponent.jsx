@@ -237,7 +237,10 @@ const handleAvatarSelection = (avatar) => {
 
     return (
         <>
+        <div className="page-container">
             <MenuComponent />
+            <MasterComponent />
+            <div className="content-wrap">
             {role === 'admin' && (
                 <div className="container pt-4">
                     <div className="shadow-lg p-4 text-center">
@@ -1147,8 +1150,13 @@ const handleAvatarSelection = (avatar) => {
             )}
             {/* buisness owner profile ends */}
 
+            </div>
+
+            <FooterComponent />
             {/* <FooterComponent></FooterComponent> */}
+            </div>
         </>
+        
     );
 };
 

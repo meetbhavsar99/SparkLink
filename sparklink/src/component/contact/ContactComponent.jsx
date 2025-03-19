@@ -49,7 +49,7 @@ const ContactComponent = () => {
       <div className="container mt-5">
         <div className="row justify-content-center">
           <div className="col-md-6">
-            <div className="shadow-lg p-4">
+            <div className="shadow-lg p-4 mb-5">
               <h2 className="text-center text-primary">Contact Us</h2>
               <p className="text-center text-muted">
                 Have any questions? We’d love to hear from you.
@@ -58,14 +58,13 @@ const ContactComponent = () => {
               <div className="mb-4">
                 <p>
                   <i className="fas fa-envelope text-primary"></i>{" "}
-                  support@sparklink.com
+                  olena.syrotkina@uwindsor.ca
                 </p>
                 <p>
-                  <i className="fas fa-phone text-success"></i> +1 123-456-7890
+                  <i className="fas fa-phone text-success"></i> (519) 253-3000
                 </p>
                 <p>
-                  <i className="fas fa-map-marker-alt text-danger"></i> 123
-                  SparkLink Ave, Windsor, ON
+                  <i className="fas fa-map-marker-alt text-danger"></i> 401 Sunset Ave, Windsor, ON N9B 3P4
                 </p>
               </div>
 

@@ -35,34 +35,42 @@ const AboutComponent = () => {
         {
             id: 1,
             name: 'Meet Bhavsar',
-            role: 'Full Stack Developer',
-            responsibilities: 'Developing both frontend and backend components.',
+            role: 'Team Leader & Full Stack Developer',
+            responsibilities: 'Led the development team, built the backend for the entire application, developed a fully functional frontend, and improved the UI for a better user experience.',
             image: Meet,
             LinkedIn: 'https://www.linkedin.com/in/meetkumar-bhavsar-0059ba1b5/',
+            Github: 'https://github.com/meetbhavsar99',
+            Email: 'meetbhavsar99@gmail.com'
+        },
+        {
+            id: 3,
+            name: 'Chaitanya  Parikh',
+            role: 'Frontend Developer & VM Deployment',
+            responsibilities: 'Worked on Virtual Machine setup and deployment, contributed to frontend development, and implemented UI enhancements to improve the application’s design and usability.',
+            image: Chaitanya,
+            LinkedIn: 'https://www.linkedin.com/in/chaitanyap310/',
+            Github: 'https://github.com/Chaitanya-0310',
+            Email: 'pancha9c@uwindsor.ca'
+        },
+        {
+            id: 4,
+            name: 'Vinit Vekaria',
+            role: 'Frontend Developer & VM Deployment',
+            responsibilities: 'Worked on Virtual Machine setup and deployment, contributed to frontend development, and implemented UI enhancements to improve the application’s design and usability.',
+            image: Vinit,
+            LinkedIn: 'https://www.linkedin.com/in/vinit-vekariaengineer/',
+            Github: 'https://github.com/VekariaVinit',
+            Email: 'vekariav@uwindsor.ca'
         },
         {
             id: 2,
             name: 'Heet Patel',
             role: 'Frontend Developer',
-            responsibilities: 'Responsible for UI/UX improvements.',
+            responsibilities: 'Assisted with UI refinements, ensured consistency in the design, and prepared comprehensive project documentation, including reports and presentations.',
             image: Heet,
             LinkedIn: 'https://www.linkedin.com/in/heet2002/',
-        },
-        {
-            id: 3,
-            name: 'Chaitanya  Parikh',
-            role: 'Backend Developer',
-            responsibilities: 'Handles API development and database management.',
-            image: Chaitanya,
-            LinkedIn: 'https://www.linkedin.com/in/chaitanyap310/',
-        },
-        {
-            id: 4,
-            name: 'Vinit Vekaria',
-            role: 'QA & Testing',
-            responsibilities: 'Ensures software quality through rigorous testing.',
-            image: Vinit,
-            LinkedIn: 'https://www.linkedin.com/in/vinit-vekariaengineer/',
+            Github: 'https://github.com/heet2002',
+            Email: 'patel2s9@uwindsor.ca'
         },
     ];
 
@@ -135,6 +143,7 @@ const AboutComponent = () => {
     return (
         <>
             <MenuComponent />
+            <MasterComponent />
             <div className="container">
                 <h1 className="text-center mt-4">About Us</h1>
 
@@ -195,6 +204,36 @@ const AboutComponent = () => {
                                             {member.name}
                                         </a>
                                     </h3>
+
+                                    {/* Social Links */}
+                                    <div className="social-icons">
+                                        {/* LinkedIn Icon */}
+                                        <a href={member.LinkedIn ? member.LinkedIn : "#"} 
+                                        target={member.LinkedIn ? "_blank" : "_self"} 
+                                        rel="noopener noreferrer"
+                                        className={`icon-linkedin ${!member.LinkedIn ? "disabled-link" : ""}`}
+                                        title={member.LinkedIn ? "View LinkedIn Profile" : "No link available"}>
+                                            <i className="fab fa-linkedin"></i>
+                                        </a>
+
+                                        {/* GitHub Icon */}
+                                        <a href={member.Github ? member.Github : "#"} 
+                                        target={member.Github ? "_blank" : "_self"} 
+                                        rel="noopener noreferrer"
+                                        className={`icon-github ${!member.Github ? "disabled-link" : ""}`}
+                                        title={member.Github ? "View GitHub Profile" : "No link available"}>
+                                            <i className="fab fa-github"></i>
+                                        </a>
+
+                                        {/* Email Icon */}
+                                        <a href={member.Email ? `mailto:${member.Email}` : "#"} 
+                                        className={`icon-email ${!member.Email ? "disabled-link" : ""}`}
+                                        title={member.Email ? "Send an Email" : "No email available"}>
+                                            <i className="fas fa-envelope"></i>
+                                        </a>
+
+                                    </div>
+
                                     <p><strong>Role:</strong> {member.role}</p>
                                     <p>{member.responsibilities}</p>
                                 </div>
@@ -204,7 +243,7 @@ const AboutComponent = () => {
                 </section>
 
                 {/* Previous Team (Expandable) */}
-                <section className="mt-4">
+                <section className="mt-4 mb-4">
                     <h2 
                         className="expandable-title"
                         onClick={() => setShowPreviousTeam(!showPreviousTeam)}

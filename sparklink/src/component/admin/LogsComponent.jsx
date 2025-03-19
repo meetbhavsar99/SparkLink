@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import MenuComponent from "../menu/MenuComponent";
 import MasterComponent from "../MasterComponent";
+import FooterComponent from '../footer/FooterComponent';
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./logs.css";
 
@@ -32,6 +33,7 @@ const LogsComponent = () => {
   };
 
   return (
+    <>
       <div className="page-container">
         <div className="content-container">
           <MenuComponent />
@@ -119,6 +121,8 @@ const LogsComponent = () => {
           </div>
         </div>
       </div>
+      <FooterComponent />
+      </>
     );
   };
 

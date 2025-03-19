@@ -9,6 +9,7 @@ import "./viewUsers.css";
 import Swal from "sweetalert2";
 import { Modal, Button, Form } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import FooterComponent from "../footer/FooterComponent";
 
 
 const roleMapping = {
@@ -214,11 +215,11 @@ const ViewUserComponent = () => {
 
   return (
     <div className="page-container">
+      <MenuComponent />
+      <MasterComponent/>
       <div className="content-container">
         <div className="container-fluid mb-5">
-          <MenuComponent />
           <div className="row">
-            <MasterComponent/>
             <div className="usertable">
               <h1>User Management</h1>
 
@@ -508,6 +509,7 @@ const ViewUserComponent = () => {
           </div>
         </div>
       </div>
+      <FooterComponent />
     </div>
   );
 };
