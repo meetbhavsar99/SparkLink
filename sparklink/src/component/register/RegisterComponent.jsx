@@ -9,6 +9,8 @@ import sparklink_logo from "../../assets/SparkLink_Logo_3.png";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 
 const RegistrationForm = () => {
+  const [isValidated, setIsValidated] = useState(false);
+
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -24,6 +26,17 @@ const RegistrationForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const form = e.target; // Get the form element
+
+    setIsValidated(true); // Set flag to show validation
+
+  // Check if form is valid
+  if (!form.checkValidity()) {
+    e.stopPropagation();
+    form.classList.add("was-validated"); // Show validation feedback
+    return; // Stop execution if form is invalid
+  }
 
     console.log("Submitting registration form...");
     console.log("Sending Data:", { username, email, password, confirmPassword, name, role });
@@ -58,6 +71,7 @@ const RegistrationForm = () => {
         }, 3000);
 
         setErrorMessage("");
+        form.classList.remove("was-validated"); // Reset validation styling after successful submission
     } catch (error) {
         console.log(error);
         setErrorMessage(
@@ -83,8 +97,9 @@ const RegistrationForm = () => {
             {/* Form Section */}
             <div className="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
               <form
-                className="register-form"
+                className="register-form needs-validation"
                 id="register-form"
+                noValidate
                 onSubmit={handleSubmit}
               >
                 <h2 className="form-title">Sign up</h2>
@@ -97,11 +112,14 @@ const RegistrationForm = () => {
                     name="username"
                     id="username"
                     value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    className="form-control form-control-lg"
+                    onChange={(e) => { setUsername(e.target.value);
+                    }}
+                    className={`form-control form-control-lg ${isValidated && !username ? "is-invalid" : ""}`}
                     placeholder="First Name"
                     required
                   />
+                  <div className="valid-feedback">Looks good!</div>
+                  <div className="invalid-feedback">Please enter your first name.</div>
                 </div>
                 <div data-mdb-input-init className="form-outline mb-4">
                   <input
@@ -110,10 +128,12 @@ const RegistrationForm = () => {
                     id="name"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="form-control form-control-lg"
+                    className={`form-control form-control-lg ${isValidated && !name ? "is-invalid" : ""}`}
                     placeholder="Last Name"
                     required
                   />
+                  <div className="valid-feedback">Looks good!</div>
+                  <div className="invalid-feedback">Please enter your last name.</div>
                 </div>
                 {/* Email Field */}
                 <div data-mdb-input-init className="form-outline mb-4">
@@ -122,11 +142,14 @@ const RegistrationForm = () => {
                     name="email"
                     id="email"
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="form-control form-control-lg"
+                    onChange={(e) => { setEmail(e.target.value)
+                    }}
+                    className={`form-control form-control-lg ${isValidated && !email ? "is-invalid" : ""}`}
                     placeholder="Your Email"
                     required
                   />
+                  <div className="valid-feedback">Looks good!</div>
+                  <div className="invalid-feedback">Please enter a valid email.</div>
                 </div>
                 {/* Password Field */}
                 <div data-mdb-input-init className="form-outline mb-4  position-relative" >
@@ -135,8 +158,9 @@ const RegistrationForm = () => {
                     name="pass"
                     id="pass"
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="form-control form-control-lg"
+                    onChange={(e) => { setPassword(e.target.value)
+                    }}
+                    className={`form-control form-control-lg ${isValidated && !password ? "is-invalid" : ""}`}
                     placeholder="Password"
                     required
                   />
@@ -145,6 +169,8 @@ const RegistrationForm = () => {
                   style={{ right: 10, top: 17, cursor: "pointer" }}
                   onClick={() => setShowPassword(!showPassword)}  // Toggle password visibility
                 ></i>
+                <div className="valid-feedback">Looks good!</div>
+                <div className="invalid-feedback">Password is required.</div>
                 </div>
                 {/* Repeat Password Field */}
                 <div data-mdb-input-init className="form-outline mb-4 position-relative">
@@ -153,8 +179,11 @@ const RegistrationForm = () => {
                     name="re_pass"
                     id="re_pass"
                     value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    className="form-control form-control-lg"
+                    onChange={(e) => { setConfirmPassword(e.target.value)
+                    }}
+                    className={`form-control form-control-lg ${
+                      isValidated && (!confirmPassword || confirmPassword !== password) ? "is-invalid" : ""
+                    }`}
                     placeholder="Repeat your password"
                     required
                   />
@@ -163,6 +192,8 @@ const RegistrationForm = () => {
                   style={{ right: 10, top: 17, cursor: "pointer" }}
                   onClick={() => setShowPassword2(!showPassword2)}  // Toggle password visibility
                 ></i>
+                <div className="valid-feedback">Passwords match!</div>
+                <div className="invalid-feedback">Passwords must match.</div>
                 </div>
                 <div className="mb-3">
                   <label htmlFor="roleSelect" className="form-label">
@@ -170,7 +201,7 @@ const RegistrationForm = () => {
                   </label>
                   <select
                     id="roleSelect"
-                    className="form-select"
+                    className={`form-select ${isValidated && !role ? "is-invalid" : "" }`} 
                     value={role} // Assuming `selectedRole` is the state holding the selected role
                     onChange={(e) => setRole(e.target.value)} // Update state on selection
                   >

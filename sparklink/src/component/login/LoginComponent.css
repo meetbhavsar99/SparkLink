@@ -116,8 +116,8 @@
 .btn.submit-button {
   padding-left: 2.5rem;
   padding-right: 2.5rem;
-  background-color: #2f5972; /* Custom background color */
-  border-color: #2f5972; /* Match border color with background */
+  background-color: #005596; /* Custom background color */
+  border-color: #005596; /* Match border color with background */
   color: #fff; /* Ensure text is visible */
 }
 
@@ -135,6 +135,7 @@
   margin: 0; /* Remove any default margin */
   text-align: center;
   font-weight: 700;
+  color: #005596;
   /*  */
 }
 
@@ -147,14 +148,14 @@
   display: block; 
   text-align: right; /* Align text to the right */
   font-size: 16px; /* Adjust font size */
-  color: #2f5972; /* Subtle gray color */
+  color: #005596; /* Subtle gray color */
   text-decoration: none; /* Remove underline */
   font-weight: 700;
 }
 
 /* Add hover effect */
 .text-end:hover {
-  color: #2f5972;  /* Change color to red on hover */
+  color: #005596;  /* Change color to red on hover */
   text-decoration: underline; /* Add underline on hover */
 }
 

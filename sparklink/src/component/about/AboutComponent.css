@@ -1,6 +1,6 @@
 .expandable-title {
   cursor: pointer;
-  color: #007BFF;
+  color: #005191;
   font-size: 24px;
   font-weight: bold;
 }
@@ -31,6 +31,7 @@
   height: 200px;
   object-fit: contain;
   border-radius: 5px;
+  margin-bottom: 7px;
 }
 
 .member-link {
@@ -39,5 +40,42 @@
 }
 
 .member-link:hover {
-  color: blue;
+  color: #005191;
+}
+
+.social-icons {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 7px;
+  margin-bottom: 7px;
+}
+
+.social-icon {
+  width: 24px;
+  height: 24px;
+  vertical-align: middle;
+  transition: opacity 0.3s;
+}
+
+.disabled-link .social-icon {
+  opacity: 0.5;
+  /* Make it look faded if no link */
+  cursor: not-allowed;
+}
+
+.container {
+  min-height: calc(100vh - 150px);
+  /* Ensures container fills the screen minus the footer */
+  display: flex;
+  flex-direction: column;
+}
+
+.content-wrapper {
+  flex-grow: 1;
+  /* Allows content to take up remaining space */
+}
+
+.footer {
+  margin-top: auto;
 }

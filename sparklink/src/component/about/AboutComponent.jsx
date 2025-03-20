@@ -2,6 +2,10 @@ import MasterComponent from '../MasterComponent';
 import MenuComponent from '../menu/MenuComponent';
 import FooterComponent from '../footer/FooterComponent';
 import React from 'react';
+import linkedin_icon from "../../assets/linkedin_icon.png";
+import github_icon from "../../assets/github_icon.png";
+import mail_icon from "../../assets/mail_icon.png";
+
 
 import './AboutComponent.css';
 import Avatar from './images/Avatar.jpg';
@@ -145,6 +149,7 @@ const AboutComponent = () => {
             <MenuComponent />
             <MasterComponent />
             <div className="container">
+            <div className="content-wrapper">
                 <h1 className="text-center mt-4">About Us</h1>
 
                 {/* Project Overview */}
@@ -213,7 +218,7 @@ const AboutComponent = () => {
                                         rel="noopener noreferrer"
                                         className={`icon-linkedin ${!member.LinkedIn ? "disabled-link" : ""}`}
                                         title={member.LinkedIn ? "View LinkedIn Profile" : "No link available"}>
-                                            <i className="fab fa-linkedin"></i>
+                                            <img src={linkedin_icon} alt="LinkedIn" className="social-icon" />
                                         </a>
 
                                         {/* GitHub Icon */}
@@ -222,14 +227,14 @@ const AboutComponent = () => {
                                         rel="noopener noreferrer"
                                         className={`icon-github ${!member.Github ? "disabled-link" : ""}`}
                                         title={member.Github ? "View GitHub Profile" : "No link available"}>
-                                            <i className="fab fa-github"></i>
+                                            <img src={github_icon} alt="LinkedIn" className="social-icon" />
                                         </a>
 
                                         {/* Email Icon */}
                                         <a href={member.Email ? `mailto:${member.Email}` : "#"} 
                                         className={`icon-email ${!member.Email ? "disabled-link" : ""}`}
                                         title={member.Email ? "Send an Email" : "No email available"}>
-                                            <i className="fas fa-envelope"></i>
+                                            <img src={mail_icon} alt="LinkedIn" className="social-icon" />
                                         </a>
 
                                     </div>
@@ -267,6 +272,7 @@ const AboutComponent = () => {
                         </div>
                     )}
                 </section>
+            </div>
             </div>
             <FooterComponent />
         </>

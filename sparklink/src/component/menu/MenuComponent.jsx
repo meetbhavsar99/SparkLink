@@ -5,6 +5,7 @@ import sparklink_logo from "../../assets/SparkLink_Logo.png";
 import sparklink_icon from "../../assets/SparkLink_icon.png";
 import view_icon from "../../assets/view_project.png";
 import about_icon from "../../assets/about_us.png";
+import home_icon from "../../assets/home_icon.png";
 import contact_icon from "../../assets/contact_us.png";
 import milestone_icon from "../../assets/Milestone_Tracker.png";
 import profile_icon from "../../assets/profile.png";
@@ -178,6 +179,20 @@ const MenuComponent = () => {
                   <div className="text-menu-category text-start px-3">
                     <span className="category-label">Home</span>
                   </div>
+                  <li className={getNavItemClass("/about")}>
+                    <span className="menu-item-wrapper">
+                      <Link className="text-menu nav-link-item" to="/">
+                        <div className="icon-container">
+                          <img
+                            src={home_icon}
+                            className="nav_sub_menu_icon"
+                            alt=""
+                          />
+                        </div>
+                        <span className="menu-text">Welcome</span>
+                      </Link>
+                    </span>
+                  </li>
                   {isAuthenticated && (
                     <li className={getNavItemClass("/profile")}>
                       <span className="menu-item-wrapper">
@@ -278,7 +293,7 @@ const MenuComponent = () => {
       <span className="menu-item-wrapper">
         <Link className="text-menu nav-link-item" to="/applications">
           <div className="icon-container">
-            <img src={view_icon} className="nav_sub_menu_icon" alt="" />
+            <img src={application_icon} className="nav_sub_menu_icon" alt="" />
           </div>
           <span className="menu-text">Applications</span>
         </Link>

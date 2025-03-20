@@ -289,7 +289,7 @@
 
 .button-card {
     background-color: #FFCE00;
-    color: #585858;
+    color: #58585B;
     border: none;
     font-weight: 700;
     padding: 10px 20px;
@@ -300,9 +300,9 @@
 }
 
 .button-card:hover {
-    background-color: #585858;
+    background-color: #58585B;
     color: #FFCE00;
-    border: 1px solid #585858;
+    border: 1px solid #58585B;
 }
 
 .row {

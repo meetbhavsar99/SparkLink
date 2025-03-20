@@ -29,6 +29,16 @@ const LoginComponent = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+
+    const form = e.target; // Get the form element
+
+    // Check if form is valid
+    if (!form.checkValidity()) {
+        e.stopPropagation();
+        form.classList.add("was-validated"); // Show validation feedback
+        return;
+    }
+
     try {
         const response = await axios.post("/api/users/login", {
             email: email.trim(),
@@ -46,6 +56,8 @@ const LoginComponent = () => {
         setIsAuthenticated(true);
         setUser(response.data.user);
         navigate("/", { replace: true });
+
+        form.classList.remove("was-validated"); // Reset validation after successful login
     } catch (error) {
         // Always return a generic error message for invalid credentials
         setErrorMessage("Invalid credentials. Please try again.");
@@ -78,35 +90,46 @@ const LoginComponent = () => {
             {successMessage && (
               <div className="alert alert-success">{successMessage}</div>
             )}
-            <form className="form" onSubmit={handleLogin}>
+            <form className="form needs-validation" noValidate onSubmit={handleLogin}>
               <h2 className="form-title">Sign in</h2>
 
               <div data-mdb-input-init className="form-outline mb-4">
                 <input
                   type="email"
                   id="form3Example3"
-                  className="email_field form-control form-control-lg"
+                  className={`email_field form-control form-control-lg ${email ? "is-valid" : "is-invalid"}`}
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => { setEmail(e.target.value);
+                  e.target.classList.remove("is-invalid");
+                  e.target.classList.add(e.target.checkValidity() ? "is-valid" : "is-invalid");
+                  }}
                   placeholder="Email address"
                   required
                 />
+                {/* <div className="valid-feedback">Looks good!</div> */}
+                <div className="invalid-feedback">Please provide a valid email.</div>
               </div>
 
               <div data-mdb-input-init className="form-outline mb-4 position-relative ">
                 <input
                   type={showPassword ? "text" : "password"}  // Toggle input type between text and password
                   id="form3Example4"
-                  className="password_field form-control form-control-lg"
+                  className={`password_field form-control form-control-lg ${password ? "is-valid" : "is-invalid" }`}
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={(e) => { setPassword(e.target.value);
+                  e.target.classList.remove("is-invalid");
+                  e.target.classList.add(e.target.checkValidity() ? "is-valid" : "is-invalid");
+                  }}
                   placeholder="Password"
+                  required
                 />
                 <i
                   className={`fas ${showPassword ? "fa-eye-slash" : "fa-eye"} position-absolute`}  // FontAwesome eye icon
                   style={{ right: 10, top: 17, cursor: "pointer" }}
                   onClick={() => setShowPassword(!showPassword)}  // Toggle password visibility
                 ></i>
+                {/* <div className="valid-feedback">Looks good!</div> */}
+                <div className="invalid-feedback">Password is required.</div>
               </div>
 
 

@@ -10,8 +10,9 @@
 
 .contact-title {
     font-size: 28px;
-    color: #333;
+    color: #005596 !important;
     margin-bottom: 10px;
+    font-weight: bold;
 }
 
 .contact-description {
@@ -38,7 +39,7 @@
 
 .contact-item i {
     font-size: 18px;
-    color: #007BFF;
+    color: #005596;
 }
 
 .contact-form {
@@ -60,7 +61,7 @@
 
 .contact-form input:focus,
 .contact-form textarea:focus {
-    border-color: #007BFF;
+    border-color: #005596;
     box-shadow: 0 0 5px rgba(0, 123, 255, 0.2);
 }
 
@@ -69,9 +70,14 @@
     resize: none;
 }
 
+.contact-icon {
+    color: #005596 !important;
+    font-size: 18px;
+}
+
 .send-button {
-    background: #007BFF;
-    color: white;
+    background: #005596 !important;
+    color: white !important;
     border: none;
     padding: 12px;
     font-size: 16px;
@@ -81,7 +87,8 @@
 }
 
 .send-button:hover {
-    background: #0056b3;
+    background: #004680 !important;
+    color: white !important;
 }
 
 .submission-status {

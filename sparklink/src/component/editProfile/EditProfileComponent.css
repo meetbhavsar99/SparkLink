@@ -37,7 +37,7 @@ body {
 
 .form-horizontal .control-label {
   font-weight: 500;
-  color: #585858;
+  color: #58585B;
   margin-right: 20px; /* Increased margin between label and input */
   flex: 0 0 20%;
   text-align: right;
@@ -90,7 +90,7 @@ textarea.form-control {
 }
 
 .btn-secondary {
-  background-color: #585858;
+  background-color: #58585B;
   color: #fff;
   border: none;
   padding: 12px 24px; /* Increased padding for buttons */
@@ -130,7 +130,7 @@ textarea.form-control {
 }
 
 .profile__contact-info-body {
-  color: #585858;
+  color: #58585B;
   font-size: 14px;
 }
 
