@@ -12,6 +12,8 @@ const LoginComponent = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const { isAuthenticated, setIsAuthenticated } = useAuth();
+  const [isValidated, setIsValidated] = useState(false);
+
   const { user, setUser } = useAuth();
   const [showPassword, setShowPassword] = useState(false); 
   const navigate = useNavigate();
@@ -29,6 +31,8 @@ const LoginComponent = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+
+    setIsValidated(true); // Mark form as attempted
 
     const form = e.target; // Get the form element
 
@@ -57,6 +61,7 @@ const LoginComponent = () => {
         setUser(response.data.user);
         navigate("/", { replace: true });
 
+        setIsValidated(false); // Reset validation on success
         form.classList.remove("was-validated"); // Reset validation after successful login
     } catch (error) {
         // Always return a generic error message for invalid credentials
@@ -97,11 +102,9 @@ const LoginComponent = () => {
                 <input
                   type="email"
                   id="form3Example3"
-                  className={`email_field form-control form-control-lg ${email ? "is-valid" : "is-invalid"}`}
+                  className={`email_field form-control form-control-lg ${isValidated ? (email ? "is-valid" : "is-invalid") : ""}`}
                   value={email}
-                  onChange={(e) => { setEmail(e.target.value);
-                  e.target.classList.remove("is-invalid");
-                  e.target.classList.add(e.target.checkValidity() ? "is-valid" : "is-invalid");
+                  onChange={(e) => { setEmail(e.target.value)
                   }}
                   placeholder="Email address"
                   required
@@ -114,18 +117,16 @@ const LoginComponent = () => {
                 <input
                   type={showPassword ? "text" : "password"}  // Toggle input type between text and password
                   id="form3Example4"
-                  className={`password_field form-control form-control-lg ${password ? "is-valid" : "is-invalid" }`}
+                  className={`password_field form-control form-control-lg {isValidated ? (password ? "is-valid" : "is-invalid" ) : "" }`}
                   value={password}
-                  onChange={(e) => { setPassword(e.target.value);
-                  e.target.classList.remove("is-invalid");
-                  e.target.classList.add(e.target.checkValidity() ? "is-valid" : "is-invalid");
+                  onChange={(e) => { setPassword(e.target.value)
                   }}
                   placeholder="Password"
                   required
                 />
                 <i
                   className={`fas ${showPassword ? "fa-eye-slash" : "fa-eye"} position-absolute`}  // FontAwesome eye icon
-                  style={{ right: 10, top: 17, cursor: "pointer" }}
+                  style={{ right: 34, top: 17, cursor: "pointer" }}
                   onClick={() => setShowPassword(!showPassword)}  // Toggle password visibility
                 ></i>
                 {/* <div className="valid-feedback">Looks good!</div> */}

@@ -964,7 +964,7 @@ const fetchProjects = async () => {
                                                     </td>}
                                                 </tr>
                                                 <tr>
-                                                    <td className="proj-details-sub-header">Budget (in Dollars)</td>
+                                                    <td className="proj-details-sub-header">Budget (CAD)</td>
                                                     {!editFlag && <td className='proj-details-data'>{Math.trunc(projDetailsList.budget)}</td>}
                                                     {editFlag && <td className='proj-details-data'>
                                                         <input
@@ -1101,16 +1101,16 @@ const fetchProjects = async () => {
                             <Modal.Footer>
                                 <div className="row">
                                     <div className="col-12 text-center">
-                                        <button className="ms-3 text-center button_text button-main"
+                                        <button className="btn btn-warning ms-3 text-center button_text button-main"
                                             onClick={closeModal}>Close</button>
-                                        {editFlag && <button className="ms-3 text-center button_text button-main"
+                                        {editFlag && <button className="btn btn-primary ms-3 text-center button_text button-main"
                                             onClick={UpdateProjDetails}>Save Changes</button>}
-                                        {(accessVal === 'A' || accessVal === 'SBA') && <button className="ms-3 text-center button_text button-main"
+                                        {user?.role === "student" && <button className="btn btn-success ms-3 text-center button_text button-main"
                                             onClick={submitApplication}>Click to Apply</button>}
-                                        {(accessVal === 'S' || accessVal === 'E' || accessVal === 'M' || accessVal === 'B' || accessVal === 'SB') && <button className="ms-3 text-center button_text button-main
+                                        {(accessVal === 'S' || accessVal === 'E' || accessVal === 'M' || accessVal === 'B' || accessVal === 'SB') && <button className="btn btn-info ms-3 text-center button_text button-main
                                         "
                                             onClick={viewMilestones}>View Milestones</button>}
-                                        {(accessVal === 'S' || accessVal === 'B' || accessVal === 'SB' || accessVal === 'SBA') && <button className="ms-3 text-center button_text button-delete"
+                                        {(accessVal === 'S' || accessVal === 'B' || accessVal === 'SB' || accessVal === 'SBA') && <button className="btn btn-danger btn-md ms-3 text-center button_text"
                                             onClick={deleteProject}>Delete Project</button>}
                                     </div>
                                 </div>

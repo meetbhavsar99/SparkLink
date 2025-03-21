@@ -5,7 +5,7 @@
 
 /* Container for progress tracker */
 .progress-tracker {
-  padding: 20px;
+  padding: 25px;
   max-width: 100%;
   margin: 0 auto;
   font-family: "Poppins", system-ui;
@@ -49,6 +49,7 @@
   font-size: 1.1rem;
   /* font-weight: 500; */
   color: #000;
+  margin-top: 10px;
 }
 
 @media (max-width: 768px) {
@@ -73,6 +74,10 @@
     text-align: center;
   }
 
+  .createproject_title {
+    color: #005596 !important;
+  }
+
   .form_label {
     font-weight: 500 !important;
     display: block;
@@ -95,6 +100,39 @@
   }
 }
 
+/* Toggle Switch Container */
+.toggle-switch-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 75%;
+  margin-bottom: 10px;
+}
+
+/* Bootstrap Toggle Switch */
+.form-check-input {
+  width: 40px;
+  height: 20px;
+  cursor: pointer;
+}
+
+/* On State */
+.form-check-input:checked {
+  background-color: #005596;
+  border-color: #004680;
+}
+
+/* Off State */
+.form-check-input:not(:checked) {
+  background-color: #ccc;
+  border-color: #aaa;
+}
+
+.button-home {
+  margin-top: 25px;
+  margin-bottom: 10px;
+}
+
 @media (min-width: 769px) {
   .radio_button_container input[type="checkbox"]:first-of-type {
     margin-left: 15px;
@@ -114,8 +152,9 @@
     background: linear-gradient(135deg, #2b2b2b, #555555 70%, #888888);
     -webkit-background-clip: text;
     background-clip: text;
-    color: transparent;
-    -webkit-text-fill-color: transparent;
+    color: #005596;
+    /* color: transparent;
+    -webkit-text-fill-color: transparent; */
     margin-left: 10px;
     font-family: "Poppins", system-ui;
     font-weight: 600 !important;
@@ -130,12 +169,13 @@
   display: block;
   width: 75%;
   padding: 10px;
-  margin: 10px;
+  /* margin: 10px; */
   border: 2px solid #6a6a6a;
-  border-radius: 5px;
+  border-radius: 12px;
   font-size: 16px;
   color: #333;
   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+  /* margin-bottom: 10px; */
 }
 
 .submit {
@@ -169,9 +209,9 @@
   display: block;
   cursor: pointer !important;
   padding: 10px;
-  margin: 10px;
+  margin: 10px 10px 10px 0;
   border: 2px solid #6a6a6a;
-  border-radius: 5px;
+  border-radius: 13px;
   font-size: 16px;
   color: #333;
   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);

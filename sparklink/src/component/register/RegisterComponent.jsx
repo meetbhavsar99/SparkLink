@@ -97,7 +97,7 @@ const RegistrationForm = () => {
             {/* Form Section */}
             <div className="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
               <form
-                className="register-form needs-validation"
+                className={`register-form needs-validation ${isValidated ? "mb-5" : "" }`} // adds margin if validated
                 id="register-form"
                 noValidate
                 onSubmit={handleSubmit}
@@ -119,7 +119,7 @@ const RegistrationForm = () => {
                     required
                   />
                   <div className="valid-feedback">Looks good!</div>
-                  <div className="invalid-feedback">Please enter your first name.</div>
+                  <div className="invalid-feedback">Please provide your first name.</div>
                 </div>
                 <div data-mdb-input-init className="form-outline mb-4">
                   <input
@@ -133,7 +133,7 @@ const RegistrationForm = () => {
                     required
                   />
                   <div className="valid-feedback">Looks good!</div>
-                  <div className="invalid-feedback">Please enter your last name.</div>
+                  <div className="invalid-feedback">Please provide your last name.</div>
                 </div>
                 {/* Email Field */}
                 <div data-mdb-input-init className="form-outline mb-4">
@@ -149,7 +149,7 @@ const RegistrationForm = () => {
                     required
                   />
                   <div className="valid-feedback">Looks good!</div>
-                  <div className="invalid-feedback">Please enter a valid email.</div>
+                  <div className="invalid-feedback">Please provide a valid email.</div>
                 </div>
                 {/* Password Field */}
                 <div data-mdb-input-init className="form-outline mb-4  position-relative" >
@@ -166,7 +166,7 @@ const RegistrationForm = () => {
                   />
                   <i
                   className={`fas ${showPassword ? "fa-eye-slash" : "fa-eye"} position-absolute`}  // FontAwesome eye icon
-                  style={{ right: 10, top: 17, cursor: "pointer" }}
+                  style={{ right: 34, top: 17, cursor: "pointer" }}
                   onClick={() => setShowPassword(!showPassword)}  // Toggle password visibility
                 ></i>
                 <div className="valid-feedback">Looks good!</div>
@@ -189,7 +189,7 @@ const RegistrationForm = () => {
                   />
                    <i
                   className={`fas ${showPassword2 ? "fa-eye-slash" : "fa-eye"} position-absolute`}  // FontAwesome eye icon
-                  style={{ right: 10, top: 17, cursor: "pointer" }}
+                  style={{ right: 34, top: 17, cursor: "pointer" }}
                   onClick={() => setShowPassword2(!showPassword2)}  // Toggle password visibility
                 ></i>
                 <div className="valid-feedback">Passwords match!</div>
@@ -204,6 +204,7 @@ const RegistrationForm = () => {
                     className={`form-select ${isValidated && !role ? "is-invalid" : "" }`} 
                     value={role} // Assuming `selectedRole` is the state holding the selected role
                     onChange={(e) => setRole(e.target.value)} // Update state on selection
+                    required
                   >
                     <option value="" disabled>
                       Select a Role
@@ -212,6 +213,9 @@ const RegistrationForm = () => {
                     <option value="3">Supervisor</option>
                     <option value="4">Student</option>
                   </select>
+                  <div className="invalid-feedback">
+                      Please select a role.
+                  </div>
                 </div>
                 {/* Submit Button */}
                 {errorMessage && (

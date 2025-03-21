@@ -14,6 +14,7 @@ const ResetPasswordComponent = () => {
   const [searchParams] = useSearchParams();
   const [loading, setLoading] = useState(false);
   const token = searchParams.get("token");
+  const [wasValidated, setWasValidated] = useState(false); // Track validation attempt
   const navigate = useNavigate();
 
   // Verify token on component load
@@ -41,6 +42,10 @@ const ResetPasswordComponent = () => {
 
   const handlePasswordReset = async (e) => {
     e.preventDefault();
+
+    setWasValidated(true); // Mark form as validated
+
+    if (newPassword.length < 8) { setErrorMessage("Password must be at least 8 characters."); return; }
 
     if (newPassword !== confirmPassword) {
       setErrorMessage("Passwords do not match.");
@@ -82,7 +87,7 @@ const ResetPasswordComponent = () => {
             {tokenValid ? (
               <div className="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
                 <form
-                  className="reset-password-form"
+                  className={`reset-password-form needs-validation ${wasValidated ? "was-validated" : ""}`} noValidate
                   onSubmit={handlePasswordReset}
                 >
                   <h2 className="form-title">Enter New Password</h2>
@@ -90,22 +95,29 @@ const ResetPasswordComponent = () => {
                   <div data-mdb-input-init className="form-outline mb-4">
                     <input
                       type="password"
-                      className="form-control form-control-lg"
+                      className={`form-control form-control-lg${wasValidated && !newPassword ? "is-invalid" : "is-valid"}`}
                       placeholder="New Password"
                       value={newPassword}
-                      onChange={(e) => setNewPassword(e.target.value)}
+                      onChange={(e) => { setNewPassword(e.target.value); setErrorMessage(""); // Clear error message on input
+                      }}
                       required
                     />
+                    <div className="invalid-feedback">Password is required.</div>
                   </div>
+
+                  {/* Confirm Password Field */}
                   <div data-mdb-input-init className="form-outline mb-4">
                     <input
                       type="password"
-                      className="form-control form-control-lg"
+                      className={`form-control form-control-lg${wasValidated && !confirmPassword ? "is-invalid" : confirmPassword === newPassword ? "is-valid" : "is-invalid"}`}
                       placeholder="Confirm Password"
                       value={confirmPassword}
-                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      onChange={(e) => { setConfirmPassword(e.target.value);
+                      setErrorMessage(""); // Clear error message on input
+                      }}
                       required
                     />
+                    <div className="invalid-feedback">Passwords do not match.</div>
                   </div>
 
                   {errorMessage && (

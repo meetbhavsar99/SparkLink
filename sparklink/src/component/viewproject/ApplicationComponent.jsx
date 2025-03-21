@@ -43,10 +43,10 @@ const ApplicationComponent = () => {
                     <MenuComponent />
                     <MasterComponent />
                     <div className="container-fluid">
-                        <h2 className="application-title">My Project Applications</h2>
+                        <h2 className="application-title display-5">My Project Applications</h2>
 
-                        <button className="refresh-button" onClick={fetchApplications}>
-                            🔄 Refresh Applications
+                        <button className="btn btn-lg refresh-button" onClick={fetchApplications}>
+                            Refresh
                         </button>
 
                         {loading ? (
@@ -54,7 +54,7 @@ const ApplicationComponent = () => {
                         ) : applications.length === 0 ? (
                             <div className="no-applications">You have no project applications yet.</div>
                         ) : (
-                            <table className="application-table">
+                            <table className="table table-striped table-hover application-table">
                                 <thead>
                                     <tr>
                                         <th>Project Name</th>

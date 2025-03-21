@@ -19,3 +19,16 @@
 .text-danger {
     color: red;
 }
+.text-title {
+    color: #005596;
+}
+
+.btn-search {
+    background-color: #005596;
+    color: white;
+}
+
+.btn-search:hover {
+    color: white;
+    background-color: #004680;
+}

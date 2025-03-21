@@ -13,6 +13,11 @@
   height: auto;
 }
 
+.mb-5 {
+  margin-bottom: 50px;
+  /* Adjust this value as needed */
+}
+
 .login-link {
   display: inline-block;
   margin-left: 5rem; 

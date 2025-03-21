@@ -12,6 +12,7 @@ import profile_icon from "../../assets/profile.png";
 import create_icon from "../../assets/create_project.png";
 import notification_icon from "../../assets/notification.png";
 import application_icon from "../../assets/application_icon.png";
+import recommendation_icon from "../../assets/recommendation_icon.png";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import logout_icon from "../../assets/logout.png";
@@ -282,7 +283,7 @@ const MenuComponent = () => {
       <span className="menu-item-wrapper">
         <Link className="text-menu nav-link-item" to="/view-Recomended-project">
           <div className="icon-container">
-            <img src={view_icon} className="nav_sub_menu_icon" alt="" />
+            <img src={recommendation_icon} className="nav_sub_menu_icon" alt="" />
           </div>
           <span className="menu-text">Recommendations</span>
         </Link>

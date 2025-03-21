@@ -13,6 +13,10 @@ const LogsComponent = () => {
   const [searchDate, setSearchDate] = useState("");
   const [searchAction, setSearchAction] = useState("");
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const logsPerPage = 20;
+
+
   useEffect(() => {
     fetchLogs();
   }, [selectedLogType]);
@@ -27,6 +31,7 @@ const LogsComponent = () => {
       });
       const response = await axios.get(`/api/logs/filter?${queryParams.toString()}`);
       setLogs(response.data);
+      setCurrentPage(1); // Reset to first page on new search/filter
     } catch (error) {
       console.error("Error fetching logs:", error);
     }
@@ -39,7 +44,7 @@ const LogsComponent = () => {
           <MenuComponent />
           <MasterComponent />
           <div className="container mt-4">
-            <h1 className="mb-4">System Logs & Activity Tracking</h1>
+            <h1 className="mb-4 text-title">System Logs & Activity Tracking</h1>
   
             {/* 🔎 Search Filters */}
             <div className="row mb-3">
@@ -73,7 +78,7 @@ const LogsComponent = () => {
               </div>
   
               <div className="col-md-3">
-                <button className="btn btn-primary" onClick={fetchLogs}>
+                <button className="btn btn-search" onClick={fetchLogs}>
                   Search
                 </button>
               </div>
@@ -100,7 +105,7 @@ const LogsComponent = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {logs.map(log => (
+                  {logs.slice((currentPage - 1) * logsPerPage, currentPage * logsPerPage).map(log => (
                       <tr key={log.log_id}>
                           <td>
                               {log.created_at && Date.parse(log.created_at) 
@@ -117,6 +122,26 @@ const LogsComponent = () => {
                   ))}
               </tbody>
               </table>
+              {/* Pagination Controls */}
+              <div className="pagination-container d-flex justify-content-center my-3">
+                <button
+                  className="btn btn-secondary mx-1"
+                  onClick={() => setCurrentPage(currentPage - 1)}
+                  disabled={currentPage === 1}
+                >
+                  Previous
+                </button>
+
+                <span className="mx-2 align-self-center">Page {currentPage} of {Math.ceil(logs.length / logsPerPage)}</span>
+
+                <button
+                  className="btn btn-secondary mx-1"
+                  onClick={() => setCurrentPage(currentPage + 1)}
+                  disabled={currentPage >= Math.ceil(logs.length / logsPerPage)}
+                >
+                  Next
+                </button>
+              </div>
             </div>
           </div>
         </div>

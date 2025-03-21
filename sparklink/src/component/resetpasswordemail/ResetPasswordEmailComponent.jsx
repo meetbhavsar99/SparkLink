@@ -13,9 +13,18 @@ const ResetPasswordEmailComponent = () => {
   const [errorMessage, setErrorMessage] = useState(
     location.state?.message || ""
   );
+  const [wasValidated, setWasValidated] = useState(false); // Controls validation display
 
   const handleEmail = async (e) => {
     e.preventDefault();
+
+    setWasValidated(true); // Show validation styles
+    // Validate email before submitting
+    if (!email || !email.includes("@")) {
+      setErrorMessage("Please enter a valid email address.");
+      return;
+    }
+
     setLoading(true);
     try {
       const response = await axios.post("/api/users/forgot-password", {
@@ -26,6 +35,7 @@ const ResetPasswordEmailComponent = () => {
         "A password reset link has been sent to your registered email address. Please check your inbox."
       );
       setErrorMessage("");
+      setWasValidated(false); // Reset validation on success
     } catch (error) {
       console.log("error");
       setErrorMessage(
@@ -61,19 +71,23 @@ const ResetPasswordEmailComponent = () => {
             {successMessage && (
               <div className="alert alert-success">{successMessage}</div>
             )}
-            <form className="form" onSubmit={handleEmail}>
+            <form className={`form needs-validation ${wasValidated ? "was-validated" : ""}`} noValidate onSubmit={handleEmail}>
               <h2 className="form-title"> Enter Your Email </h2>
 
               <div data-mdb-input-init className="form-outline mb-4">
                 <input
                   type="email"
                   id="form3Example3"
-                  className="email_field form-control form-control-lg"
+                  className={`email_field form-control form-control-lg${wasValidated && (!email || !email.includes("@")) ? "is-invalid" : email ? "is-valid" : ""}`}
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => {
+                     setEmail(e.target.value);
+        setErrorMessage(""); // Remove error when typing
+                     }}
                   placeholder="Email address"
                   required
                 />
+                <div className="invalid-feedback">Please enter a valid email.</div>
               </div>
 
 
