@@ -9,6 +9,10 @@ import { useAuth } from '../../AuthContext';
 import Modal from 'react-bootstrap/Modal';
 import Table from 'react-bootstrap/Table';
 import { useSearchParams } from 'react-router-dom';
+import Avatar from 'react-avatar';
+import { TailSpin } from "react-loader-spinner";
+
+
 
 import photo1 from '../../assets/project_images/photo1.jpg';
 import photo2 from '../../assets/project_images/photo2.jpg';
@@ -155,7 +159,7 @@ const handleAvatarSelection = (avatar) => {
         }, [profile]);
 
     if (loading) {
-        return <div className="loading">Loading...</div>;
+        return <div className="loading"> LoadingNow.</div>;
     }
 
     if (error) {
@@ -237,226 +241,191 @@ const handleAvatarSelection = (avatar) => {
 
     return (
         <>
-        <div className="page-container">
-            <MenuComponent />
-            <MasterComponent />
-            <div className="content-wrap">
-            {role === 'admin' && (
-                <div className="container pt-4">
-                    <div className="shadow-lg p-4 text-center">
-                        <h1 className="text-primary pb-4">Welcome, {userDetails.username}</h1>
-                        <p className="text-muted">You are logged in as an <strong>Administrator</strong>.</p>
-
-                        {/* Contact Information */}
-                        <div className="mt-4">
-                            <h5 className="text-secondary">Contact Information</h5>
-                            <div className="d-flex justify-content-center align-items-center gap-3">
-                                <i className="fas fa-envelope text-danger"></i>
-                                <p className="mb-0">{userDetails.email}</p>
-                            </div>
-                        </div>
-
-                        {/* Admin Actions */}
-                        <div className="mt-4">
-                            <h5 className="text-secondary">Admin Actions</h5>
-                            <div className="d-flex justify-content-center gap-3 flex-wrap">
-                                {/* <a href="/admin/dashboard" className="btn btn-primary">
-                                    <i className="fas fa-tachometer-alt"></i> Admin Dashboard
-                                </a> */}
-                                <a href="/admin/viewusers" className="btn btn-secondary">
-                                    <i className="fas fa-users"></i> View Users
-                                </a>
-                                {/* <a href="/admin/settings" className="btn btn-warning">
-                                    <i className="fas fa-cogs"></i> System Settings
-                                </a> */}
-                                {/* <a href="/admin/analytics-reports" className="btn btn-info">
-                                    <i className="fas fa-chart-bar"></i> Analytics & Reports
-                                </a> */}
-                                {/* <a href="/admin/admin-logs" className="btn btn-info">
-                                    <i className="fas fa-chart-bar"></i> View Logs
-                                </a> */}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            )}
-            {role === 'student' && (
-                <div className="container pt-4">
-                    <div className="team-single">
-                        <div className="row">
-                            <div className="col-lg-4 col-md-5 xs-margin-30px-bottom">
-                                {/* <div className="team-single-img">
-                                    <img
-                                        className="image"
-                                        src="https://bootdey.com/img/Content/avatar/avatar7.png"
-                                        alt=""
-                                    />
-                                </div> */}
-                                <div className="team-single-img">
-                                    <img 
-                                        className="image" 
-                                        src={profile?.avatar || selectedAvatar || "https://bootdey.com/img/Content/avatar/avatar7.png"} 
-                                        alt="Profile Avatar" 
-                                    />
+    
+                 <MenuComponent />
+                        {role === 'admin' && (
+                            <div className="admin-profile">
+                                <div className="admin-header">
+                                    <h1>Welcome, {userDetails.username}</h1>
+                                    <p className="admin-subtitle">You are logged in as an <strong>Administrator</strong>.</p>
                                 </div>
 
-
-                                <div className="bg-light-gray padding-30px-all md-padding-25px-all sm-padding-20px-all text-center">
-                                    {/* <h4 className="margin-10px-bottom font-size24 md-font-size22 sm-font-size20 font-weight-600">
-                                        Full Stack Developer
-                                    </h4> */}
-                                    {/* Dynamic Role instead of 'Full Stack Developer' */}
-                                    <h4 className="margin-10px-bottom font-size24 md-font-size22 sm-font-size20 font-weight-600">
-                                        {role.charAt(0).toUpperCase() + role.slice(1)}
-                                    </h4>
-                                    <p className="sm-width-95 sm-margin-auto">SKills : {profile.skills}</p>
-                                    {/* <div className="margin-20px-top team-single-icons">
-                                        <ul className="no-margin">
-                                            <li><a href={profile.linkedin}><i className="fab fa-linkedin-in"></i></a></li>
-                                            <li><a href={profile.github}><i className="fab fa-github"></i></a></li>
-                                        </ul>
-                                    </div> */}
-
-                                    {/* Social Media Links with Validation */}
-                                    <div className="margin-20px-top team-single-icons">
-                                        <ul className="no-margin">
-                                            {profile.linkedin && profile.linkedin.includes("linkedin.com") && (
-                                                <li><a href={profile.linkedin} target="_blank" rel="noopener noreferrer"><i className="fab fa-linkedin-in"></i></a></li>
-                                            )}
-                                            {profile.github && profile.github.includes("github.com") && (
-                                                <li><a href={profile.github} target="_blank" rel="noopener noreferrer"><i className="fab fa-github"></i></a></li>
-                                            )}
-                                        </ul>
+                                {/* Contact Information */}
+                                <div className="admin-contact">
+                                    <h5>Contact Information</h5>
+                                    <div className="admin-contact-details">
+                                        <i className="fas fa-envelope contact-icon"></i>
+                                        <p>{userDetails.email}</p>
                                     </div>
-                                    
-                                    {user_id_param ? (
-                                        user.user_id === Number(user_id_param) && (
-                                            <a href="/editProfile" className="button">Manage Profile</a>
-                                        )
-                                    ) : null}
+                                </div>
+
+                                {/* Admin Actions */}
+                                <div className="admin-actions-section">
+                                    <h5>Admin Actions</h5>
+                                    <div className="admin-actions">
+                                        {/* <a href="/admin/dashboard" className="">
+                                            <i className="fas fa-tachometer-alt"></i> Dashboard
+                                        </a> */}
+                                        <a href="/admin/viewusers" >
+                                            <i className="fas fa-users"></i> View Users
+                                        </a>
+                                        {/* <a href="/admin/settings" >
+                                            <i className="fas fa-cogs"></i> System Settings
+                                        </a>
+                                        <a href="/admin/analytics-reports" >
+                                            <i className="fas fa-chart-bar"></i> Analytics & Reports
+                                        </a> */}
+                                        <a href="/admin/logs" >
+                                            <i className="fas fa-file-alt"></i> View Logs
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
-
-                            <div className="col-lg-8 col-md-7">
-                                <div className="team-single-text padding-50px-left sm-no-padding-left">
-                                    <h1 className="pb-4">Welcome, {userDetails.username}</h1>
-                                    <p className="no-margin-bottom">{profile.bio}</p>
-                                    <div className="contact-info-section margin-40px-tb padding-left:10px">
-                                        <ul className="list-style9 no-margin">
-                                            <li>
-                                                <div className="row">
-                                                    <div className="col-md-5 col-5">
-                                                        <i className="fas fa-graduation-cap text-orange"></i>
-                                                        <strong className="margin-10px-left text-orange">Degree:</strong>
-                                                    </div>
-                                                    <div className="col-md-7 col-7">
-                                                        <p>{profile.education}</p>
-                                                    </div>
+                        )}
+                            {role === 'student' && (
+                                <div className="student-profile-container">
+                                    <div className="student-profile-card">
+                                        <div className="row student-profile-header">
+                                            {/* Left Section: Avatar, Role, and Social Media */}
+                                            <div className="student-left">
+                                                <div className="student-avatar-container">
+                                                    <Avatar 
+                                                        name={userDetails.username} 
+                                                        round={true} 
+                                                        size="120" 
+                                                        color="#005596" 
+                                                        fgColor="#fff"
+                                                        textSizeRatio={2}
+                                                    />
                                                 </div>
-                                            </li>
-                                            <li>
-                                                <div className="row">
-                                                    <div className="col-md-5 col-5">
-                                                        <i className="far fa-gem text-yellow"></i>
-                                                        <strong className="margin-10px-left text-yellow">Experience:</strong>
-                                                    </div>
-                                                    <div className="col-md-7 col-7">
-                                                        <p>{profile.experience}</p>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div className="row">
-                                                    <div className="col-md-5 col-5">
-                                                        <i className="far fa-file text-lightred"></i>
-                                                        <strong className="margin-10px-left text-lightred">Courses:</strong>
-                                                    </div>
-                                                    <div className="col-md-7 col-7">
-                                                        <p>{profile.course}</p>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div className="row">
-                                                    <div className="col-md-5 col-5">
-                                                        <i className="fas fa-map-marker-alt text-green"></i>
-                                                        <strong className="margin-10px-left text-green">Address:</strong>
-                                                    </div>
-                                                    <div className="col-md-7 col-7">
-                                                        <p>{profile.address}</p>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div className="row">
-                                                    <div className="col-md-5 col-5">
-                                                        <i className="fas fa-mobile-alt text-purple"></i>
-                                                        <strong className="margin-10px-left xs-margin-four-left text-purple">Phone:</strong>
-                                                    </div>
-                                                    <div className="col-md-7 col-7">
-                                                        <p>{profile.phone_number}</p>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div className="row">
-                                                    <div className="col-md-5 col-5">
-                                                        <i className="fas fa-envelope text-pink"></i>
-                                                        <strong className="margin-10px-left xs-margin-four-left text-pink">Email:</strong>
-                                                    </div>
-                                                    <div className="col-md-7 col-7">
-                                                        <p>{userDetails.email}</p>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                        </ul>
+                                    <div className="student-role-info">
+                                        <h4 className="student-role">
+                                            {role.charAt(0).toUpperCase() + role.slice(1)}
+                                        </h4>
+                                        <p className="student-skills">Skills: {profile.skills}</p>
+                                        <div className="student-social-icons">
+                                            <ul className="no-margin">
+                                                {profile.linkedin && profile.linkedin.includes("linkedin.com") && (
+                                                    <li>
+                                                        <a href={profile.linkedin} target="_blank" rel="noopener noreferrer">
+                                                            <i className="fab fa-linkedin-in"></i>
+                                                        </a>
+                                                    </li>
+                                                )}
+                                                {profile.github && profile.github.includes("github.com") && (
+                                                    <li>
+                                                        <a href={profile.github} target="_blank" rel="noopener noreferrer">
+                                                            <i className="fab fa-github"></i>
+                                                        </a>
+                                                    </li>
+                                                )}
+                                            </ul>
+                                        </div>
+                                        {user_id_param ? (
+                                            user.user_id === Number(user_id_param) && (
+                                                <a href="/editProfile" className="button-home">Manage Profile</a>
+                                            )
+                                        ) : null}
                                     </div>
-                                    <h2>Projects you are working on currently:</h2>
-                                    <div className="progress-background-card">
-                                        <div className="progress-card-layout">
-                                            {/* <div className="progress-items"> */}
-                                            <div className={`progress-items profile ${isScrollable ? "scrollable" : ""}`}>
-                                                {projectList.map((project, index) => (
-                                                    <div
-                                                        className="progress-card profile"
-                                                        key={index}
-                                                        onClick={() => openModal(project)}
-                                                    >
-                                                        <div className="progress-image"
-                                                            style={{
-                                                                backgroundImage: `url(${imageArray[Number(project.image_url)] || ''})`,
-                                                                backgroundSize: 'cover',
-                                                                backgroundPosition: 'center'
+                                </div>
 
-                                                            }}
-                                                            loading="lazy">
+                                {/* Right Section: Bio and Contact Info */}
+                                <div className="student-right">
+                                    <div className="student-details">
+                                        <h1 className="student-welcome">Welcome, {userDetails.username}</h1>
+                                        <p className="student-bio">{profile.bio}</p>
+                                        <div className="student-contact-info">
+                                            <ul className="contact-list">
+                                                <li>
+                                                    <div className="contact-row">
+                                                        <div className="contact-label">
+                                                            <i className="fas fa-graduation-cap text-orange"></i> Degree:
                                                         </div>
-                                                        <div className="progress-content">
-                                                            <div className="progress-title">
-                                                                {/* {project.project_name} */}
-                                                                {project.project_name}
-                                                            </div>
-                                                            <div className="progress-bar-container">
-                                                                <div className="progress-bar">
-                                                                    <div
-                                                                        className="progress"
-                                                                        style={{ width: `${project.progress}%` }}
-                                                                    ></div>
-                                                                </div>
-                                                                <span className="progress-text">
-                                                                    {project.progress}%
-                                                                </span>
-                                                            </div>
-                                                        </div>
+                                                        <div className="contact-value">{profile.education}</div>
                                                     </div>
-                                                ))}
-                                            </div>
+                                                </li>
+                                                <li>
+                                                    <div className="contact-row">
+                                                        <div className="contact-label">
+                                                            <i className="fas fa-gem text-yellow"></i> Experience:
+                                                        </div>
+                                                        <div className="contact-value">{profile.experience}</div>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div className="contact-row">
+                                                        <div className="contact-label">
+                                                            <i className="fas fa-file text-lightred"></i> Courses:
+                                                        </div>
+                                                        <div className="contact-value">{profile.course}</div>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div className="contact-row">
+                                                        <div className="contact-label">
+                                                            <i className="fas fa-map-marker-alt text-green"></i> Address:
+                                                        </div>
+                                                        <div className="contact-value">{profile.address}</div>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div className="contact-row">
+                                                        <div className="contact-label">
+                                                            <i className="fas fa-mobile-alt text-purple"></i> Phone:
+                                                        </div>
+                                                        <div className="contact-value">{profile.phone_number}</div>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div className="contact-row">
+                                                        <div className="contact-label">
+                                                            <i className="fas fa-envelope text-pink"></i> Email:
+                                                        </div>
+                                                        <div className="contact-value">{userDetails.email}</div>
+                                                    </div>
+                                                </li>
+                                            </ul>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+
+                            {/* Projects Section in Separate Row */}
+                            <div className="student-projects-container">
+                                <h2 className="student-projects-title">Projects you are working on currently:</h2>
+                                <div className="student-projects">
+                                    {projectList.map((project, index) => (
+                                        <div
+                                            className="student-project-card"
+                                            key={index}
+                                            onClick={() => openModal(project)}
+                                        >
+                                            <div className="project-image"
+                                                style={{
+                                                    backgroundImage: `url(${imageArray[Number(project.image_url)] || ''})`,
+                                                    backgroundSize: 'cover',
+                                                    backgroundPosition: 'center'
+                                                }}
+                                                loading="lazy">
+                                            </div>
+                                            <div className="project-info">
+                                                <div className="project-title">{project.project_name}</div>
+                                                <div className="project-progress-container">
+                                                    <div className="project-progress-bar">
+                                                        <div
+                                                            className="project-progress"
+                                                            style={{ width: `${project.progress}%` }}
+                                                        ></div>
+                                                    </div>
+                                                    <span className="project-progress-text">{project.progress}%</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
                         </div>
-                    </div>
+
                     <Modal
                         size="xl"
                         show={isModalOpen}
@@ -513,7 +482,13 @@ const handleAvatarSelection = (avatar) => {
                                             </tr>
                                             <tr>
                                                 <td className='proj-details-sub-header'>End Date</td>
-                                                {<td className='proj-details-data'>{selectedProjectDetails.end_date}</td>}
+                                                <td className='proj-details-data'>
+                                                    {new Date(selectedProjectDetails.end_date).toLocaleDateString('en-US', {
+                                                        year: 'numeric',
+                                                        month: 'long',
+                                                        day: 'numeric'
+                                                    })}
+                                                </td>
                                             </tr>
                                             <tr>
                                                 <td className="proj-details-sub-header">Status</td>
@@ -566,196 +541,138 @@ const handleAvatarSelection = (avatar) => {
             )}
             {/* student proile ends */}
 
-            {/* supervisor profile starts */}
-            {role === 'supervisor' && (
-                <div className="container pt-4">
-                    <div className="team-single">
-                        <div className="row">
-                            <div className="col-lg-4 col-md-5 xs-margin-30px-bottom">
-                                {/* <div className="team-single-img">
-                                    <img className="image" src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="" />
-                                </div> */}
-                                <div className="team-single-img">
-                                    <img 
-                                        className="image" 
-                                        src={profile?.avatar || selectedAvatar || "https://bootdey.com/img/Content/avatar/avatar7.png"} 
-                                        alt="Profile Avatar" 
-                                    />
-                                </div>
+            {/* Supervisor Profile */}
+{role === 'supervisor' && (
+    <div className="supervisor-profile-container">
+        <div className="supervisor-profile-card">
+            
+            {/* First Row: Avatar, Role, Social Media & Bio, Contact Info */}
+            <div className="supervisor-profile-header">
+                
+                {/* Left Section - Avatar & Role */}
+                <div className="supervisor-left">
+                    <div className="supervisor-avatar-container">
+                        <Avatar 
+                            name={userDetails.username} 
+                            round={true} 
+                            size="140" 
+                            color="#005596" 
+                            fgColor="#fff"
+                            textSizeRatio={2}
+                        />
+                    </div>
 
+                    {/* Role & Manage Profile */}
+                    <div className="supervisor-role-card">
+                        <h4 className="supervisor-role">
+                            {role.charAt(0).toUpperCase() + role.slice(1)}
+                        </h4>
 
-                                <div className="bg-light-gray padding-30px-all md-padding-25px-all sm-padding-20px-all text-center">
-                                    {/* Dynamic Role instead of 'Full Stack Developer' */}
-                                    <h4 className="margin-10px-bottom font-size24 md-font-size22 sm-font-size20 font-weight-600">
-                                        {role.charAt(0).toUpperCase() + role.slice(1)}
-                                    </h4>
-                                    <p className="sm-width-95 sm-margin-auto">{profile.skills}</p>
-                                    {/* Social Media Links with Validation */}
-                                    <div className="margin-20px-top team-single-icons">
-                                        <ul className="no-margin">
-                                            {profile.linkedin && profile.linkedin.includes("linkedin.com") && (
-                                                <li><a href={profile.linkedin} target="_blank" rel="noopener noreferrer"><i className="fab fa-linkedin-in"></i></a></li>
-                                            )}
-                                            {profile.github && profile.github.includes("github.com") && (
-                                                <li><a href={profile.github} target="_blank" rel="noopener noreferrer"><i className="fab fa-github"></i></a></li>
-                                            )}
-                                        </ul>
-                                    </div>
-                                    {user_id_param ? (
-                                        user.user_id === Number(user_id_param) && (
-                                            <a href="/editProfile" className="button">Manage Profile</a>
-                                        )
-                                    ) : null}
-                                </div>
-                            </div>
+                        {/* Social Media Links */}
+                        <div className="supervisor-social-icons">
+                            <ul>
+                                {profile.linkedin && profile.linkedin.includes("linkedin.com") && (
+                                    <li>
+                                        <a href={profile.linkedin} target="_blank" rel="noopener noreferrer">
+                                            <i className="fab fa-linkedin-in"></i>
+                                        </a>
+                                    </li>
+                                )}
+                                {profile.github && profile.github.includes("github.com") && (
+                                    <li>
+                                        <a href={profile.github} target="_blank" rel="noopener noreferrer">
+                                            <i className="fab fa-github"></i>
+                                        </a>
+                                    </li>
+                                )}
+                            </ul>
+                        </div>
 
-                            <div className="col-lg-8 col-md-7">
-                                <div className="team-single-text padding-50px-left sm-no-padding-left">
-                                    <h1 className="pb-4">Welcome, {userDetails.username}</h1>
-                                    {/* <h4 className="font-size38 sm-font-size32 xs-font-size30">{userDetails.name}</h4> */}
-                                    <p className="no-margin-bottom">{profile.bio} </p>
-                                    <div className="contact-info-section margin-40px-tb padding-left:10px">
-                                        <ul className="list-style9 no-margin">
-                                            <li>
-                                                <div className="row">
-                                                    <div className="col-md-5 col-5">
-                                                        <i className="fas fa-graduation-cap text-orange"></i>
-                                                        <strong className="margin-10px-left text-orange">Education:</strong>
-                                                    </div>
-                                                    <div className="col-md-7 col-7">
-                                                        {profile.education ? (
-                                                            <p>{profile.education}</p>
-                                                        ) : (
-                                                            <p style={{ color: "light gray" }}>Add your education, by clicking Manage Profile</p>
+                        {/* Manage Profile Button */}
+                        {user_id_param ? (
+                            user.user_id === Number(user_id_param) && (
+                                <a href="/editProfile" className="button-home">Manage Profile</a>
+                            )
+                        ) : null}
+                    </div>
+                </div>
 
-                                                        )}
-                                                    </div>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div className="row">
-                                                    <div className="col-md-5 col-5">
-                                                        <i className="far fa-gem text-yellow"></i>
-                                                        <strong className="margin-10px-left text-yellow">Experience:</strong>
-                                                    </div>
-                                                    <div className="col-md-7 col-7">
-                                                        {profile.experience ? (
-                                                            <p>{profile.experience}</p>
-                                                        ) : (
-                                                            <p style={{ color: "light gray" }}>Add your experience, by clicking Manage Profile</p>
+                {/* Right Section - Bio & Contact Info */}
+                <div className="supervisor-right">
+                    <div className="supervisor-info">
+                        <h1 className="supervisor-welcome">Welcome, {userDetails.username}</h1>
+                        <p className="supervisor-bio">{profile.bio}</p>
 
-                                                        )}
-                                                    </div>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div className="row">
-                                                    <div className="col-md-5 col-5">
-                                                        <i className="far fa-file text-lightred"></i>
-                                                        <strong className="margin-10px-left text-lightred">Courses:</strong>
-                                                    </div>
-                                                    <div className="col-md-7 col-7">
-                                                        {profile.course ? (
-                                                            <p>{profile.course}</p>
-                                                        ) : (
-                                                            <p style={{ color: "light gray" }}>Add your courses, by clicking Manage Profile</p>
-
-                                                        )}
-                                                    </div>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div className="row">
-                                                    <div className="col-md-5 col-5">
-                                                        <i className="fas fa-map-marker-alt text-green"></i>
-                                                        <strong className="margin-10px-left text-green">Address:</strong>
-                                                    </div>
-                                                    <div className="col-md-7 col-7">
-                                                        {profile.address ? (
-                                                            <p>{profile.address}</p>
-                                                        ) : (
-                                                            <p style={{ color: "light gray" }}>Add your address, by clicking Manage Profile</p>
-
-                                                        )}
-                                                    </div>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div className="row">
-                                                    <div className="col-md-5 col-5">
-                                                        <i className="fas fa-mobile-alt text-purple"></i>
-                                                        <strong className="margin-10px-left xs-margin-four-left text-purple">Phone:</strong>
-                                                    </div>
-                                                    <div className="col-md-7 col-7">
-                                                        {profile.phone_number ? (
-                                                            <p>{profile.phone_number}</p>
-                                                        ) : (
-                                                            <p style={{ color: "light gray" }}>Add your Phone number, by clicking Manage Profile</p>
-
-                                                        )}
-                                                    </div>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div className="row">
-                                                    <div className="col-md-5 col-5">
-                                                        <i className="fas fa-envelope text-pink"></i>
-                                                        <strong className="margin-10px-left xs-margin-four-left text-pink">Email:</strong>
-                                                    </div>
-                                                    <div className="col-md-7 col-7">
-                                                        <p>{userDetails.email}</p>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                        </ul>
-                                    </div>
-
-                                    <h2>Projects you are supervising currently : </h2>
-                                    <div className="progress-background-card">
-                                        <div className="progress-card-layout">
-                                            {/* <div className="progress-items"> */}
-                                            <div className={`progress-items profile ${isScrollable ? "scrollable" : ""}`}>
-                                                {projectList.map((project, index) => (
-                                                    <div
-                                                        className="progress-card profile"
-                                                        key={index}
-                                                        onClick={() => openModal(project)}
-                                                    >
-                                                        <div className="progress-image"
-                                                            style={{
-                                                                backgroundImage: `url(${imageArray[Number(project.image_url)] || ''})`,
-                                                                backgroundSize: 'cover',
-                                                                backgroundPosition: 'center'
-
-                                                            }}
-                                                            loading="lazy">
-                                                        </div>
-                                                        <div className="progress-content">
-                                                            <div className="progress-title">
-                                                                {/* {project.project_name} */}
-                                                                {project.project_name}
-                                                            </div>
-                                                            <div className="progress-bar-container">
-                                                                <div className="progress-bar">
-                                                                    <div
-                                                                        className="progress"
-                                                                        style={{ width: `${project.progress}%` }}
-                                                                    ></div>
-                                                                </div>
-                                                                <span className="progress-text">
-                                                                    {project.progress}%
-                                                                </span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                ))}
+                        {/* Contact Info */}
+                        <div className="supervisor-contact-info">
+                            <ul className="contact-list">
+                                {[
+                                    { label: "Education", name: "education", icon: "fas fa-graduation-cap" },
+                                    { label: "Experience", name: "experience", icon: "fas fa-gem" },
+                                    { label: "Courses", name: "course", icon: "fas fa-file" },
+                                    { label: "Address", name: "address", icon: "fas fa-map-marker-alt" },
+                                    { label: "Phone", name: "phone_number", icon: "fas fa-mobile-alt" },
+                                    { label: "Email", name: "email", icon: "fas fa-envelope" },
+                                ].map(({ label, name, icon }) => (
+                                    <li key={name}>
+                                        <div className="contact-row">
+                                            <div className="contact-label">
+                                                <i className={`${icon}`}></i> {label}:
+                                            </div>
+                                            <div className="contact-value">
+                                                {profile[name] || (
+                                                    <p style={{ color: "lightgray" }}>
+                                                        Add your {label} by clicking Manage Profile
+                                                    </p>
+                                                )}
                                             </div>
                                         </div>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+            </div> {/* End of First Row */}
+
+            {/* Second Row: Projects Section */}
+            <div className="supervisor-projects-container">
+                <h2 className="supervisor-projects-title">Projects you are supervising currently:</h2>
+                <div className="supervisor-projects">
+                    {projectList.map((project, index) => (
+                        <div
+                            className="supervisor-project-card"
+                            key={index}
+                            onClick={() => openModal(project)}
+                        >
+                            <div
+                                className="project-image"
+                                style={{
+                                    backgroundImage: `url(${imageArray[Number(project.image_url)] || ''})`,
+                                }}
+                            ></div>
+                            <div className="project-info">
+                                <div className="project-title">{project.project_name}</div>
+                                <div className="project-progress-container">
+                                    <div className="project-progress-bar">
+                                        <div
+                                            className="project-progress"
+                                            style={{ width: `${project.progress}%` }}
+                                        ></div>
                                     </div>
+                                    <span className="project-progress-text">{project.progress}%</span>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    ))}
+                </div>
+            </div>
+
+        </div>
+
+
+
                     <Modal
                         size="xl"
                         show={isModalOpen}
@@ -812,7 +729,13 @@ const handleAvatarSelection = (avatar) => {
                                             </tr>
                                             <tr>
                                                 <td className='proj-details-sub-header'>End Date</td>
-                                                {<td className='proj-details-data'>{selectedProjectDetails.end_date}</td>}
+                                                <td className='proj-details-data'>
+                                                    {new Date(selectedProjectDetails.end_date).toLocaleDateString('en-US', {
+                                                        year: 'numeric',
+                                                        month: 'long',
+                                                        day: 'numeric'
+                                                    })}
+                                                </td>
                                             </tr>
                                             <tr>
                                                 <td className="proj-details-sub-header">Status</td>
@@ -865,182 +788,163 @@ const handleAvatarSelection = (avatar) => {
             )}
             {/* supervisor profile ends */}
             {role === 'business_owner' && (
-                <div className="container pt-4">
-                    <div className="team-single">
-                        <div className="row">
-                            <div className="col-lg-4 col-md-5 xs-margin-30px-bottom">
-                                {/* <div className="team-single-img">
-                                    <img className="image" src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="" />
-                                </div> */}
-                                <div className="team-single-img">
-                                    <img 
-                                        className="image" 
-                                        src={profile?.avatar || selectedAvatar || "https://bootdey.com/img/Content/avatar/avatar7.png"} 
-                                        alt="Profile Avatar" 
+                <div className="business-owner-profile-container">
+                    <div className="business-owner-profile-card">
+                        {/* 🔹 First Row: Avatar, Role & Contact Info */}
+                        <div className="business-owner-header">
+                            {/* Left Section: Avatar & Role */}
+                            <div className="business-owner-left">
+                                <div className="business-owner-avatar-container">
+                                    <Avatar 
+                                        name={userDetails.username} 
+                                        round={true} 
+                                        size="140" 
+                                        color="#005596" 
+                                        fgColor="#fff"
+                                        textSizeRatio={2}
                                     />
                                 </div>
 
-
-                                <div className="bg-light-gray padding-30px-all md-padding-25px-all sm-padding-20px-all text-center">
-                                    {/* <h4 className="margin-10px-bottom font-size24 md-font-size22 sm-font-size20 font-weight-600">Full Stack Developer</h4> */}
-                                    {/* Dynamic Role instead of 'Full Stack Developer' */}
-                                    <h4 className="margin-10px-bottom font-size24 md-font-size22 sm-font-size20 font-weight-600">
+                                <div className="business-owner-role-card">
+                                    <h4 className="business-owner-role">
                                         {role.charAt(0).toUpperCase() + role.slice(1)}
                                     </h4>
-                                    <p className="sm-width-95 sm-margin-auto">{profile.skills}</p>
-                                    {/* <div className="margin-20px-top team-single-icons">
-                                        <ul className="no-margin">
-                                            <li><a href={profile.linkedin}><i className="fab fa-linkedin-in"></i></a></li>
-                                            <li><a href={profile.github}><i className="fab fa-github"></i></a></li>
-                                        </ul>
-                                    </div> */}
-                                    {/* Social Media Links with Validation */}
-                                    <div className="margin-20px-top team-single-icons">
-                                        <ul className="no-margin">
+
+                                    {/* Social Media Links */}
+                                    <div className="business-owner-social-icons">
+                                        <ul>
                                             {profile.linkedin && profile.linkedin.includes("linkedin.com") && (
-                                                <li><a href={profile.linkedin} target="_blank" rel="noopener noreferrer"><i className="fab fa-linkedin-in"></i></a></li>
+                                                <li>
+                                                    <a href={profile.linkedin} target="_blank" rel="noopener noreferrer">
+                                                        <i className="fab fa-linkedin-in"></i>
+                                                    </a>
+                                                </li>
                                             )}
                                             {profile.github && profile.github.includes("github.com") && (
-                                                <li><a href={profile.github} target="_blank" rel="noopener noreferrer"><i className="fab fa-github"></i></a></li>
+                                                <li>
+                                                    <a href={profile.github} target="_blank" rel="noopener noreferrer">
+                                                        <i className="fab fa-github"></i>
+                                                    </a>
+                                                </li>
                                             )}
                                         </ul>
                                     </div>
+
+                                    {/* Manage Profile Button */}
                                     {user_id_param ? (
                                         user.user_id === Number(user_id_param) && (
-                                            <a href="/editProfile" className="button">Manage Profile</a>
+                                            <a href="/editProfile" className="button-main">Manage Profile</a>
                                         )
                                     ) : null}
                                 </div>
                             </div>
 
-                            <div className="col-lg-8 col-md-7">
-                                <div className="team-single-text padding-50px-left sm-no-padding-left">
-                                    <h1 className="pb-4">Welcome, {userDetails.username}</h1>
-                                    {/* <h4 className="font-size38 sm-font-size32 xs-font-size30">{userDetails.name}</h4> */}
-                                    <p className="no-margin-bottom">{profile.bio} </p>
-                                    <div className="contact-info-section margin-40px-tb padding-left:10px">
-                                        <ul className="list-style9 no-margin">
-                                            <li>
-                                                <div className="row">
-                                                    <div className="col-md-5 col-5">
-                                                        <i className="fas fa-graduation-cap text-orange"></i>
-                                                        <strong className="margin-10px-left text-orange">Business Type:</strong>
-                                                    </div>
-                                                    <div className="col-md-7 col-7">
-                                                        {profile.business_type ? (
-                                                            <p>{profile.business_type}</p>
-                                                        ) : (
-                                                            <p style={{ color: "light gray" }}>Add your Business Type, by clicking Manage Profile</p>
+                            {/* Right Section: Bio & Contact Info */}
+                            <div className="business-owner-right">
+                                <div className="business-owner-info">
+                                    <h1 className="business-owner-welcome">Welcome, {userDetails.username}</h1>
+                                    <p className="business-owner-bio">{profile.bio}</p>
 
+                                    {/* Contact Info */}
+                                    <div className="business-owner-contact-info">
+                                        <ul className="contact-list">
+                                            <li>
+                                                <div className="contact-row">
+                                                    <div className="contact-label">
+                                                        <i className="fas fa-building text-orange"></i> Business Type:
+                                                    </div>
+                                                    <div className="contact-value">
+                                                        {profile.business_type || (
+                                                            <p style={{ color: "lightgray" }}>Add your Business Type by clicking Manage Profile</p>
                                                         )}
                                                     </div>
                                                 </div>
                                             </li>
                                             <li>
-                                                <div className="row">
-                                                    <div className="col-md-5 col-5">
-                                                        <i className="far fa-gem text-yellow"></i>
-                                                        <strong className="margin-10px-left text-yellow">Domain:</strong>
+                                                <div className="contact-row">
+                                                    <div className="contact-label">
+                                                        <i className="fas fa-gem text-yellow"></i> Domain:
                                                     </div>
-                                                    <div className="col-md-7 col-7">
-                                                        {profile.domain_type ? (
-                                                            <p>{profile.domain_type}</p>
-                                                        ) : (
-                                                            <p style={{ color: "light gray" }}>Add your domain, by clicking Manage Profile</p>
-
+                                                    <div className="contact-value">
+                                                        {profile.domain_type || (
+                                                            <p style={{ color: "lightgray" }}>Add your domain by clicking Manage Profile</p>
                                                         )}
                                                     </div>
                                                 </div>
                                             </li>
                                             <li>
-                                                <div className="row">
-                                                    <div className="col-md-5 col-5">
-                                                        <i className="fas fa-map-marker-alt text-green"></i>
-                                                        <strong className="margin-10px-left text-green">Address:</strong>
+                                                <div className="contact-row">
+                                                    <div className="contact-label">
+                                                        <i className="fas fa-map-marker-alt text-green"></i> Address:
                                                     </div>
-                                                    <div className="col-md-7 col-7">
-                                                        {profile.address ? (
-                                                            <p>{profile.address}</p>
-                                                        ) : (
-                                                            <p style={{ color: "light gray" }}>Add your address, by clicking Manage Profile</p>
-
+                                                    <div className="contact-value">
+                                                        {profile.address || (
+                                                            <p style={{ color: "lightgray" }}>Add your address by clicking Manage Profile</p>
                                                         )}
                                                     </div>
                                                 </div>
                                             </li>
                                             <li>
-                                                <div className="row">
-                                                    <div className="col-md-5 col-5">
-                                                        <i className="fas fa-mobile-alt text-purple"></i>
-                                                        <strong className="margin-10px-left xs-margin-four-left text-purple">Phone:</strong>
+                                                <div className="contact-row">
+                                                    <div className="contact-label">
+                                                        <i className="fas fa-mobile-alt text-purple"></i> Phone:
                                                     </div>
-                                                    <div className="col-md-7 col-7">
-                                                        {profile.phone_number ? (
-                                                            <p>{profile.phone_number}</p>
-                                                        ) : (
-                                                            <p style={{ color: "light gray" }}>Add your Phone number, by clicking Manage Profile</p>
-
+                                                    <div className="contact-value">
+                                                        {profile.phone_number || (
+                                                            <p style={{ color: "lightgray" }}>Add your phone number by clicking Manage Profile</p>
                                                         )}
                                                     </div>
                                                 </div>
                                             </li>
                                             <li>
-                                                <div className="row">
-                                                    <div className="col-md-5 col-5">
-                                                        <i className="fas fa-envelope text-pink"></i>
-                                                        <strong className="margin-10px-left xs-margin-four-left text-pink">Email:</strong>
+                                                <div className="contact-row">
+                                                    <div className="contact-label">
+                                                        <i className="fas fa-envelope text-pink"></i> Email:
                                                     </div>
-                                                    <div className="col-md-7 col-7">
-                                                        <p>{userDetails.email}</p>
-                                                    </div>
+                                                    <div className="contact-value">{userDetails.email}</div>
                                                 </div>
                                             </li>
                                         </ul>
                                     </div>
-                                    <h2>Projects you have listed currrently : </h2>
-                                    <div className="progress-background-card">
-                                        <div className="progress-card-layout">
-                                            <div className={`progress-items profile ${isScrollable ? "scrollable" : ""}`}>
-                                                {projectList.map((project, index) => (
-                                                    <div
-                                                        className="progress-card profile"
-                                                        key={index}
-                                                        onClick={() => openModal(project)}
-                                                    >
-                                                        <div className="progress-image"
-                                                            style={{
-                                                                backgroundImage: `url(${imageArray[Number(project.image_url)] || ''})`,
-                                                                backgroundSize: 'cover',
-                                                                backgroundPosition: 'center'
-
-                                                            }}
-                                                            loading="lazy">
-                                                        </div>
-                                                        <div className="progress-content">
-                                                            <div className="progress-title">
-                                                                {project.project_name}
-                                                            </div>
-                                                            <div className="progress-bar-container">
-                                                                <div className="progress-bar">
-                                                                    <div
-                                                                        className="progress"
-                                                                        style={{ width: `${project.progress}%` }}
-                                                                    ></div>
-                                                                </div>
-                                                                <span className="progress-text">
-                                                                    {project.progress}%
-                                                                </span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
                         </div>
+
+                        {/* 🔹 Second Row: Projects Section */}
+                        <div className="business-owner-projects-container">
+                            <h2 className="business-owner-projects-title">Projects you have listed currently:</h2>
+                            <div className="business-owner-header">
+                                {projectList.map((project, index) => (
+                                    <div
+                                        className="business-owner-project-card"
+                                        key={index}
+                                        onClick={() => openModal(project)}
+                                    >
+                                        <div
+                                            className="project-image"
+                                            style={{
+                                                backgroundImage: `url(${imageArray[Number(project.image_url)] || ''})`,
+                                            }}
+                                        ></div>
+                                        <div className="project-info">
+                                            <div className="project-title">{project.project_name}</div>
+                                            <div className="project-progress-container">
+                                                <div className="project-progress-bar">
+                                                    <div
+                                                        className="project-progress"
+                                                        style={{ width: `${project.progress}%` }}
+                                                    ></div>
+                                                </div>
+                                                <span className="project-progress-text">{project.progress}%</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
                     </div>
+
+
                     <Modal
                         size="xl"
                         show={isModalOpen}
@@ -1097,7 +1001,13 @@ const handleAvatarSelection = (avatar) => {
                                             </tr>
                                             <tr>
                                                 <td className='proj-details-sub-header'>End Date</td>
-                                                {<td className='proj-details-data'>{selectedProjectDetails.end_date}</td>}
+                                                <td className='proj-details-data'>
+                                                    {new Date(selectedProjectDetails.end_date).toLocaleDateString('en-US', {
+                                                        year: 'numeric',
+                                                        month: 'long',
+                                                        day: 'numeric'
+                                                    })}
+                                                </td>
                                             </tr>
                                             <tr>
                                                 <td className="proj-details-sub-header">Status</td>
@@ -1150,13 +1060,8 @@ const handleAvatarSelection = (avatar) => {
             )}
             {/* buisness owner profile ends */}
 
-            </div>
-
-            <FooterComponent />
             {/* <FooterComponent></FooterComponent> */}
-            </div>
         </>
-        
     );
 };
 

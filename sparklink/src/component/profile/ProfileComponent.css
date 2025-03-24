@@ -1,218 +1,1133 @@
+/* Global Styles */
 body {
-    font-size: 16px;
-    color: #6f6f6f;
-    font-weight: 400;
-    line-height: 28px;
-    letter-spacing: 0.8px;
-    margin-top: 20px;
-    background: linear-gradient(135deg, #f0f0f0, #f5f0ff);
-    font-family: 'Poppins', sans-serif;
-  }
-  
-  .container {
-    padding-top: 20px;
-  }
-    /* Ensures the whole page takes the full height */
-    .page-container {
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-      /* Full viewport height */
-    }
-  
-    /* Expands the main content to push the footer down */
-    .content-wrap {
-      flex: 1;
-      /* Takes up remaining space */
-    }
-  
-    /* Footer styling */
-    .footer {
-      background-color: #f8f9fa;
-      /* Light gray background */
-      padding: 15px;
-      text-align: center;
-      width: 100%;
-    }
-  
-  .team-single {
-    background: #fff;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-  }
-  
-  .team-single-img img {
-    border-radius: 50%;
-    border: 4px solid #005596;
-    width: 150px;
-    height: 150px;
-    object-fit: cover;
-    display: block;
-    margin: 0 auto;
-    width: fit-content;
+  font-size: 16px;
+  color: #6f6f6f;
+  font-weight: 400;
+  line-height: 28px;
+  letter-spacing: 0.8px;
+  margin-top: 20px;
+  background: linear-gradient(135deg, #f0f0f0, #f5f0ff);
+  font-family: 'Poppins', sans-serif;
+}
 
+.container {
+  padding-top: 20px;
+}
+
+/* Profile & Team Card */
+/* .team-single, .progress-background-card {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin-top: 20px;
+} */
+
+.team-single-img img {
+  border-radius: 50%;
+  border: 4px solid #005596;
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  display: block;
+  margin: 0 auto;
+}
+
+/* Common Button Styles */
+.button, .button-home, .admin-actions a {
+  background-color: #005596;
+  color: white;
+  border: none;
+  padding: 12px 22px; /* Increased padding for better spacing */
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  /* transition: background-color 0.3s ease, box-shadow 0.2s ease; */
+  text-decoration: none;
+  /* display: inline-flex; */
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+  white-space: nowrap;
+}
+
+/* Updated Hover Effect (Preventing Layout Shifts) */
+.button:hover, .button-home:hover, .admin-actions a:hover {
+  background-color: #585858;
+  color: #FFCE00;
+
+}
+
+
+
+/* Admin Profile Container */
+.admin-profile {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  padding: 40px;
+  text-align: center;
+  max-width: 900px;
+ margin: 0 auto;
+}
+
+.admin-header {
+  background: #005596;
+  color: white;
+  padding: 20px;
+  border-radius: 12px 12px 0 0;
+  text-align: center;
+}
+
+.admin-header h1 {
+  font-size: 28px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.admin-subtitle {
+  font-size: 18px;
+  font-weight: 500;
+}
+
+/* Admin Contact Section */
+.admin-contact {
+  margin-top: 25px;
+  padding: 20px;
+  background: #eef2ff;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.admin-contact h5 {
+  color: #003366;
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+}
+
+.admin-contact-details {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.contact-icon {
+  font-size: 20px;
+  color: #ff4757;
+}
+
+/* Admin Actions Section */
+.admin-actions-section {
+  margin-top: 30px;
+  padding: 25px;
+  background: #eef2ff;
+  border-radius: 12px;
+  box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.1);
+}
+
+.admin-actions-section h5 {
+  color: #003366;
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 15px;
+  text-transform: uppercase;
+}
+
+.admin-actions {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 15px;
+  row-gap: 15px;
+  padding: 5px;
+  max-width: 600px;
+  margin: auto;
+}
+
+.admin-actions a i {
+  font-size: 16px;
+}
+
+/* Progress Components */
+.progress-card {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  margin-bottom: 15px;
+  transition: transform 0.3s ease;
+}
+
+.progress-card:hover {
+  transform: translateY(-5px);
+}
+
+.progress-bar-container {
+  margin-top: 10px;
+}
+
+.progress-bar {
+  background: #e9ecef;
+  border-radius: 5px;
+  height: 10px;
+  overflow: hidden;
+}
+
+.progress {
+  background: #005596;
+  height: 100%;
+  border-radius: 5px;
+}
+
+.progress-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #005596;
+  margin-top: 10px;
+}
+
+/* Project Details */
+.proj-details-header, .proj-details-sub-header {
+  font-size: 20px;
+  font-weight: 600;
+  color: #005596;
+}
+
+.proj-details-data {
+  color: #6f6f6f;
+}
+
+.stakeholder-button {
+  background: #005596;
+  color: #fff;
+  padding: 5px 10px;
+  border-radius: 5px;
+  display: inline-block;
+  margin: 5px;
+}
+
+/* Student Profile Container */
+.student-profile-container {
+  padding-top: 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Student Profile Card */
+.student-profile-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-left: 70px;
+}
+
+/* Profile Header: Divides into Two Sections */
+.student-profile-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+}
+
+/* Left Section - Avatar, Role & Social Media */
+.student-left {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+/* Avatar Container */
+.student-avatar-container {
+  margin-bottom: 20px;
+}
+
+/* Avatar Styling */
+.student-avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 4px solid #005596;
+  object-fit: cover;
+}
+
+/* Role & Skills Section */
+.student-role-info {
+  background: #eef2ff;
+  border-radius: 8px;
+  padding: 20px;
+  width: 100%;
+}
+
+.student-role {
+  font-size: 20px;
+  font-weight: 600;
+  color: #003366;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.student-skills {
+  font-size: 16px;
+  color: #585858;
+}
+
+/* Social Media Icons */
+.student-social-icons ul {
+  list-style: none;
+  padding: 0;
+  margin: 10px 0;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.student-social-icons ul li a {
+  color: #005596;
+  font-size: 20px;
+  transition: color 0.3s ease;
+}
+
+.student-social-icons ul li a:hover {
+  color:  #585858;
+}
+
+/* Right Section - Bio & Contact Info */
+.student-right {
+  flex: 2;
+  padding-left: 20px;
+}
+
+.student-details {
+  text-align: left;
+}
+
+/* Welcome Header */
+.student-welcome {
+  font-size: 26px;
+  font-weight: 700;
+  color: #003366;
+  margin-bottom: 15px;
+}
+
+/* Bio */
+.student-bio {
+  font-size: 16px;
+  color: #6f6f6f;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+/* Contact Info */
+.student-contact-info {
+  background: #eef2ff;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 30px;
+}
+
+.contact-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.contact-list li {
+  margin-bottom: 10px;
+}
+
+.contact-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.contact-label {
+  font-size: 16px;
+  font-weight: bold;
+  color: #003366;
+}
+
+.contact-value {
+  font-size: 16px;
+  color: #585858;
+}
+
+/* Projects Section */
+.student-projects-container {
+  margin-top: 20px;
+  width: 100%;
+  text-align: center;
+}
+
+.student-projects-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #003366;
+  margin-bottom: 20px;
+}
+
+/* Projects Grid */
+.student-projects {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+}
+
+/* Project Cards */
+.student-project-card {
+  background-color: #ffffff;
+  color: #333;
+  padding: 20px;
+  border-radius: 16px;
+  width: 260px;
+  max-width: 260px;
+  position: relative;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  cursor: pointer;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.student-project-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Project Image */
+.project-image {
+  width: 100%;
+  height: 140px;
+  border-radius: 12px;
+  background-size: cover;
+  background-position: center;
+  margin-bottom: 15px;
+}
+
+/* Project Title */
+.project-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #005596;
+  margin-bottom: 10px;
+}
+
+/* Project Progress */
+.project-progress-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.project-progress-bar {
+  flex-grow: 1;
+  height: 8px;
+  background: #e9ecef;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.project-progress {
+  height: 100%;
+  background: #005596;
+}
+
+.project-progress-text {
+  font-size: 14px;
+  color: #585858;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 1024px) {
+  .student-profile-header {
+    flex-direction: column;
+    align-items: center;
   }
-  
-  .bg-light-gray {
-    background-color: #f7f7f7;
-    border-radius: 10px;
-    padding: 20px;
-    margin-top: 20px;
-  }
-  
-  .team-single-icons ul {
-    padding: 0;
-    list-style: none;
-  }
-  
-  .team-single-icons ul li {
-    display: inline-block;
-    margin-right: 10px;
-  }
-  
-  .team-single-icons ul li a {
-    color: #005596;
-    font-size: 18px;
-    transition: color 0.3s ease;
-  }
-  
-  .team-single-icons ul li a:hover {
-    color: #003366;
-  }
-  
-  .button {
-    background-color: #005596;
-    color: #fff;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  .button:hover {
-    background-color: #003366;
-  }
-  
-  .contact-info-section ul {
-    list-style: none;
-    padding: 0;
-  }
-  
-  .contact-info-section ul li {
-    padding: 10px 0;
-    border-bottom: 1px dashed rgba(0, 0, 0, 0.1);
-  }
-  
-  .contact-info-section ul li:last-child {
-    border-bottom: none;
-  }
-  
-  .contact-info-section ul li i {
-    margin-right: 10px;
-    color: #005596;
-  }
-  
-  .progress-background-card {
-    background: #f7f7f7;
-    border-radius: 10px;
-    padding: 20px;
-    margin-top: 20px;
-  }
-  
-  .progress-card {
-    background: #fff;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 15px;
-    margin-bottom: 15px;
-    transition: transform 0.3s ease;
-  }
-  
-  .progress-card:hover {
-    transform: translateY(-5px);
-  }
-  
-  .progress-image {
+
+  .student-left,
+  .student-right {
     width: 100%;
-    height: 150px;
-    border-radius: 10px;
-    background-size: cover;
-    background-position: center;
+    text-align: center;
+    padding: 15px;
   }
-  
-  .progress-title {
-    font-size: 18px;
-    font-weight: 600;
-    color: #005596;
-    margin-top: 10px;
+
+  .student-right {
+    padding-left: 0;
   }
-  
-  .progress-bar-container {
-    margin-top: 10px;
+}
+
+@media (max-width: 768px) {
+  .student-profile-container {
+    padding-top: 30px;
   }
-  
-  .progress-bar {
-    background: #e9ecef;
-    border-radius: 5px;
-    height: 10px;
-    overflow: hidden;
+
+  .student-profile-card
+   {
+    padding: 20px;
   }
-  
-  .progress {
-    background: #005596;
-    height: 100%;
-    border-radius: 5px;
+
+  .student-avatar {
+    width: 100px;
+    height: 100px;
   }
-  
-  .progress-text {
+
+  .student-bio {
     font-size: 14px;
-    color: #6f6f6f;
-    margin-top: 5px;
   }
-  
-  .modal_text_header {
-    color: #005596;
-    font-weight: 600;
+
+  .contact-label,
+  .contact-value {
+    font-size: 14px;
   }
-  
-  .proj-details-header {
-    font-size: 20px;
-    font-weight: 600;
-    color: #005596;
+
+  .student-project-card {
+    width: 100%;
+    max-width: 300px;
   }
-  
-  .proj-details-sub-header {
-    font-weight: 600;
-    color: #005596;
+}
+
+@media (max-width: 480px) {
+  .student-profile-card {
+    padding: 15px;
   }
-  
-  .proj-details-data {
-    color: #6f6f6f;
+
+  .student-welcome {
+    font-size: 22px;
   }
-  
-  .stakeholder-button {
-    background: #005596;
-    color: #fff;
-    padding: 5px 10px;
-    border-radius: 5px;
-    display: inline-block;
-    margin: 5px;
+
+  .student-bio {
+    font-size: 13px;
   }
+
+  .student-project-card {
+    width: 100%;
+    max-width: 280px;
+  }
+
+  .contact-label,
+  .contact-value {
+    font-size: 12px;
+  }
+}
+
+
+
+/* Business Owner Profile Container */
+.business-owner-profile-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
   
-  .button-home {
-    background-color: #005596;
-    color: #fff;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
+}
+
+/* Business Owner Profile Card */
+.business-owner-profile-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-left: 70px;
+  
+}
+
+/* First Row: Avatar & Contact Info */
+.business-owner-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 30px;
+  
+  
+}
+
+/* Left Section - Avatar & Role */
+.business-owner-left {
+  flex: 1;
+  text-align: center;
+}
+
+.business-owner-avatar-container img {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  border: 4px solid #005596;
+}
+
+/* Role Card */
+.business-owner-role-card {
+  background: #eef2ff;
+  border-radius: 8px;
+  padding: 20px;
+  margin-top: 10px;
+  text-align: center;
+  padding-bottom: 30px;
+}
+
+.business-owner-role {
+  font-size: 20px;
+  font-weight: 700;
+  color: #003366;
+  text-transform: uppercase;
+}
+
+/* Social Media Icons */
+.business-owner-social-icons ul {
+  list-style: none;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.business-owner-social-icons ul li a {
+  color: #005596;
+  font-size: 20px;
+  transition: color 0.3s ease;
+}
+
+.business-owner-social-icons ul li a:hover {
+  color: #003366;
+}
+
+/* 🔹 Right Column: Bio & Contact Info */
+.business-owner-right {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.business-owner-info {
+  text-align: left;
+}
+
+.business-owner-welcome {
+  font-size: 28px;
+  font-weight: 700;
+  color: #003366;
+}
+
+.business-owner-bio {
+  font-size: 16px;
+  color: #6f6f6f;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+/* Contact Info Section */
+.business-owner-contact-info {
+  background: #eef2ff;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Contact List */
+.contact-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Contact Row */
+.contact-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 15px;
+  background: #fff;
+  border-radius: 6px;
+  box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+
+/* Contact Label */
+.contact-label {
+  flex: 0 0 25%;
+  font-size: 18px;
+  font-weight: 600;
+  color: #003366;
+  text-transform: uppercase;
+  text-align: left;
+}
+
+/* Contact Value */
+.contact-value {
+  flex: 1;
+  font-size: 18px;
+  font-weight: 500;
+  color: #585858;
+  text-align: left;
+  word-wrap: break-word;
+}
+
+/* 🔹 Second Row: Projects */
+.business-owner-projects-container {
+  margin-top: 20px;
+}
+
+/* Projects Section */
+.business-owner-projects-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #003366;
+  margin-bottom: 20px;
+}
+
+/* Business Owner Projects Layout */
+.business-owner-projects {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+  justify-content: center;
+}
+
+/* Business Owner Project Card */
+.business-owner-project-card {
+  background: #ffffff;
+  color: #333;
+  padding: 20px;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 300px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  cursor: pointer;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+/* Hover Effect */
+.business-owner-project-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Project Image */
+.project-image {
+  width: 100%;
+  height: 140px;
+  border-radius: 12px;
+  background-size: cover;
+  background-position: center;
+}
+
+/* Project Info */
+.project-info {
+  padding: 10px 15px;
+}
+
+.project-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #005596;
+}
+
+/* Project Progress Bar */
+.project-progress-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.project-progress-bar {
+  flex-grow: 1;
+  height: 8px;
+  background: #e9ecef;
+  border-radius: 4px;
+}
+
+.project-progress {
+  height: 100%;
+  background: #005596;
+}
+
+.project-progress-text {
+  font-size: 14px;
+  color: #585858;
+}
+
+/* 🔹 Responsive Adjustments */
+@media (max-width: 1024px) {
+  .business-owner-profile-card {
+    padding: 20px;
+  }
+
+  .contact-label {
     font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+    flex: 0 0 30%;
   }
-  
-  .button-home:hover {
-    background-color: #003366;
+
+  .contact-value {
+    font-size: 16px;
   }
+}
+
+@media (max-width: 768px) {
+  .business-owner-header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .business-owner-left {
+    flex: none;
+    width: 100%;
+  }
+
+  .business-owner-role-card {
+    padding: 15px;
+  }
+
+  .contact-list li {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .contact-label {
+    font-size: 14px;
+    flex: 1;
+    padding-bottom: 5px;
+  }
+
+  .contact-value {
+    font-size: 14px;
+    flex: 1;
+  }
+
+  .business-owner-contact-info {
+    padding: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .contact-label,
+  .contact-value {
+    font-size: 13px;
+  }
+}
+
+
+
+/* Supervisor Profile Container */
+.supervisor-profile-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* Supervisor Profile Card */
+.supervisor-profile-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  padding: 10px;
+  padding-top: 30px;
+  padding-bottom: 30px;
+  display: flex;
+  flex-direction: column;
+  margin-left: 70px;
+  gap: 20px;
+}
+
+/* 🔹 First Row: Avatar + Bio + Contact Info */
+.supervisor-profile-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 30px;
+}
+
+/* Left Section - Avatar & Role */
+.supervisor-left {
+  flex: 1;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Avatar Container */
+.supervisor-avatar-container {
+  margin-bottom: 15px;
+}
+
+.supervisor-avatar-container img {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  border: 4px solid #005596;
+  object-fit: cover;
+}
+
+/* Role Card */
+.supervisor-role-card {
+  background: #eef2ff;
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+  width: 100%;
+}
+
+/* Role Title */
+.supervisor-role {
+  font-size: 20px;
+  font-weight: 700;
+  color: #585858;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+/* Social Media Icons */
+.supervisor-social-icons ul {
+  list-style: none;
+  padding: 0;
+  margin: 10px 0;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.supervisor-social-icons ul li a {
+  color: #005596;
+  font-size: 20px;
+  transition: color 0.3s ease;
+}
+
+.supervisor-social-icons ul li a:hover {
+  color:  #585858;
+}
+
+/* Manage Profile Button */
+.button-home {
+  display: inline-block;
+  padding: 10px 20px;
+  background: #005596;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  text-align: center;
+  border-radius: 5px;
+  margin-top: 10px;
+  text-decoration: none;
+  transition: background 0.3s ease;
+}
+
+.button-home:hover {
+  background:  #585858;
+}
+
+/* 🔹 Right Section - Bio & Contact Info */
+.supervisor-right {
+  flex: 2;
+}
+
+.supervisor-info {
+  text-align: left;
+}
+
+.supervisor-welcome {
+  font-size: 28px;
+  font-weight: 700;
+  color: #003366;
+  margin-bottom: 15px;
+}
+
+.supervisor-bio {
+  font-size: 16px;
+  color: #6f6f6f;
+  text-transform: uppercase;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+/* Contact Info */
+.supervisor-contact-info {
+  background: #eef2ff;
+  border-radius: 8px;
+  padding: 20px;
+  margin-top: 10px;
+}
+
+/* Contact Row */
+.contact-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.contact-list li {
+  margin-bottom: 10px;
+}
+
+.contact-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.contact-label {
+  font-size: 18px;
+  font-weight: 600;
+  color: #003366;
+  text-transform: uppercase;
+}
+
+.contact-value {
+  font-size: 18px;
+  font-weight: 500;
+  color: #585858;
+}
+
+/* 🔹 Second Row: Projects Section */
+.supervisor-projects-container {
+  margin-top: 20px;
+  width: 100%;
+  text-align: center;
+}
+
+.supervisor-projects-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #003366;
+  margin-bottom: 20px;
+}
+
+/* Supervisor Projects Grid */
+.supervisor-projects {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+}
+
+/* Supervisor Project Card */
+.supervisor-project-card {
+  background-color: #ffffff;
+  color: #333;
+  padding: 20px;
+  border-radius: 16px;
+  width: 260px !important;
+  max-width: 260px !important;
+  position: relative;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  cursor: pointer !important;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+
+
+/* Hover Effect */
+.supervisor-project-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Project Image */
+.project-image {
+  width: 100%;
+  height: 140px;
+  border-radius: 12px;
+  background-size: cover;
+  background-position: center;
+  margin-bottom: 15px;
+}
+
+/* Project Info */
+.project-info {
+  padding: 10px 15px;
+}
+
+.project-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #005596;
+  margin-bottom: 10px;
+}
+
+/* Progress Bar */
+.project-progress-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.project-progress-bar {
+  flex-grow: 1;
+  height: 8px;
+  background: #e9ecef;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.project-progress {
+  height: 100%;
+  background: #005596;
+}
+
+.project-progress-text {
+  font-size: 14px;
+  color: #585858;
+}
+
+/* 🔹 Responsive Adjustments */
+@media (max-width: 1024px) {
+  .supervisor-profile-header {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .supervisor-left,
+  .supervisor-right {
+    width: 100%;
+  }
+
+  .supervisor-role-card {
+    width: 80%;
+  }
+}
+
+@media (max-width: 768px) {
+  .supervisor-projects {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  }
+
+  .supervisor-role-card {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .supervisor-projects {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  }
+
+  .contact-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .supervisor-welcome {
+    font-size: 24px;
+  }
+}

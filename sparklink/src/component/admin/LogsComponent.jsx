@@ -43,107 +43,83 @@ const LogsComponent = () => {
         <div className="content-container">
           <MenuComponent />
           <MasterComponent />
-          <div className="container mt-4">
-            <h1 className="mb-4 text-title">System Logs & Activity Tracking</h1>
-  
-            {/* 🔎 Search Filters */}
-            <div className="row mb-3">
-              <div className="col-md-3">
-                <input
-                  type="text"
-                  className="form-control"
-                  placeholder="Search by User ID"
-                  value={searchUserId}
-                  onChange={(e) => setSearchUserId(e.target.value)}
-                />
-              </div>
-  
-              <div className="col-md-3">
-                <input
-                  type="date"
-                  className="form-control"
-                  value={searchDate}
-                  onChange={(e) => setSearchDate(e.target.value)}
-                />
-              </div>
-  
-              <div className="col-md-3">
-                <input
-                  type="text"
-                  className="form-control"
-                  placeholder="Search by Action"
-                  value={searchAction}
-                  onChange={(e) => setSearchAction(e.target.value)}
-                />
-              </div>
-  
-              <div className="col-md-3">
-                <button className="btn btn-search" onClick={fetchLogs}>
-                  Search
-                </button>
-              </div>
-            </div>
-  
-            {/* Dropdown for Log Type */}
-            <select className="form-control mb-3" onChange={(e) => setSelectedLogType(e.target.value)}>
-              <option value="all">All Logs</option>
-              <option value="user">User Logs</option>
-              <option value="action">Action Logs</option>
-              <option value="error">Error Logs</option>
-            </select>
-  
-            {/* Logs Table */}
-            <div className="table-responsive">
-              <table className="table table-striped">
-                <thead>
-                  <tr>
-                    <th>Timestamp</th>
-                    <th>User ID</th>
-                    <th>Action</th>
-                    <th>Description</th>
-                    <th>Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {logs.slice((currentPage - 1) * logsPerPage, currentPage * logsPerPage).map(log => (
-                      <tr key={log.log_id}>
-                          <td>
-                              {log.created_at && Date.parse(log.created_at) 
-                                  ? new Date(log.created_at).toLocaleString()
-                                  : "Invalid Date"}
-                          </td>
-                          <td>{log.user_id || "System"}</td>
-                          <td>{log.action}</td>
-                          <td>{log.details}</td>
-                          <td className={`status-${log.log_type.toLowerCase()}`}>
-                              {log.log_type.toUpperCase()}
-                          </td>
-                      </tr>
+          <div className="logs-wrapper">
+          <div className="log-content">
+            <h1 className="log-title">System Logs & Activity Tracking</h1>
+          </div>
+
+          {/* 🔎 Filter Section */}
+          <div className="logs-filters">
+      <input type="text" placeholder="Search by User ID" value={searchUserId} onChange={(e) => setSearchUserId(e.target.value)} />
+      <input type="date" value={searchDate} onChange={(e) => setSearchDate(e.target.value)} />
+      <input type="text" placeholder="Search by Action" value={searchAction} onChange={(e) => setSearchAction(e.target.value)} />
+      <button onClick={fetchLogs}>Search</button>
+          </div>
+
+          {/* Log Type Dropdown */}
+          <select className="logs-select" onChange={(e) => setSelectedLogType(e.target.value)}>
+      <option value="all">All Logs</option>
+      <option value="user">User Logs</option>
+      <option value="action">Action Logs</option>
+      <option value="error">Error Logs</option>
+    </select>
+
+          {/* Logs Table */}
+          <div className="logs-table-wrapper">
+            <table className="logs-table">
+              <thead>
+                <tr>
+                  <th>Timestamp</th>
+                  <th>User ID</th>
+                  <th>Action</th>
+                  <th>Description</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {logs
+                  .slice((currentPage - 1) * logsPerPage, currentPage * logsPerPage)
+                  .map((log) => (
+                    <tr key={log.log_id}>
+                      <td>
+                        {log.created_at && Date.parse(log.created_at)
+                          ? new Date(log.created_at).toLocaleString()
+                          : "Invalid Date"}
+                      </td>
+                      <td>{log.user_id || "System"}</td>
+                      <td>{log.action}</td>
+                      <td>{log.details}</td>
+                      <td className={`log-status log-status-${log.log_type.toLowerCase()}`}>
+                        {log.log_type.toUpperCase()}
+                      </td>
+                    </tr>
                   ))}
               </tbody>
-              </table>
-              {/* Pagination Controls */}
-              <div className="pagination-container d-flex justify-content-center my-3">
-                <button
-                  className="btn btn-secondary mx-1"
-                  onClick={() => setCurrentPage(currentPage - 1)}
-                  disabled={currentPage === 1}
-                >
-                  Previous
-                </button>
-
-                <span className="mx-2 align-self-center">Page {currentPage} of {Math.ceil(logs.length / logsPerPage)}</span>
-
-                <button
-                  className="btn btn-secondary mx-1"
-                  onClick={() => setCurrentPage(currentPage + 1)}
-                  disabled={currentPage >= Math.ceil(logs.length / logsPerPage)}
-                >
-                  Next
-                </button>
-              </div>
-            </div>
+            </table>
           </div>
+
+          {/* Pagination */}
+          <div className="logs-pagination">
+            <button
+              className="btn btn-secondary me-2"
+              onClick={() => setCurrentPage(currentPage - 1)}
+              disabled={currentPage === 1}
+            >
+              Previous
+            </button>
+            <span className="log-page-text">
+              Page {currentPage} of {Math.ceil(logs.length / logsPerPage)}
+            </span>
+            <button
+              className="btn btn-secondary ms-2"
+              onClick={() => setCurrentPage(currentPage + 1)}
+              disabled={currentPage >= Math.ceil(logs.length / logsPerPage)}
+            >
+              Next
+            </button>
+          </div>
+        </div>
+
         </div>
       </div>
       <FooterComponent />

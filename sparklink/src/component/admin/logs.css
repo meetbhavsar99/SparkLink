@@ -1,34 +1,151 @@
-/* logs.css */
-.logs-container {
-    padding: 20px;
-}
-
-.logs-container h1 {
+/* Wrapper padding to avoid sidebar overlap */
+.logs-wrapper {
+    padding: 20px 20px 20px 80px; /* leaves space for sidebar */
+    max-width: 100%;
+    background-color: #f9f9f9;
+    min-height: 100vh;
+  }
+  
+  /* Content container */
+  .logs-content {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0px 5px 15px rgba(0,0,0,0.1);
+  }
+  
+  /* Title */
+  .logs-title {
     font-size: 24px;
-    margin-bottom: 15px;
-}
-
-.table-responsive {
-    overflow-x: auto;
-}
-
-.text-success {
-    color: green;
-}
-
-.text-danger {
-    color: red;
-}
-.text-title {
+    font-weight: 700;
     color: #005596;
-}
-
-.btn-search {
+    margin-bottom: 25px;
+  }
+  
+  /* Filters Row */
+  .logs-filters {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+  
+  .logs-filters input {
+    flex: 1 1 200px;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+  }
+  
+  .logs-filters button {
     background-color: #005596;
     color: white;
-}
-
-.btn-search:hover {
+    padding: 10px 18px;
+    border: none;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  
+  .logs-filters button:hover {
+    background-color: #585858;
+    color: #FFCE00;;
+  }
+  
+  /* Select Dropdown */
+  .logs-select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 25px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+  }
+  
+  /* Table Styles */
+  .logs-table-wrapper {
+    overflow-x: auto;
+  }
+  
+  .logs-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .logs-table th {
+    background-color: #005596;
+    color: #fff;
+    padding: 12px;
+    text-align: left;
+  }
+  
+  .logs-table td {
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+    font-size: 14px;
+  }
+  
+  /* Status styling */
+  .status-user {
+    color: #007bff;
+    font-weight: bold;
+  }
+  
+  .status-error {
+    color: #dc3545;
+    font-weight: bold;
+  }
+  
+  .status-action {
+    color: #28a745;
+    font-weight: bold;
+  }
+  
+  /* Pagination */
+  .logs-pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 25px;
+    gap: 10px;
+  }
+  
+  .logs-pagination button {
+    padding: 8px 16px;
+    background-color: #005596;
     color: white;
-    background-color: #004680;
-}
+    border: none;
+    border-radius: 5px;
+    font-weight: 500;
+  }
+  
+  .logs-pagination button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+
+  .logs-pagination button:hover {
+    background-color: #585858;
+    color: #FFCE00;
+  }
+  
+  /* Responsive */
+  @media (max-width: 768px) {
+    .logs-wrapper {
+      padding: 20px 10px 40px 70px;
+    }
+  
+    .logs-content {
+      padding: 20px;
+    }
+  
+    .logs-filters {
+      flex-direction: column;
+    }
+  
+    .logs-pagination {
+      flex-direction: column;
+    }
+  }
+  

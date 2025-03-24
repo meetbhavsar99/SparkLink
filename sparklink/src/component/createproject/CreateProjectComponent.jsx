@@ -130,10 +130,9 @@ const CreateProjectComponent = () => {
   };
 
   const handleNAChange=(field)=> {
-  if (field==="features") {
-    setFeaturesNA( !featuresNA);
-    if ( !featuresNA) setFeatures([]);
-  }
+    if (field === "features") {
+      setFeaturesNA((prev) => !prev);
+    }
 
   if (field==="students") {
     setNumStudentsNA( !numStudentsNA);
@@ -357,40 +356,43 @@ const CreateProjectComponent = () => {
                       required
                     />
 
-{user.role !== "2" || !featuresNA ? (
-  <div className="feature-section">
-    <label className="form_label">
-      What are the main features or functionalities you want to include in the project?
-    </label>
-    <textarea
-      id="features"
-      name="features"
-      value={features}
-      onChange={(e) => setFeatures(e.target.value)}
-      placeholder="Enter features separated by commas (e.g., User login, Sign up)"
-      rows="4"
-      disabled={featuresNA}
-      className={`form_textarea feature-textarea ${featuresNA ? "disabled-textarea" : ""}`}
-    />
-    {user.role === "2" && (
-  <div className="toggle-switch-container">
-    <label className="form_label">Features N/A</label>
-    <div className="form-check form-switch">
-      <input
-        className="form-check-input"
-        type="checkbox"
-        role="switch"
-        id="featuresNA"
-        checked={featuresNA}
-        onChange={() => handleNAChange("features")}
-      />
-      <label className="form-check-label" htmlFor="featuresNA">
-        {featuresNA ? "Enabled" : "Disabled"}
-      </label>
-    </div>
-  </div>
-)}
-  </div>
+                      {user.role !== "2" || !featuresNA ? (
+                        <div className="feature-section">
+                        <label className="form_label">
+                          What are the main features or functionalities you want to include in the project?
+                        </label>
+                      
+                        <textarea
+                          id="features"
+                          name="features"
+                          value={features}
+                          onChange={(e) => setFeatures(e.target.value)}
+                          placeholder="Enter features separated by commas (e.g., User login, Sign up)"
+                          rows="4"
+                          disabled={featuresNA} // ✅ this disables input, not visibility
+                          className={`form_textarea feature-textarea ${featuresNA ? "disabled-textarea" : ""}`}
+                        />
+                      
+                        {/* Toggle Switch always visible if role is Business Owner */}
+                        {user.role === "2" && (
+                          <div className="toggle-switch-container mt-2">
+                            <label className="form_label">Features N/A</label>
+                            <div className="form-check form-switch">
+                              <input
+                                className="form-check-input"
+                                type="checkbox"
+                                role="switch"
+                                id="featuresNA"
+                                checked={featuresNA}
+                                onChange={() => handleNAChange("features")}
+                              />
+                              <label className="form-check-label ms-2" htmlFor="featuresNA">
+                                {featuresNA ? "Disabled" : "Enabled"}
+                              </label>
+                            </div>
+                          </div>
+                        )}
+                      </div>                      
                     ) : null}
 
                     <label className="form_label">

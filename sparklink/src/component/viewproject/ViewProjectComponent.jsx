@@ -41,6 +41,7 @@ const ViewProjectComponent = () => {
     const [originalProjectList, setOriginalProjectList] = useState([]);
     const [error, setError] = useState(null);
     const [searchQuery, setSearchQuery] = useState('');
+    const [searchError, setSearchError] = useState(null);
     const [suggestions, setSuggestions] = useState([]);
     const [selectedOption, setSelectedOption] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -61,7 +62,7 @@ const ViewProjectComponent = () => {
     const [accessVal, setAccessVal] = useState('');
     const today = new Date().toISOString().split("T")[0];
     const [currentPage, setCurrentPage] = useState(1);
-    const projectsPerPage = 8; // Change for more/less projects per page  
+    const projectsPerPage = 6; // Change for more/less projects per page  
 
     const indexOfLastProject = currentPage * projectsPerPage;
     const indexOfFirstProject = indexOfLastProject - projectsPerPage;
@@ -171,12 +172,25 @@ const fetchProjects = async () => {
 
     const handleInputChange = (inputValue) => {
         setSearchQuery(inputValue);
-        if (inputValue.trim()) {
-            fetchSuggestions(inputValue);
+      
+        if (inputValue.trim() === '') {
+          setProjectList(originalProjectList);
+          setSearchError(null); // ✅ Clear error
         } else {
-            setSuggestions([]);
+          const filteredProjects = originalProjectList.filter((project) =>
+            project.project_name.toLowerCase().startsWith(inputValue.toLowerCase())
+          );
+      
+          setProjectList(filteredProjects);
+      
+          if (filteredProjects.length === 0) {
+            setSearchError("No relevant match found.");
+          } else {
+            setSearchError(null); // ✅ Clear error if match is found
+          }
         }
-    };
+      };
+      
     // const handleInputChange = (inputValue) => {
     //     setSearchQuery(inputValue);
         
@@ -718,7 +732,13 @@ const fetchProjects = async () => {
                                         </div>
                 
                                         <div className="progress-background-card">
+                                            
                                         <div className="row progress-card-layout">
+                                        {searchError && (
+                                            <div className="text-danger text-center mt-2" style={{ fontWeight: '500' }}>
+                                                {searchError}
+                                            </div>
+                                        )}
                                             {currentProjects.map((item, index) => {
                                                 return (
                                                     <div className="col-8 col-md-4 col-sm-10 col-lg-2 px-4 progress-card mb-4 mt-3" 
@@ -964,7 +984,7 @@ const fetchProjects = async () => {
                                                     </td>}
                                                 </tr>
                                                 <tr>
-                                                    <td className="proj-details-sub-header">Budget (CAD)</td>
+                                                    <td className="proj-details-sub-header">Budget (in Dollars)</td>
                                                     {!editFlag && <td className='proj-details-data'>{Math.trunc(projDetailsList.budget)}</td>}
                                                     {editFlag && <td className='proj-details-data'>
                                                         <input
@@ -1040,51 +1060,48 @@ const fetchProjects = async () => {
                                                                                  ))}
                                                                              </td>
                                                                          </tr>
-                         )}
+                                              )}
                                                 
-{["admin", "business_owner", "supervisor", "student"].map(role => {
-    const stakeholdersByRole = (projDetailsList?.stakeholder || []).filter(
-        stakeholder => stakeholder.role === role
-    );
+                                            {["admin", "business_owner", "supervisor", "student"].map(role => {
+                                                const stakeholdersByRole = (projDetailsList?.stakeholder || []).filter(
+                                                    stakeholder => stakeholder.role === role
+                                                );
 
-    if (stakeholdersByRole.length > 0) {
-        return (
-            <tr key={role}>
-                <td className="proj-details-sub-header">
-                    {role === "admin" && "Admin"}
-                    {role === "business_owner" && "Business Owner"}
-                    {role === "supervisor" && "Supervisor(s)"}
-                    {role === "student" && "Student(s)"}
-                </td>
-                <td className="proj-details-data">
-                    {stakeholdersByRole.map(({ name, user_id, proj_id }, index) => (
-                        <div
-                            key={`${role}-${user_id}`}
-                            className="stakeholder-button"
-                            onClick={() => fetchUserProfile(user_id)} // Navigate to profile on click
-                        >
-                            {name}
-                            {editFlag &&
-                                (((accessVal === "E" || accessVal === "SB") && role === "student") ||
-                                    (accessVal === "S" && role !== "business_owner")) && (
-                                    <img
-                                        src={remove_icon}
-                                        onClick={() => removeStakeholder(proj_id, role, user_id)}
-                                        className="remove_icon"
-                                        alt=""
-                                    />
-                                )}
-                        </div>
-                    ))}
-                </td>
-            </tr>
-        );
-    }
-    return null;
-})}
-
-
-
+                                                if (stakeholdersByRole.length > 0) {
+                                                    return (
+                                                        <tr key={role}>
+                                                            <td className="proj-details-sub-header">
+                                                                {role === "admin" && "Admin"}
+                                                                {role === "business_owner" && "Business Owner"}
+                                                                {role === "supervisor" && "Supervisor(s)"}
+                                                                {role === "student" && "Student(s)"}
+                                                            </td>
+                                                            <td className="proj-details-data">
+                                                                {stakeholdersByRole.map(({ name, user_id, proj_id }, index) => (
+                                                                    <div
+                                                                        key={`${role}-${user_id}`}
+                                                                        className="stakeholder-button"
+                                                                        onClick={() => fetchUserProfile(user_id)} // Navigate to profile on click
+                                                                    >
+                                                                        {name}
+                                                                        {editFlag &&
+                                                                            (((accessVal === "E" || accessVal === "SB") && role === "student") ||
+                                                                                (accessVal === "S" && role !== "business_owner")) && (
+                                                                                <img
+                                                                                    src={remove_icon}
+                                                                                    onClick={() => removeStakeholder(proj_id, role, user_id)}
+                                                                                    className="remove_icon"
+                                                                                    alt=""
+                                                                                />
+                                                                            )}
+                                                                    </div>
+                                                                ))}
+                                                            </td>
+                                                        </tr>
+                                                    );
+                                                }
+                                                return null;
+                                            })}
                                             </tbody>
                                         </Table>
                                         <div className="message">
@@ -1101,16 +1118,16 @@ const fetchProjects = async () => {
                             <Modal.Footer>
                                 <div className="row">
                                     <div className="col-12 text-center">
-                                        <button className="btn btn-warning ms-3 text-center button_text button-main"
+                                        <button className="ms-3 text-center button_text button-main"
                                             onClick={closeModal}>Close</button>
-                                        {editFlag && <button className="btn btn-primary ms-3 text-center button_text button-main"
+                                        {editFlag && <button className="ms-3 text-center button_text button-main"
                                             onClick={UpdateProjDetails}>Save Changes</button>}
-                                        {user?.role === "student" && <button className="btn btn-success ms-3 text-center button_text button-main"
+                                        {(accessVal === 'A' || accessVal === 'SBA') && <button className="ms-3 text-center button_text button-main"
                                             onClick={submitApplication}>Click to Apply</button>}
-                                        {(accessVal === 'S' || accessVal === 'E' || accessVal === 'M' || accessVal === 'B' || accessVal === 'SB') && <button className="btn btn-info ms-3 text-center button_text button-main
+                                        {(accessVal === 'S' || accessVal === 'E' || accessVal === 'M' || accessVal === 'B' || accessVal === 'SB') && <button className="ms-3 text-center button_text button-main
                                         "
                                             onClick={viewMilestones}>View Milestones</button>}
-                                        {(accessVal === 'S' || accessVal === 'B' || accessVal === 'SB' || accessVal === 'SBA') && <button className="btn btn-danger btn-md ms-3 text-center button_text"
+                                        {(accessVal === 'S' || accessVal === 'B' || accessVal === 'SB' || accessVal === 'SBA') && <button className="ms-3 text-center button_text button-delete"
                                             onClick={deleteProject}>Delete Project</button>}
                                     </div>
                                 </div>
@@ -1118,6 +1135,7 @@ const fetchProjects = async () => {
                         </Modal>
                     </div>
                 </div>
+
 
                                 {loading && (
                     <div className="loading-overlay">
