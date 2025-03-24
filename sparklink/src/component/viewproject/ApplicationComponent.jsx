@@ -11,6 +11,16 @@ const ApplicationComponent = () => {
     const { user } = useAuth();
     const [applications, setApplications] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
+    const applicationsPerPage = 10;
+
+
+    useEffect(() => {
+        if (user?.user_id) {
+            fetchApplications();
+        }
+    }, [user]);
+
 
     const fetchApplications = async () => {
         setLoading(true);
@@ -36,6 +46,13 @@ const ApplicationComponent = () => {
         }
     };
 
+    const indexOfLastApp = currentPage * applicationsPerPage;
+    const indexOfFirstApp = indexOfLastApp - applicationsPerPage;
+    const currentApplications = applications.slice(indexOfFirstApp, indexOfLastApp);
+
+    const totalPages = Math.ceil(applications.length / applicationsPerPage);
+
+
     return (
         <>
             <div className="page-container">
@@ -43,7 +60,7 @@ const ApplicationComponent = () => {
                     <MenuComponent />
                     <MasterComponent />
                     <div className="container-fluid">
-                        <h2 className="application-title display-5">My Project Applications</h2>
+                        <h2 className="application-title display-4">My Project Applications</h2>
 
                         <button className="btn btn-lg refresh-button" onClick={fetchApplications}>
                             Refresh
@@ -66,7 +83,7 @@ const ApplicationComponent = () => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {applications.map((app, index) => (
+                                    {currentApplications.map((app, index) => (
                                         <tr key={index}>
                                             <td>{app.project_name}</td>
                                             <td>{app.description}</td>
@@ -80,7 +97,30 @@ const ApplicationComponent = () => {
                                     ))}
                                 </tbody>
                             </table>
+                            
                         )}
+                        {totalPages > 1 && (
+                        <div className="pagination-container d-flex justify-content-center mt-3">
+                            <button
+                            className="btn btn-outline-primary mx-1"
+                            disabled={currentPage === 1}
+                            onClick={() => setCurrentPage(prev => prev - 1)}
+                            >
+                            Previous
+                            </button>
+
+                            <span className="align-self-center mx-2">Page {currentPage} of {totalPages}</span>
+
+                            <button
+                            className="btn btn-outline-primary mx-1"
+                            disabled={currentPage === totalPages}
+                            onClick={() => setCurrentPage(prev => prev + 1)}
+                            >
+                            Next
+                            </button>
+                        </div>
+                        )}
+
                     </div>
                 </div>
                 <FooterComponent />

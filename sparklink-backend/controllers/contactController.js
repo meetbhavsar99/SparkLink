@@ -56,7 +56,17 @@ const submitContactForm = async (req, res) => {
           from: process.env.EMAIL_USER,
           to: email,
           subject: `Your Contact Request Has Been Received`,
-          text: `Hello ${name},\n\nThank you for reaching out to SparkLink! Your request has been successfully submitted.\n\n🔹 Token ID: ${tokenId}\n📩 Message: ${message}\n\nWe will get back to you shortly!\n\nBest,\nSparkLink Support Team`
+          html: `
+            <p>Dear ${name},</p>
+            <p>Thank you for reaching out to SparkLink! We've received your message and will get back to you shortly.</p>
+            <p><strong>📩 Your Message:</strong></p>
+            <blockquote style="margin: 10px 0; padding: 12px; background-color: #f9f9f9; border-left: 4px solid #007bff;">
+                ${message}
+            </blockquote>
+            <p><strong>🔹 Token ID:</strong> ${tokenId}</p>
+            <p>If you didn’t make this request, please ignore this email.</p>
+            <p>Regards,<br>SparkLink Support Team</p>
+            `
         };
 
         // 📧 Email to the Receiver
@@ -64,7 +74,21 @@ const submitContactForm = async (req, res) => {
           from: process.env.EMAIL_USER,
           to: process.env.EMAIL_RECEIVER,
           subject: `New Contact Request - Token ID: ${tokenId}`,
-          text: `A new contact request has been received:\n\n🔹 Name: ${name}\n📧 Email: ${email}\n📩 Message: ${message}\n🔹 Token ID: ${tokenId}\n\nPlease follow up accordingly.`
+          html: `
+            <p>Hello Admin,</p>
+            <p>A new contact request has been submitted on SparkLink. Here are the details:</p>
+            <ul>
+            <li><strong> Name:</strong> ${name}</li>
+            <li><strong> Email:</strong> ${email}</li>
+            <li><strong> Token ID:</strong> ${tokenId}</li>
+            </ul>
+            <p><strong>📩 Message:</strong></p>
+            <blockquote style="margin: 10px 0; padding: 12px; background-color: #f9f9f9; border-left: 4px solid #28a745;">
+            ${message}
+            </blockquote>
+            <p>Please follow up with the user at your earliest convenience.</p>
+            <p>Regards,<br>SparkLink System</p>
+        `
         };
 
         console.log("📩 Sending emails...");

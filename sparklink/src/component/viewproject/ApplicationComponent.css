@@ -1,9 +1,17 @@
 .application-title {
     text-align: left;
-    font-size: 24px;
+    font-weight: 700 !important;
+    letter-spacing: 0.5px !important;
     margin: 20px 0;
     margin-left: 90px;
     color: #005596;
+}
+
+.pagination-container {
+    margin-top: 15px;
+    margin-bottom: 15px;
+    margin-left: 90px;
+    font-family: 'Poppins', sans-serif;
 }
 
 .application-table {

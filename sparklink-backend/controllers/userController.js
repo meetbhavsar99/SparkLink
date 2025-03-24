@@ -88,8 +88,19 @@ const mailOptions = {
     from: process.env.EMAIL_USER,
     to: email,
     subject: "Confirm Your Email",
-    html: `<p>Click the link below to confirm your email:</p>
-             <a href="${confirmationLink}">${confirmationLink}</a>`,
+    // html: `<p>Click the link below to confirm your email:</p>
+    //          <a href="${confirmationLink}">${confirmationLink}</a>`,
+    html: `
+      <p>Dear ${username},</p>
+      <p>Thank you for registering with SparkLink! Please confirm your email address by clicking the button below:</p>
+      <a href="${confirmationLink}" 
+        style="display: inline-block; padding: 12px 24px; background-color: #005596; color: #ffffff; text-decoration: none; border-radius: 6px; font-weight: bold;">
+        Confirm Your Email
+      </a>
+      <p>If you did not register, please ignore this email.</p>
+      <p>Regards,<br>Team SparkLink</p>
+    `,
+
 };
 
 await transporter.sendMail(mailOptions);

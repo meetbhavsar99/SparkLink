@@ -13,6 +13,11 @@
   font-style: normal;
 }
 
+.ml-custom {
+  margin-left: 90px;
+  /* or try 20px or 30px */
+}
+
 .message {
   font-family: "Poppins", system-ui;
   text-align: center;

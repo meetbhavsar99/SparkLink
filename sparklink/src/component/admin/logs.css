@@ -1,12 +1,12 @@
 /* logs.css */
-.logs-container {
+/* .logs-container {
     padding: 20px;
-}
+} */
 
-.logs-container h1 {
+/* .logs-container h1 {
     font-size: 24px;
     margin-bottom: 15px;
-}
+} */
 
 .table-responsive {
     overflow-x: auto;
@@ -21,6 +21,9 @@
 }
 .text-title {
     color: #005596;
+    font-size: 3rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
 }
 
 .btn-search {

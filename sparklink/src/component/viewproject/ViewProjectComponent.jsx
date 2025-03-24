@@ -1115,7 +1115,7 @@ const fetchProjects = async () => {
                                             onClick={closeModal}>Close</button>
                                         {editFlag && <button className="btn btn-primary ms-3 text-center button_text button-main"
                                             onClick={UpdateProjDetails}>Save Changes</button>}
-                                        {user?.role === "student" && <button className="btn btn-success ms-3 text-center button_text button-main"
+                                        {user?.role === "4" && <button className="btn btn-success ms-3 text-center button_text button-main"
                                             onClick={submitApplication}>Click to Apply</button>}
                                         {(accessVal === 'S' || accessVal === 'E' || accessVal === 'M' || accessVal === 'B' || accessVal === 'SB') && <button className="btn btn-info ms-3 text-center button_text button-main
                                         "

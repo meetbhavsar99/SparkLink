@@ -227,8 +227,8 @@ const CreateProjectComponent = () => {
         <MenuComponent />
         <div className="row">
           <MasterComponent />
-          <div className="col-1"></div>
-          <div className="col-11">
+          {/* <div className="col-1"></div> */}
+          <div className=" col-11 ml-custom">
             <div className="progress-tracker">
               <div className="createproject_Heading">
                 <span className="createproject_title">Tell us about your project</span>
