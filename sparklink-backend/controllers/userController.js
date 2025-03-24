@@ -151,10 +151,18 @@ exports.login = async (req, res, next) => {
         .json({ message: info.message || "Invalid credentials" });
     };
 
-    // Check if email is verified before logging in
     if (user.is_verified === 'N') {
-      return res.status(403).json({ message: "Please verify your email before logging in." });
+      await createLog(user.user_id, "Unverified Login Attempt", `Unverified user ${user.username} attempted login.`, "error");
+      return res.status(403).json({ message: "Please confirm your account before logging in." });
     }
+
+
+    // // Check if email is verified before logging in
+    // if (user.is_verified === 'N') {
+    //   console.log("❌ User not verified. Blocking login.");
+    //   return res.status(403).json({ message: "Please verify your email before logging in." });
+    // }
+
 
     // Debugging: Log the stored hashed password for comparison
     console.log("Stored Hashed Password:", user.password);
@@ -177,6 +185,8 @@ exports.login = async (req, res, next) => {
           role: user.role,
           isAuthenticated: true,
           user_id: user.user_id,
+          is_verified: user.is_verified,
+          is_active: user.is_active
         },
         // Adjust this to the desired path
       });

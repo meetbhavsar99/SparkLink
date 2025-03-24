@@ -83,7 +83,10 @@ exports.updateProfile = async (req, res) => {
   try {
     // const user_id = req.user.user_id;
     // const updatedProfileData = req.body;
-    const { user_id, bio, skills, linkedin, github, address, phone_number, avatar } = req.body;
+    const {
+      user_id, bio, skills, linkedin, github, address,
+      phone_number, avatar, department, domain, expertise, education, experience, course
+    } = req.body;
 
     console.log("Updating profile with data:", { bio, skills, linkedin, github, address, phone_number, avatar });
 
@@ -127,7 +130,12 @@ exports.updateProfile = async (req, res) => {
     //   { bio, skills, linkedin, github, address, phone_number, avatar }, 
     //   { where: { user_id } } 
     // );
-    const updateData = { bio, skills, linkedin, github, address, phone_number };
+    const updateData = {
+      bio, skills, linkedin, github, address,
+      phone_number, avatar, department, domain,
+      expertise, education, experience, course
+    };
+
 
     // Only update avatar if it's provided
     if (avatar) {
@@ -148,12 +156,10 @@ exports.updateProfile = async (req, res) => {
       return res.status(404).json({ message: "Profile not found after update" });
     }
 
-    res.status(200).json({ message: "Profile updated successfully" });
+    await createLog(user_id, "Profile Updated", "User updated their profile.", "action");
 
-    // Log profile update
-        await createLog(user_id, "Profile Updated", "User updated their profile.", "action");
+    return res.status(200).json({ message: "Profile updated successfully" });
 
-        res.status(200).json({ message: "Profile updated successfully" });
   } catch (err) {
     console.error("Error updating profile:", err);
     res.status(500).json({ message: 'Error updating profile', error: err.message });

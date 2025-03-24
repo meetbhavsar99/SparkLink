@@ -3,6 +3,7 @@ const Log = require("../models/logs"); // ✅ Correct
 const { Op } = require("sequelize");
 const express = require("express");
 const moment = require("moment"); // for date formatting
+const { Parser } = require("json2csv");
 
 exports.getLogs = async (req, res) => {
     try {
@@ -107,4 +108,45 @@ exports.getFilteredLogs = async (req, res) => {
         res.status(500).json({ error: "Failed to retrieve logs." });
     }
 };
+
+exports.downloadLogs = async (req, res) => {
+  try {
+    const { log_type, user_id, date, action } = req.query;
+
+    const filters = {};
+    if (log_type) filters.log_type = log_type;
+    if (user_id) filters.user_id = user_id;
+    if (date) filters.created_at = { [Op.startsWith]: date }; // or better: use Op.between
+    if (action) filters.action = { [Op.iLike]: `%${action}%` };
+
+    const logs = await Log.findAll({
+      where: filters,
+      order: [["created_at", "DESC"]],
+    });
+
+    // ✅ Format the logs BEFORE converting to CSV
+    const formattedLogs = logs.map(log => ({
+      created_at: log.created_at
+        ? moment(log.created_at).format("DD-MMM-YYYY hh:mm A")
+        : "Unknown",
+      user_id: log.user_id || "System",
+      action: log.action,
+      details: log.details,
+      log_type: log.log_type
+    }));
+
+    const fields = ["created_at", "user_id", "action", "details", "log_type"];
+    const parser = new Parser({ fields });
+    const csv = parser.parse(formattedLogs); // ✅ Use formattedLogs here
+
+    res.header("Content-Type", "text/csv");
+    res.attachment("filtered_logs.csv");
+    res.send(csv);
+  } catch (error) {
+    console.error("❌ Error generating log CSV:", error);
+    res.status(500).json({ message: "Error downloading logs", error: error.message });
+  }
+};
+
+
 

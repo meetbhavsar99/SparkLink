@@ -4,7 +4,7 @@ const {
   getAllProjects,
   filterProject,
   UpdateProjDetails,
-  RemoveProject,
+  deleteProject,
   CompleteProject,
   ResumeProject,
   CancelProject,
@@ -38,7 +38,7 @@ router.post('/', createProject);
 router.post('/updateProject', UpdateProjDetails);
 
 //Delete Project
-router.post('/deleteProject', RemoveProject);
+router.post('/deleteProject', deleteProject);
 
 //Complete Project
 router.post('/completeProject', CompleteProject);

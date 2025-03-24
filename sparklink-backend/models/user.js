@@ -47,6 +47,14 @@ const User = sequelize.define('User', {
       isIn: [['Y', 'N']], // ✅ Ensures only 'Y' or 'N' is allowed
     },
   },
+  is_verified: {
+  type: DataTypes.CHAR(1),
+  allowNull: false,
+  defaultValue: 'N',
+  validate: {
+    isIn: [['Y', 'N']],
+  },
+  },
   created_by: {
     type: DataTypes.INTEGER,
     allowNull: false,

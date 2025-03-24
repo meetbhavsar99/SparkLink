@@ -178,6 +178,13 @@
   /* margin-bottom: 10px; */
 }
 
+.disabled-textarea {
+  background-color: #e0e0e0 !important;
+  color: #666 !important;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
 .submit {
   display: block;
   margin: 20px auto;

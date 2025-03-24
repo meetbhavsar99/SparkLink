@@ -51,10 +51,10 @@ const LoginComponent = () => {
             withCredentials: true,
         });
 
-        if (response.data.is_confirmed === 0) {
-            setErrorMessage("Please confirm your email before logging in.");
-            return;
-        }
+        // if (response.data.user.is_verified === 'N') {
+        //     setErrorMessage("Please confirm your email before logging in.");
+        //     return;
+        // }
 
         localStorage.setItem("token", response.data.token);
         setIsAuthenticated(true);
@@ -65,8 +65,26 @@ const LoginComponent = () => {
         form.classList.remove("was-validated"); // Reset validation after successful login
     } catch (error) {
         // Always return a generic error message for invalid credentials
-        setErrorMessage("Invalid credentials. Please try again.");
-    }
+        const backendMessage = error.response?.data?.message;
+
+        if (error.response?.status === 403 && backendMessage === "Please confirm your account before logging in.") {
+          setErrorMessage("Please confirm your account before logging in.");
+        } else if (error.response?.status === 401) {
+          setErrorMessage("Invalid credentials. Please try again.");
+        } else {
+          setErrorMessage("Something went wrong. Please try again.");
+        }
+
+        // if (backendMessage === "Please verify your email before logging in.") {
+        //     setErrorMessage("Please confirm your account before logging in.");
+        // } 
+        // else if (backendMessage === "Your account is not active. Please contact support.") {
+        //     setErrorMessage("Your account is inactive. Please contact admin.");
+        // } 
+        // else {
+        //     setErrorMessage("Invalid credentials. Please try again.");
+        // }
+        }
 };
 
 

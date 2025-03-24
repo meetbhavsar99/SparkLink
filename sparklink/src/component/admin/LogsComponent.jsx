@@ -37,6 +37,32 @@ const LogsComponent = () => {
     }
   };
 
+  const handleDownload = async () => {
+  try {
+    const queryParams = new URLSearchParams({
+      log_type: selectedLogType !== "all" ? selectedLogType : "",
+      user_id: searchUserId,
+      date: searchDate,
+      action: searchAction,
+    });
+
+    const response = await axios.get(`/api/download?${queryParams.toString()}`, {
+      responseType: "blob",
+    });
+
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", "filtered_logs.csv");
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+  } catch (error) {
+    console.error("❌ Error downloading logs:", error);
+  }
+};
+
+
   return (
     <>
       <div className="page-container">
@@ -82,6 +108,12 @@ const LogsComponent = () => {
                   Search
                 </button>
               </div>
+              <div className="col-md-3">
+                <button className="btn btn-success w-100" onClick={handleDownload}>
+                  ⬇ Download Logs
+                </button>
+              </div>
+
             </div>
   
             {/* Dropdown for Log Type */}

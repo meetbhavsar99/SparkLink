@@ -157,15 +157,21 @@ if (!areValidFeatures(req.body.features)) {
     const user = req.user;
     //const user = req.body;
 
+    // Fallback handling for N/A toggles
+    const finalSkills = !skills_required || skills_required === "N/A" ? "N/A" : skills_required.trim();
+    const finalFeatures = !features || features === "N/A" ? "N/A" : features;
+    const finalNumStudents = (!num_students || num_students === "N/A") ? 0 : parseInt(num_students);
+
+
     const projectData = {
       project_name: project_name,
       purpose: purpose,
       product: product,
       description: project_description,
-      features: features,
+      features: finalFeatures,
       category: category || "Uncategorized", // Defaults if missing
-      num_students: num_students === "N/A" ? null : num_students, // Store NULL if N/A
-      skills_required: skills_required === "N/A" ? null : skills_required.trim(),
+      num_students: finalNumStudents, // Store NULL if N/A
+      skills_required: finalSkills,
       budget: project_budget,
       end_date: project_deadline,
       created_by: req.body.user_id,
@@ -584,41 +590,85 @@ exports.updateProject = async (req, res) => {
 //     }
 // };
 
+// exports.deleteProject = async (req, res) => {
+//     const { projData } = req.body;
+//     const projectId = projData.proj_id;
+//     const userId = req.body.user_id;
+
+//     console.log("🔴 Attempting to delete project:", projectId);
+
+//     try {
+//         // 🚀 Directly delete from `t_project`
+//         await sequelize.query(
+//             `DELETE FROM t_project WHERE proj_id = :projectId`,
+//             { replacements: { projectId } }
+//         );
+
+//         await logsController.createLog(
+//             userId, 
+//             "Project Deleted", 
+//             `Project ID ${projectId} was deleted by user ${userId}`, 
+//             "action"
+//         );
+
+//         console.log("✅ Project deleted successfully:", projectId);
+//         res.status(200).json({ message: "Project deleted successfully" });
+//     } catch (error) {
+//       await logsController.createLog(
+//             userId || "System", 
+//             "Project Deletion Failed", 
+//             `Error: ${error.message} | User ${userId || "Unknown"} attempted to delete project ID ${projectId}.`,
+//             "error"
+//         );
+
+//         console.error("❌ Error deleting project:", error);
+//         res.status(500).json({ message: "Error deleting project", error: error.message });
+//     }
+// };
+
 exports.deleteProject = async (req, res) => {
-    const { projData } = req.body;
-    const projectId = projData.proj_id;
-    const userId = req.body.user_id;
+  const { projData } = req.body;
+  const projectId = projData.proj_id;
+  const userId = req.body.user_id;
 
-    console.log("🔴 Attempting to delete project:", projectId);
+  const transaction = await sequelize.transaction(); // ✅ Begin transaction
 
-    try {
-        // 🚀 Directly delete from `t_project`
-        await sequelize.query(
-            `DELETE FROM t_project WHERE proj_id = :projectId`,
-            { replacements: { projectId } }
-        );
+  try {
+    // Step 1: Clean up all related tables
+    await sequelize.query(`DELETE FROM t_milestone_counter WHERE proj_id = :projectId`, { replacements: { projectId }, transaction });
+    await sequelize.query(`DELETE FROM t_proj_allocation WHERE proj_id = :projectId`, { replacements: { projectId }, transaction });
+    await sequelize.query(`DELETE FROM t_proj_application WHERE proj_id = :projectId`, { replacements: { projectId }, transaction });
+    await sequelize.query(`DELETE FROM t_proj_milestone WHERE proj_id = :projectId`, { replacements: { projectId }, transaction });
+    await sequelize.query(`DELETE FROM t_proj_report WHERE proj_id = :projectId`, { replacements: { projectId }, transaction });
 
-        await logsController.createLog(
-            userId, 
-            "Project Deleted", 
-            `Project ID ${projectId} was deleted by user ${userId}`, 
-            "action"
-        );
+    // Step 2: Finally delete from the main project table
+    await sequelize.query(`DELETE FROM t_project WHERE proj_id = :projectId`, { replacements: { projectId }, transaction });
 
-        console.log("✅ Project deleted successfully:", projectId);
-        res.status(200).json({ message: "Project deleted successfully" });
-    } catch (error) {
-      await logsController.createLog(
-            userId || "System", 
-            "Project Deletion Failed", 
-            `Error: ${error.message} | User ${userId || "Unknown"} attempted to delete project ID ${projectId}.`,
-            "error"
-        );
+    await transaction.commit(); // ✅ Commit changes
 
-        console.error("❌ Error deleting project:", error);
-        res.status(500).json({ message: "Error deleting project", error: error.message });
-    }
+    // Log success
+    await logsController.createLog(
+      userId || 'System',
+      "Project Deleted",
+      `Project ID ${projectId} was deleted by user ${userId || "Unknown"}`,
+      "action"
+    );
+
+    res.status(200).json({ message: "Project deleted successfully" });
+  } catch (error) {
+    await transaction.rollback(); // ❌ Rollback on error
+
+    await logsController.createLog(
+      userId || "System",
+      "Project Deletion Failed",
+      `Error: ${error.message} | User ${userId || "Unknown"} attempted to delete project ID ${projectId}.`,
+      "error"
+    );
+
+    res.status(500).json({ message: "Error deleting project", error: error.message });
+  }
 };
+
 
 
 

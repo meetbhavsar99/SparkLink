@@ -357,41 +357,40 @@ const CreateProjectComponent = () => {
                       required
                     />
 
-{user.role !== "2" || !featuresNA ? (
-  <div className="feature-section">
-    <label className="form_label">
-      What are the main features or functionalities you want to include in the project?
-    </label>
-    <textarea
-      id="features"
-      name="features"
-      value={features}
-      onChange={(e) => setFeatures(e.target.value)}
-      placeholder="Enter features separated by commas (e.g., User login, Sign up)"
-      rows="4"
-      disabled={featuresNA}
-      className={`form_textarea feature-textarea ${featuresNA ? "disabled-textarea" : ""}`}
-    />
-    {user.role === "2" && (
-  <div className="toggle-switch-container">
-    <label className="form_label">Features N/A</label>
-    <div className="form-check form-switch">
-      <input
-        className="form-check-input"
-        type="checkbox"
-        role="switch"
-        id="featuresNA"
-        checked={featuresNA}
-        onChange={() => handleNAChange("features")}
-      />
-      <label className="form-check-label" htmlFor="featuresNA">
-        {featuresNA ? "Enabled" : "Disabled"}
-      </label>
+<div className="feature-section">
+  <label className="form_label">
+    What are the main features or functionalities you want to include in the project?
+  </label>
+  <textarea
+    id="features"
+    name="features"
+    value={features}
+    onChange={(e) => setFeatures(e.target.value)}
+    placeholder="Enter features separated by commas (e.g., User login, Sign up)"
+    rows="4"
+    disabled={featuresNA}
+    className={`form_textarea feature-textarea ${featuresNA ? "disabled-textarea" : ""}`}
+  />
+  {user.role === "2" && (
+    <div className="toggle-switch-container">
+      <label className="form_label">Features N/A</label>
+      <div className="form-check form-switch">
+        <input
+          className="form-check-input"
+          type="checkbox"
+          role="switch"
+          id="featuresNA"
+          checked={featuresNA}
+          onChange={() => handleNAChange("features")}
+        />
+        <label className="form-check-label" htmlFor="featuresNA">
+          {featuresNA ? "Enabled" : "Disabled"}
+        </label>
+      </div>
     </div>
-  </div>
-)}
-  </div>
-                    ) : null}
+  )}
+</div>
+
 
                     <label className="form_label">
                       What is the expected timeline or deadline for the project completion?
@@ -423,76 +422,76 @@ const CreateProjectComponent = () => {
                       )}
                     </div>
 
-                    {user.role !== "2" || !numStudentsNA ? (
-                      <div>
-                        <label className="form_label">
-                          Please enter the number of students you want for this project?
-                          <span className="text-danger"> *</span>
-                        </label>
-                        <input
-                          type="number"
-                          className="margin-down"
-                          value={numStudents}
-                          placeholder="Enter number of students..."
-                          min="1"
-                          onChange={(e) => setNumStudents(e.target.value)}
-                          disabled={numStudentsNA}
-                        />
-                        {user.role === "2" && (
-                        <div className="toggle-switch-container">
-                          <label className="form_label">Number of Students N/A</label>
-                          <div className="form-check form-switch">
-                            <input
-                              className="form-check-input"
-                              type="checkbox"
-                              role="switch"
-                              id="numStudentsNA"
-                              checked={numStudentsNA}
-                              onChange={() => handleNAChange("students")}
-                            />
-                            <label className="form-check-label" htmlFor="numStudentsNA">
-                              {numStudentsNA ? "Enabled" : "Disabled"}
-                            </label>
-                          </div>
-                        </div>
-                      )}
-                      </div>
-                    ) : null}
+                    <div className="students-section">
+  <label className="form_label">
+    Please enter the number of students you want for this project?
+    <span className="text-danger"> *</span>
+  </label>
+  <input
+    type="number"
+    className={`margin-down form-control ${numStudentsNA ? "disabled-textarea" : ""}`}
+    value={numStudents}
+    placeholder="Enter number of students..."
+    min="1"
+    onChange={(e) => setNumStudents(e.target.value)}
+    disabled={numStudentsNA}
+  />
 
-                    {user.role !== "2" || !skillsNA ? (
-                      <div>
-                        <label className="form_label">
-                          Please enter the required skills (technology) for this project?
-                          <span className="text-danger"> *</span>
-                        </label>
-                        <textarea
-                          value={skillsRequired}
-                          className="margin-down form_textarea"
-                          style={{ width: '75%' }}
-                          placeholder="Enter the skills, and add comma between them..."
-                          onChange={(e) => setSkillsRequired(e.target.value)}
-                          disabled={skillsNA}
-                        />
-                        {user.role === "2" && (
-                          <div className="toggle-switch-container">
-                            <label className="form_label">Skills Required N/A</label>
-                            <div className="form-check form-switch">
-                              <input
-                                className="form-check-input"
-                                type="checkbox"
-                                role="switch"
-                                id="skillsNA"
-                                checked={skillsNA}
-                                onChange={() => handleNAChange("skills")}
-                              />
-                              <label className="form-check-label" htmlFor="skillsNA">
-                                {skillsNA ? "Enabled" : "Disabled"}
-                              </label>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    ) : null}
+  {user.role === "2" && (
+    <div className="toggle-switch-container">
+      <label className="form_label">Number of Students N/A</label>
+      <div className="form-check form-switch">
+        <input
+          className="form-check-input"
+          type="checkbox"
+          role="switch"
+          id="numStudentsNA"
+          checked={numStudentsNA}
+          onChange={() => handleNAChange("students")}
+        />
+        <label className="form-check-label" htmlFor="numStudentsNA">
+          {numStudentsNA ? "Enabled" : "Disabled"}
+        </label>
+      </div>
+    </div>
+  )}
+</div>
+
+
+                    <div className="skills-section">
+  <label className="form_label">
+    Please enter the required skills (technology) for this project?
+    <span className="text-danger"> *</span>
+  </label>
+  <textarea
+    value={skillsRequired}
+    className={`margin-down form_textarea ${skillsNA ? "disabled-textarea" : ""}`}
+    style={{ width: "75%" }}
+    placeholder="Enter the skills, and add comma between them..."
+    onChange={(e) => setSkillsRequired(e.target.value)}
+    disabled={skillsNA}
+  />
+  
+  {user.role === "2" && (
+    <div className="toggle-switch-container">
+      <label className="form_label">Skills Required N/A</label>
+      <div className="form-check form-switch">
+        <input
+          className="form-check-input"
+          type="checkbox"
+          role="switch"
+          id="skillsNA"
+          checked={skillsNA}
+          onChange={() => handleNAChange("skills")}
+        />
+        <label className="form-check-label" htmlFor="skillsNA">
+          {skillsNA ? "Enabled" : "Disabled"}
+        </label>
+      </div>
+    </div>
+  )}
+</div>
+
 
                     <div className="message">
                       {errorMessage && <div className="error-message">{errorMessage}</div>}

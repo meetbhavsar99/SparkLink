@@ -10,6 +10,11 @@ passport.use(new LocalStrategy({
   try {
     const user = await User.findOne({ where: { email } });
     if (!user) return done(null, false, { message: 'Incorrect email.' });
+
+    // ✅ Check if user is verified
+    if (user.is_verified !== 'Y') {
+      return done(null, false, { message: 'Please verify your email before logging in.' });
+    }
     
     const isValidPassword = await user.validPassword(password.trim());
     if (!isValidPassword) return done(null, false, { message: 'Incorrect password.' });

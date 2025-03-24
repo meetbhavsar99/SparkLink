@@ -1059,11 +1059,21 @@ const fetchProjects = async () => {
                 <td className="proj-details-data">
                     {stakeholdersByRole.map(({ name, user_id, proj_id }, index) => (
                         <div
-                            key={`${role}-${user_id}`}
-                            className="stakeholder-button"
-                            onClick={() => fetchUserProfile(user_id)} // Navigate to profile on click
+                        key={`${role}-${user_id}`}
+                        className="stakeholder-button"
+                        onClick={() => {
+                            if (!(user?.role === "4" && role === "business_owner")) { // role 4 = student
+                            fetchUserProfile(user_id);
+                            }
+                        }}
+                        style={{
+                            cursor: user?.role === "4" && role === "business_owner" ? "not-allowed" : "pointer",
+                            // color: user?.role === "4" && role === "business_owner" ? "gray" : "inherit",
+                            // textDecoration: user?.role === "4" && role === "business_owner" ? "none" : "underline",
+                        }}
                         >
-                            {name}
+                        {name}
+
                             {editFlag &&
                                 (((accessVal === "E" || accessVal === "SB") && role === "student") ||
                                     (accessVal === "S" && role !== "business_owner")) && (
