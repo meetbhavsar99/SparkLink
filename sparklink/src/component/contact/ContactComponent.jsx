@@ -44,11 +44,12 @@ const ContactComponent = () => {
 
       const result = await response.json();
       if (response.ok) {
-        setSubmissionStatus("✅ Your message has been sent successfully!");
+        setSubmissionStatus(`Your request has been submitted successfully! Token ID: ${result.tokenId}`);
+        alert(`Your request has been submitted successfully!\nToken ID: ${result.tokenId}\nCheck your email for confirmation.`);
         setFormData({ name: "", email: "", message: "" });
         form.classList.remove("was-validated"); // Reset validation styling
       } else {
-        setSubmissionStatus("❌ Failed to send message. Please try again.");
+        setSubmissionStatus("Failed to send message. Please try again.");
       }
     } catch (error) {
       console.error("Error submitting form:", error);
@@ -57,106 +58,83 @@ const ContactComponent = () => {
   };
 
   return (
-    <>
-      <MasterComponent />
-      <MenuComponent></MenuComponent>
-      <div className="container mt-5">
-        <div className="row justify-content-center">
-          <div className="col-md-6">
-            <div className="shadow-lg p-4 mb-5">
-              <h2 className="text-center contact-title">Contact Us</h2>
-              <p className="text-center text-muted">
-                Have any questions? We’d love to hear from you.
-              </p>
+  <>
+  <MenuComponent />
+    <MasterComponent />
+    <div className="contact-container">
+      <h2 className="contact-title">Contact Us</h2>
+      <p className="contact-description">Have any questions? We’d love to hear from you.</p>
 
-              <div className="mb-4">
-                <p>
-                  <i className="fas fa-envelope contact-icon"></i>{" "}
-                  olena.syrotkina@uwindsor.ca
-                </p>
-                <p>
-                  <i className="fas fa-phone text-success"></i> (519) 253-3000
-                </p>
-                <p>
-                  <i className="fas fa-map-marker-alt text-danger"></i> 401 Sunset Ave, Windsor, ON N9B 3P4
-                </p>
-              </div>
-
-              <form className="needs-validation" noValidate onSubmit={handleSubmit}>
-                <div className="mb-3">
-                  <label for="name" className="form-label">Your Name</label>
-                  <input
-                    type="text"
-                    id="name"
-                    name="name"
-                    className="form-control"
-                    placeholder="Enter your name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    required
-                  />
-                  <div className="valid-feedback">
-                    Looks good!
-                  </div>
-                  <div className="invalid-feedback">
-                    Please provide a name.
-                  </div>
-                </div>
-
-                <div className="mb-3">
-                  <label className="form-label">Your Email</label>
-                  <input
-                    type="email"
-                    name="email"
-                    className="form-control"
-                    placeholder="Enter your email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    required
-                  />
-                  <div className="valid-feedback">
-                    Looks good!
-                  </div>
-                  <div className="invalid-feedback">
-                    Please provide an email.
-                  </div>
-                </div>
-
-                <div className="mb-3">
-                  <label className="form-label">Your Message</label>
-                  <textarea
-                    name="message"
-                    className="form-control"
-                    placeholder="Enter your message"
-                    rows="4"
-                    value={formData.message}
-                    onChange={handleChange}
-                    required
-                  ></textarea>
-                  <div className="valid-feedback">
-                    Looks good!
-                  </div>
-                  <div className="invalid-feedback">
-                    Please provide a message.
-                  </div>
-                </div>
-
-                <button type="submit" className="btn send-button w-100">
-                  Send Message
-                </button>
-              </form>
-
-              {submissionStatus && (
-                <p className="mt-3 text-center text-success">{submissionStatus}</p>
-              )}
-            </div>
-          </div>
-        </div>
+      <div className="contact-info">
+        <p className="contact-item">
+          <i className="fas fa-envelope"></i> olena.syrotkina@uwindsor.ca
+        </p>
+        <p className="contact-item">
+          <i className="fas fa-map-marker-alt"></i> University of Windsor <br /> 401 Sunset Ave, Windsor, ON N9B 3P4
+        </p>
       </div>
-      
-      <FooterComponent></FooterComponent>
-    </>
-  );
+
+      {/* Bootstrap validated form */}
+      <form className="needs-validation contact-form" noValidate onSubmit={handleSubmit}>
+        <div className="mb-3">
+          <label htmlFor="name" className="form-label">Your Name</label>
+          <input
+            type="text"
+            name="name"
+            id="name"
+            className="form-control contact-input"
+            placeholder="Enter your name"
+            value={formData.name}
+            onChange={handleChange}
+            required
+          />
+          <div className="valid-feedback">Looks good!</div>
+          <div className="invalid-feedback">Please provide a name.</div>
+        </div>
+
+        <div className="mb-3">
+          <label htmlFor="email" className="form-label">Your Email</label>
+          <input
+            type="email"
+            name="email"
+            id="email"
+            className="form-control contact-input"
+            placeholder="Enter your email"
+            value={formData.email}
+            onChange={handleChange}
+            required
+          />
+          <div className="valid-feedback">Looks good!</div>
+          <div className="invalid-feedback">Please provide an email.</div>
+        </div>
+
+        <div className="mb-4">
+          <label htmlFor="message" className="form-label">Your Message</label>
+          <textarea
+            name="message"
+            id="message"
+            className="form-control contact-input"
+            placeholder="Enter your message"
+            rows="4"
+            value={formData.message}
+            onChange={handleChange}
+            required
+          ></textarea>
+          <div className="valid-feedback">Looks good!</div>
+          <div className="invalid-feedback">Please provide a message.</div>
+        </div>
+
+        <button type="submit" className="send-button w-100">Send Message</button>
+      </form>
+
+      {submissionStatus && (
+        <p className="submission-status text-center mt-3">{submissionStatus}</p>
+      )}
+    </div>
+    <FooterComponent />
+  </>
+);
+
 };
 
 export default ContactComponent;

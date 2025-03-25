@@ -7,13 +7,15 @@ body {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
   background: #fff;
-  margin-bottom: 30px; /* Increased margin between panels */
+  margin-bottom: 30px;
+  /* Increased margin between panels */
   border: none;
 }
 
 .panel-heading {
   border-bottom: 2px solid #005596;
-  padding: 20px; /* Increased padding */
+  padding: 20px;
+  /* Increased padding */
   background-color: #fff;
   border-radius: 8px 8px 0 0;
 }
@@ -26,19 +28,22 @@ body {
 }
 
 .panel-body {
-  padding: 25px; /* Increased padding */
+  padding: 25px;
+  /* Increased padding */
 }
 
 .form-horizontal .form-group {
-  margin-bottom: 25px; /* Increased margin between form groups */
+  margin-bottom: 25px;
+  /* Increased margin between form groups */
   display: flex;
   align-items: center;
 }
 
 .form-horizontal .control-label {
   font-weight: 500;
-  color: #58585B;
-  margin-right: 20px; /* Increased margin between label and input */
+  color: #585858;
+  margin-right: 20px;
+  /* Increased margin between label and input */
   flex: 0 0 20%;
   text-align: right;
 }
@@ -46,7 +51,8 @@ body {
 .form-control {
   border: 1px solid #ddd;
   border-radius: 5px;
-  padding: 12px; /* Increased padding inside inputs */
+  padding: 12px;
+  /* Increased padding inside inputs */
   font-size: 14px;
   width: 100%;
   transition: border-color 0.3s ease;
@@ -61,7 +67,8 @@ body {
 
 textarea.form-control {
   resize: vertical;
-  min-height: 120px; /* Increased height for textarea */
+  min-height: 120px;
+  /* Increased height for textarea */
 }
 
 .profile-avatar {
@@ -69,20 +76,25 @@ textarea.form-control {
   height: 150px;
   border-radius: 50%;
   border: 4px solid #005596;
-  margin: 30px auto; /* Increased margin around avatar */
+  margin: 30px auto;
+  /* Increased margin around avatar */
   object-fit: cover;
 }
 
 .btn-primary {
   background-color: #005596;
-  color: #fff;
+  color: white;
   border: none;
-  padding: 12px 24px; /* Increased padding for buttons */
+  padding: 12px 20px;
+  /* Adjusted padding */
   font-size: 16px;
   border-radius: 5px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
-  margin-right: 15px; /* Added margin between buttons */
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  text-decoration: none;
+  min-width: 150px;
+  /* Ensures proper button width */
+  text-align: center;
 }
 
 .btn-primary:hover {
@@ -90,14 +102,19 @@ textarea.form-control {
 }
 
 .btn-secondary {
-  background-color: #58585B;
-  color: #fff;
+  background-color: #585858;
+  color: white;
   border: none;
-  padding: 12px 24px; /* Increased padding for buttons */
+  padding: 12px 20px;
+  /* Adjusted padding */
   font-size: 16px;
   border-radius: 5px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  text-decoration: none;
+  min-width: 150px;
+  /* Ensures proper button width */
+  text-align: center;
 }
 
 .btn-secondary:hover {
@@ -105,9 +122,11 @@ textarea.form-control {
 }
 
 .alert {
-  padding: 15px; /* Increased padding for alerts */
+  padding: 15px;
+  /* Increased padding for alerts */
   border-radius: 5px;
-  margin-top: 25px; /* Increased margin above alerts */
+  margin-top: 25px;
+  /* Increased margin above alerts */
   text-align: center;
 }
 
@@ -130,7 +149,7 @@ textarea.form-control {
 }
 
 .profile__contact-info-body {
-  color: #58585B;
+  color: #585858;
   font-size: 14px;
 }
 
@@ -148,4 +167,346 @@ input[type="file"] {
 
 input[type="file"]:hover {
   background-color: #f0f0f0;
+}
+
+
+/* Common Button Styles */
+.newButtonEdit {
+  background-color: #f63d00;
+  color: white;
+  border: none;
+  padding: 12px 22px;
+  /* Increased padding for better spacing */
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  /* transition: background-color 0.3s ease, box-shadow 0.2s ease; */
+  text-decoration: none;
+  /* display: inline-flex; */
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+  white-space: nowrap;
+}
+
+/* Updated Hover Effect (Preventing Layout Shifts) */
+.newButtonEdit:hover {
+  background-color: #585858;
+  color: #FFCE00;
+
+}
+
+.newContainer {
+  display: flex;
+  justify-content: center;
+  /* Centers horizontally */
+  align-items: center;
+  /* Centers vertically if needed */
+  gap: 20px;
+  /* Adds space around multiple buttons */
+  padding: 20px;
+  /* Adjust as needed */
+}
+
+/* Generic Profile Container - Centers the Profile Form */
+/* Updated Profile Container */
+.profile-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 40px;
+  background-color: #f5f5f5;
+}
+
+/* Profile Card - Centered & Optimized */
+.profile-card {
+
+  border-radius: 12px;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  max-width: 900px;
+  /* Increased width */
+  width: 90%;
+
+}
+
+
+/* Form Inside Profile Card */
+.form-horizontal {
+  width: 100%;
+  max-width: 750px;
+  margin: 0 auto;
+}
+
+/* Avatar Container */
+.profile-avatar {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  border: 4px solid #005596;
+  object-fit: cover;
+  margin-bottom: 15px;
+}
+
+/* Avatar Edit Button */
+.avatar-edit-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: #005596;
+  color: white;
+  border: none;
+  padding: 5px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.avatar-edit-btn:hover {
+  background: #003366;
+}
+
+/* Panel Improvements */
+.panel {
+  border-radius: 8px;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+  border: none;
+  background: #ffffff;
+  margin-bottom: 25px;
+}
+
+/* Panel Header */
+.panel-heading {
+  background: #005596;
+  color: white;
+  padding: 15px;
+  border-radius: 8px 8px 0 0;
+}
+
+/* Form Group - Input Field Alignment */
+.form-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+/* Labels */
+.control-label {
+  font-weight: 600;
+  color: #003366;
+  text-align: left;
+  flex: 0 0 28%;
+}
+
+/* Input Fields - Increased Width */
+.form-control {
+  flex: 1;
+  padding: 12px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  transition: border 0.3s ease;
+  width: 100%;
+  font-size: 14px;
+  min-width: 500px;
+  /* Increased width */
+  max-width: 800px;
+  /* Prevents stretching too wide */
+}
+
+/* Responsive Adjustments */
+@media (max-width: 1024px) {
+  .form-control {
+    min-width: 500px;
+    /* Slightly reduces width on medium screens */
+  }
+}
+
+@media (max-width: 768px) {
+  .form-control {
+    min-width: 100%;
+    /* Ensures full width for smaller screens */
+    font-size: 14px;
+    padding: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .form-control {
+    min-width: 100%;
+    font-size: 13px;
+    padding: 8px;
+  }
+}
+
+
+/* Focus Effect */
+.form-control:focus {
+  border-color: #005596;
+  box-shadow: 0 0 5px rgba(0, 85, 150, 0.3);
+}
+
+/* Textarea Improvements */
+textarea.form-control {
+  resize: vertical;
+  /* Allows only vertical resizing */
+  min-height: 200px;
+  /* Slightly increased height */
+  max-height: 450px;
+  /* Prevents excessive stretching */
+  padding: 12px;
+  font-size: 14px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  transition: border 0.3s ease;
+  width: 100%;
+}
+
+/* Submit and Cancel Buttons */
+.button-container {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  /* Adds space between buttons */
+  flex-wrap: wrap;
+  /* Ensures they don’t overlap on smaller screens */
+  margin-top: 25px;
+}
+
+.button-primary,
+.button-secondary {
+  background-color: #005596;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  /* Adjusted padding */
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  text-decoration: none;
+  min-width: 150px;
+  /* Ensures proper button width */
+  text-align: center;
+}
+
+/* Hover Effects */
+.button-primary:hover,
+.button-secondary:hover {
+  background-color: #585858;
+  color: #FFCE00;
+  border: 1px solid #585858;
+  transform: scale(1.02);
+  /* Slight pop-out effect */
+}
+
+/* Responsive Button Layout */
+@media (max-width: 768px) {
+  .button-container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .button-primary,
+  .button-secondary .btn-primary .btn-secondary {
+    width: 90%;
+    /* Ensures full width on smaller screens */
+    min-width: unset;
+  }
+}
+
+/* Responsive Profile Card */
+@media (max-width: 1024px) {
+  .profile-card {
+    max-width: 95%;
+  }
+}
+
+@media (max-width: 768px) {
+  .profile-card {
+    width: 95%;
+    padding: 25px;
+  }
+
+  .control-label {
+    flex: 1 1 100%;
+    text-align: left;
+  }
+
+  .form-control {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .profile-card {
+    padding: 20px;
+  }
+
+  .button-primary,
+  .button-secondary {
+    width: 100%;
+  }
+}
+
+
+/* Loading Overlay */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1050;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.loading-spinner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 6px 12px rgba(255, 255, 255, 0.2);
+}
+
+.spinner-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.spinner-border {
+  width: 70px !important;
+  height: 70px !important;
+  border-width: 6px;
+  color: #FFCE00 !important;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-text {
+  margin-top: 10px;
+  font-size: 18px;
+  font-weight: 600;
+  color: #FFCE00;
+  text-align: center;
 }

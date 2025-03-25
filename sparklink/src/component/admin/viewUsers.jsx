@@ -213,304 +213,210 @@ const ViewUserComponent = () => {
     link.click();
   };
 
-  return (
-    <div className="page-container">
-      <MenuComponent />
-      <MasterComponent/>
-      <div className="content-container">
-        <div className="container-fluid mb-5">
-          <div className="row">
-            <div className="usertable">
-              <h1>User Management</h1>
+  return (    <div className="page-container">
+  <MenuComponent />
+  <MasterComponent />
+  <div className="content-container">
+    <div className="container-fluid user-management-wrapper">
+      <h1 className="user-title mb-4">User Management</h1>
 
-              <div className="bulk-actions">
-              <button
-                className="btn btn-danger pl-6 mr-2 bulk-btn"
-                onClick={handleBulkDelete}
-                disabled={selectedUsers.length === 0}
-              >
-                Bulk Delete
-              </button>
-              <button className="btn btn-success mx-2" onClick={handleExportCSV}>
-                Export CSV
-              </button>
-              <button className="btn btn-info" onClick={() => navigate("/admin/logs")}>
-                View Logs
-              </button>
-
-            </div>
-
-              {loading && (
-                <p className="text-center text-info">Loading users...</p>
-              )}
-              {error && (
-                <p className="text-center text-danger">Error: {error}</p>
-              )}
-
-              {/* User search and filter */}
-              <div className="filters text-center my-4">
-                <button
-                  className="btn btn-outline-success mx-2"
-                  onClick={() => filterByRole("All")}
-                >
-                  All
-                </button>
-                <button
-                  className="btn btn-outline-primary mx-2"
-                  onClick={() => filterByRole("Business_Owner")}
-                >
-                  Business Owners
-                </button>
-                <button
-                  className="btn btn-outline-secondary mx-2"
-                  onClick={() => filterByRole("Supervisor")}
-                >
-                  Supervisors
-                </button>
-                <button
-                  className="btn btn-outline-danger mx-2"
-                  onClick={() => filterByRole("Student")}
-                >
-                  Students
-                </button>
-                <button
-                  className="btn btn-outline-dark mx-2"
-                  onClick={() => filterByRole("Admin")}
-                >
-                  Admins
-                </button>
-                <div className="d-inline-block search-box">
-                  <input
-                    type="text"
-                    className="form-control d-inline w-auto h-auto mx-2"
-                    placeholder="Search by id, name or email..."
-                    value={searchQuery}
-                    onChange={(e) => {
-                      const query = e.target.value.toLowerCase();
-                      setSearchQuery(query); // Update the search query state
-                      handleSearch(query); // Call the search function with the updated query
-                    }}
-                  />
-                </div>
+      {/* Filter & Actions Row */}
+                  <div className="row gy-3 flex-column flex-md-row align-items-start justify-content-between mb-4 actions-bar">
+              {/* Role Filters */}
+              <div className="col-md-auto filter-group d-flex flex-wrap gap-2 justify-content-center justify-content-md-start">
+                {["All", "Business_Owner", "Supervisor", "Student", "Admin"].map((r, idx) => (
+                  <button
+                    key={idx}
+                    className="btn btn-outline-primary"
+                    onClick={() => filterByRole(r)}
+                  >
+                    {r.replace("_", " ")}
+                  </button>
+                ))}
               </div>
 
-              {/* User Table */}
-              <div className="usertable table-responsive">
-                <table className="table table-bordered table-hover  table-striped ">
-                  <thead className="thead-dark">
-                    <tr>
-                      <th>Select</th>
-                      <th>User ID</th>
-                      <th>Username</th>
-                      <th>Name</th>
-                      <th>Email</th>
-                      <th>Role</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {filteredUsers.length > 0 ? (
-                      filteredUsers.map((user) => (
-                        <tr key={user.user_id}>
-                          <td>
-                            <input
-                              type="checkbox"
-                              onChange={(e) =>
-                                setSelectedUsers((prev) =>
-                                  e.target.checked
-                                    ? [...prev, user.user_id]
-                                    : prev.filter((id) => id !== user.user_id)
-                                )
-                              }
-                            />
-                          </td>
-                          <td>{user.user_id}</td>
-                          <td>{user.username}</td>
-                          <td>{user.name}</td>
-                          <td>{user.email}</td>
-                          <td>{user.roleName}</td>
-                          <td>
-                            <img
-                              src={edit_icon}
-                              className="edit_icon"
-                              title="Click to edit Profile Details"
-                              alt=""
-                              onClick={() => handleEditClick(user)}
-                            />
-                            <img
-                              src={delete_icon}
-                              className="delete_icon"
-                              title="Click to delete user"
-                              alt=""
-                              onClick={() => handleDeleteClick(user)}
-                            />
-                          </td>
-                        </tr>
-                      ))
-                    ) : (
-                      <tr>
-                        <td colSpan="6" className="text-center">
-                          <div
-                            style={{
-                              padding: "20px",
-                              color: "#6c757d",
-                              fontSize: "1.2rem",
-                            }}
-                          >
-                            <i
-                              className="bi bi-person-x-fill"
-                              style={{
-                                fontSize: "2rem",
-                                color: "#d9534f",
-                                marginBottom: "10px",
-                              }}
-                            ></i>
-                            <p>No users found matching your criteria.</p>
-                            <p style={{ fontSize: "1rem" }}>
-                              Try adjusting your search or filter options.
-                            </p>
-                          </div>
-                        </td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
+              {/* Search & Bulk Actions */}
+              <div className="col-md-auto d-flex flex-wrap gap-2 justify-content-center justify-content-md-end search-actions-group pt-md-1">
+              <input
+                  className="form-control search-input"
+                  placeholder="Search by ID, Name or Email..."
+                  value={searchQuery}
+                  onChange={(e) => {
+                    setSearchQuery(e.target.value);
+                    handleSearch(e.target.value);
+                  }}
+                />
+                <button
+                  className="button-user-delete"
+                  onClick={handleBulkDelete}
+                  disabled={selectedUsers.length === 0}
+                >
+                  Bulk Delete
+                </button>
+                <button className="button-user" onClick={handleExportCSV}>
+                  Export CSV
+                </button>
+                <button className="button-user" onClick={() => navigate("/admin/logs")}>
+                  View Logs
+                </button>
               </div>
-
-              {/* Modal for editing user */}
-              {showModal && (
-                <Modal show={showModal} onHide={() => setShowModal(false)}>
-                  <Modal.Header closeButton>
-                    <Modal.Title>Edit User</Modal.Title>
-                  </Modal.Header>
-                  <Modal.Body>
-                    <Form onSubmit={handleSubmit}>
-                      <Form.Group controlId="username">
-                        <Form.Label>Username</Form.Label>
-                        <Form.Control
-                          type="text"
-                          value={selectedUser.username}
-                          onChange={(e) =>
-                            setSelectedUser({
-                              ...selectedUser,
-                              username: e.target.value,
-                            })
-                          }
-                          disabled
-                        />
-                      </Form.Group>
-                      <Form.Group controlId="name" className="mt-3">
-                        <Form.Label>Name</Form.Label>
-                        <Form.Control
-                          type="text"
-                          value={selectedUser.name}
-                          onChange={(e) =>
-                            setSelectedUser({
-                              ...selectedUser,
-                              name: e.target.value,
-                            })
-                          }
-                        />
-                      </Form.Group>
-                      <Form.Group controlId="email" className="mt-3">
-                        <Form.Label>Email</Form.Label>
-                        <Form.Control
-                          type="email"
-                          value={selectedUser.email}
-                          onChange={(e) =>
-                            setSelectedUser({
-                              ...selectedUser,
-                              email: e.target.value,
-                            })
-                          }
-                        />
-                      </Form.Group>
-                      <Form.Group controlId="password" className="mt-3">
-                        <Form.Label>Password</Form.Label>
-                        <div className="d-flex align-items-center">
-                          <Form.Control
-                            type={showPassword ? "text" : "password"}
-                            value={selectedUser.password}
-                            onChange={(e) =>
-                              setSelectedUser({
-                                ...selectedUser,
-                                password: e.target.value,
-                              })
-                            }
-                          />
-                          <button
-                            type="button"
-                            className="btn btn-sm btn-outline-secondary ms-2"
-                            onClick={() => setShowPassword(!showPassword)}
-                          >
-                            {showPassword ? "Hide" : "Show"}
-                          </button>
-                        </div>
-                      </Form.Group>
-                      <Form.Group controlId="role" className="mt-3">
-                        <Form.Label>Role</Form.Label>
-                        <Form.Select
-                          value={reverseRoleMapping[selectedUser.roleName]}
-                          onChange={(e) =>
-                            setSelectedUser({
-                              ...selectedUser,
-                              roleName: roleMapping[e.target.value],
-                            })
-                          }
-                        >
-                          <option value="1">Admin</option>
-                          <option value="2">Business Owner</option>
-                          <option value="3">Supervisor</option>
-                          <option value="4">Student</option>
-                        </Form.Select>
-                      </Form.Group>
-                      <Form.Group controlId="isActive" className="mt-3">
-                        <div className="form-check form-switch mt-2">
-                          <input
-                            className="form-check-input"
-                            type="checkbox"
-                            id="isActiveSwitch"
-                            checked={selectedUser.is_active}
-                            onChange={(e) =>
-                              setSelectedUser({
-                                ...selectedUser,
-                                is_active: e.target.checked,
-                              })
-                            }
-                          />
-                          <label
-                            className="form-check-label"
-                            htmlFor="isActiveSwitch"
-                          >
-                            {selectedUser.is_active ? "Active" : "Inactive"}
-                          </label>
-                        </div>
-                      </Form.Group>
-                      <div className="mt-4 text-end">
-                        <Button
-                          variant="secondary"
-                          onClick={() => setShowModal(false)}
-                        >
-                          Cancel
-                        </Button>
-                        <Button
-                          type="submit"
-                          variant="primary"
-                          className="ms-2"
-                        >
-                          Save Changes
-                        </Button>
-                      </div>
-                    </Form>
-                  </Modal.Body>
-                </Modal>
-              )}
             </div>
-          </div>
-        </div>
+
+
+      {/* User Table */}
+      <div className="table-responsive user-table-wrapper">
+        <table className="table table-bordered table-hover user-table">
+          <thead className="table-dark">
+            <tr>
+              <th>Select</th>
+              <th>User ID</th>
+              <th>Username</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filteredUsers.length ? (
+              filteredUsers.map((user) => (
+                <tr key={user.user_id}>
+                  <td>
+                    <input
+                      type="checkbox"
+                      onChange={(e) =>
+                        setSelectedUsers((prev) =>
+                          e.target.checked
+                            ? [...prev, user.user_id]
+                            : prev.filter((id) => id !== user.user_id)
+                        )
+                      }
+                    />
+                  </td>
+                  <td>{user.user_id}</td>
+                  <td>{user.username}</td>
+                  <td>{user.name}</td>
+                  <td>{user.email}</td>
+                  <td>{user.roleName}</td>
+                  <td>
+                    <img
+                      src={edit_icon}
+                      className="edit_icon me-2"
+                      onClick={() => handleEditClick(user)}
+                      alt="Edit"
+                      title="Edit User"
+                    />
+                    <img
+                      src={delete_icon}
+                      className="delete_icon"
+                      onClick={() => handleDeleteClick(user)}
+                      alt="Delete"
+                      title="Delete User"
+                    />
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="7" className="text-center text-muted py-4">
+                  No users found matching your criteria.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
       </div>
-      <FooterComponent />
+
+      {/* Modal */}
+      {showModal && (
+        <Modal show={showModal} onHide={() => setShowModal(false)} centered dialogClassName="custom-user-modal">
+          <Modal.Header closeButton className="modal-header-custom">
+            <Modal.Title>Edit User</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <div className="modal-body-scroll">
+              <Form onSubmit={handleSubmit}>
+                <Form.Group controlId="username" className="mb-3">
+                  <Form.Label>Username</Form.Label>
+                  <Form.Control type="text" value={selectedUser.username} disabled />
+                </Form.Group>
+
+                <Form.Group controlId="name" className="mb-3">
+                  <Form.Label>Name</Form.Label>
+                  <Form.Control
+                    type="text"
+                    value={selectedUser.name}
+                    onChange={(e) => setSelectedUser({ ...selectedUser, name: e.target.value })}
+                  />
+                </Form.Group>
+
+                <Form.Group controlId="email" className="mb-3">
+                  <Form.Label>Email</Form.Label>
+                  <Form.Control
+                    type="email"
+                    value={selectedUser.email}
+                    onChange={(e) => setSelectedUser({ ...selectedUser, email: e.target.value })}
+                  />
+                </Form.Group>
+
+                <Form.Group controlId="password" className="mb-3">
+                  <Form.Label>Password</Form.Label>
+                  <Form.Control
+                    type={showPassword ? "text" : "password"}
+                    value={selectedUser.password}
+                    onChange={(e) => setSelectedUser({ ...selectedUser, password: e.target.value })}
+                  />
+                  <Form.Check
+                    type="checkbox"
+                    label={showPassword ? "Hide Password" : "Show Password"}
+                    checked={showPassword}
+                    onChange={() => setShowPassword(!showPassword)}
+                    className="mt-2"
+                  />
+                </Form.Group>
+
+                <Form.Group controlId="role" className="mb-3">
+                  <Form.Label>Role</Form.Label>
+                  <Form.Select
+                    value={reverseRoleMapping[selectedUser.roleName]}
+                    onChange={(e) =>
+                      setSelectedUser({
+                        ...selectedUser,
+                        roleName: roleMapping[e.target.value],
+                      })
+                    }
+                  >
+                    <option value="1">Admin</option>
+                    <option value="2">Business Owner</option>
+                    <option value="3">Supervisor</option>
+                    <option value="4">Student</option>
+                  </Form.Select>
+                </Form.Group>
+
+                <Form.Group className="mb-4">
+                  <Form.Check
+                    type="switch"
+                    label={selectedUser.is_active ? "Active" : "Inactive"}
+                    checked={selectedUser.is_active}
+                    onChange={(e) => setSelectedUser({ ...selectedUser, is_active: e.target.checked })}
+                  />
+                </Form.Group>
+
+                <div className="d-flex justify-content-end gap-2">
+                  <Button variant="secondary" onClick={() => setShowModal(false)}>Cancel</Button>
+                  <Button type="submit" variant="primary">Save Changes</Button>
+                </div>
+              </Form>
+            </div>
+          </Modal.Body>
+        </Modal>
+      )}
+
     </div>
+  </div>
+  <FooterComponent />
+</div>
+
   );
 };
 

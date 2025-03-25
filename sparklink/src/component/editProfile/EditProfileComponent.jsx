@@ -7,6 +7,8 @@ import { useAuth } from '../../AuthContext';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import { FaEdit } from 'react-icons/fa';
+import { toast, ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 import '../createproject/CreateProjectComponent.css';
 
@@ -117,153 +119,165 @@ useEffect(() => {
       if (response.data.profile?.avatar) {
             setSelectedAvatar(response.data.profile.avatar); // ✅ Update UI with saved avatar
         }
-      alert("Profile updated successfully!");
-      navigate(`/profile?user_id=${user.user_id}`);
+      // ✅ Success Notification
+        toast.success("🎉 Profile updated successfully!", {
+            position: "top-right",
+            autoClose: 2000, // Closes in 3 seconds
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            theme: "colored",
+            icon: "✅"
+        });
+
+        setTimeout(() => {
+          navigate(`/profile?user_id=${user.user_id}`);
+      }, 2000); // Wait for 3.5 seconds before navigating
     } catch (error) {
-      setError(error.response?.data?.message || 'Failed to update profile FE.');
+      // ✅ Error Notification
+        toast.error("⚠️ " + (error.response?.data?.message || "Failed to update profile."), {
+            position: "top-right",
+            autoClose: 2000, // Closes in 4 seconds
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            theme: "colored",
+            icon: "❌"
+        });
     }
-  };
+};
 
   if (loading) return <div className="loading">Loading...</div>;
   if (error) return <div className="error">{error}</div>;
 
   return (
     <>
+    <ToastContainer 
+            position="top-right"
+            autoClose={3000}
+            hideProgressBar={false}
+            newestOnTop={true}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="colored"
+      />
+
+          {loading && (
+                              <div className="loading-overlay">
+                                  <div className="loading-spinner">
+                                      <div className="spinner-icon">
+                                          <div className="spinner-border" role="status"></div>
+                                      </div>
+                                      <div className="loading-text">⏳ Please wait, we’re processing your request...</div>
+                                  </div>
+                              </div>
+                          )}
       <MenuComponent />
       {/* Student profile */}
       {role === 'student' && (
-        <div className="container bootstrap snippets bootdeys">
-          <div className="row">
-            <div className="col-xs-6 col-sm-8 mx-auto">
-              <form className="form-horizontal" onSubmit={handleSubmit}>
-                 {/* Avatar display with edit button */}
-<div className="panel panel-default">
-    <div className="panel-body text-center position-relative">
-        <img
-            src={selectedAvatar}
-            className="img-circle profile-avatar"
-            alt="User avatar"
-        />
-        {/* Edit Button beside avatar */}
-        <button 
-            className="avatar-edit-btn" 
-            onClick={() => handleAvatarModal(true)}
-        >
-            <FaEdit size={20} />
-        </button>
-    </div>
-</div>
+<div className="profile-container">
+        <div className="profile-card">
+            <form className="form-horizontal" onSubmit={handleSubmit}>
 
-{/* // Avatar Selection Modal */}
-<Modal show={showAvatarModal} onHide={() => handleAvatarModal(false)} centered>
-    <Modal.Header closeButton>
-        <Modal.Title>Select Your Avatar</Modal.Title>
-    </Modal.Header>
-    <Modal.Body className="d-flex flex-wrap justify-content-center">
-        {avatars.map((avatar, index) => (
-            <img
-                key={index}
-                src={avatar}
-                alt={`Avatar ${index}`}
-                className={`avatar-option ${selectedAvatar === avatar ? "selected-avatar" : ""}`}
-                onClick={() => handleAvatarSelection(avatar)}
-                style={{ width: "80px", height: "80px", margin: "10px", cursor: "pointer" }}
-            />
-        ))}
-    </Modal.Body>
-    <Modal.Footer>
-        <Button 
-            variant="primary" 
-            onClick={() => {
-                setProfile((prevProfile) => ({
-                    ...prevProfile,
-                    avatar: selectedAvatar
-                }));
-                handleCloseAvatarModal();
-            }}
-        >
-            Save Avatar
-        </Button>
-
-    </Modal.Footer>
-</Modal>
+                {/* Avatar Section */}
+                <div className="panel">
+                    <div className="panel-body text-center position-relative">
+                        {/* Avatar Image */}
+                        <img
+                            src={selectedAvatar}
+                            className="profile-avatar"
+                            alt="User avatar"
+                        />
+                        {/* Edit Button */}
+                        <button 
+                            className="avatar-edit-btn" 
+                            type="button"
+                            onClick={handleOpenAvatarModal}
+                        >
+                            <FaEdit size={20} />
+                        </button>
+                    </div>
+                </div>
 
                 {/* User Info */}
-                <div className="panel panel-default">
-                  <div className="panel-heading">
-                    <h4 className="panel-title">User Info</h4>
-                  </div>
-                  <div className="panel-body">
-                    {[
-                      { label: 'Bio', name: 'bio', type: 'textarea' },
-                      { label: 'Education', name: 'education', type: 'text' },
-                      { label: 'Experience', name: 'experience', type: 'text' },
-                      { label: 'Courses', name: 'course', type: 'text' },
-                      { label: 'Skills', name: 'skills', type: 'text' },
-                    ].map(({ label, name, type }) => (
-                      <div className="form-group" key={name}>
-                        <label className="col-sm-2 control-label">{label}</label>
-                        <div className="col-sm-8">
-                          {type === 'textarea' ? (
-                            <textarea
-                              name={name}
-                              value={profile[name] || ''}
-                              className="form-control"
-                              onChange={handleChange}
-                              placeholder={`Enter ${label.toLowerCase()}`}
-                            />
-                          ) : (
-                            <input
-                              name={name}
-                              type={type}
-                              value={profile[name] || ''}
-                              className="form-control"
-                              onChange={handleChange}
-                              placeholder={`Enter ${label.toLowerCase()}`}
-                            />
-                          )}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+                <div className="panel">
+                    <div className="panel-heading">
+                        <h4 className="panel-title">User Info</h4>
+                    </div>
+                    <div className="panel-body">
+                        {[
+                            { label: 'Bio', name: 'bio', type: 'textarea' },
+                            { label: 'Education', name: 'education', type: 'text' },
+                            { label: 'Experience', name: 'experience', type: 'text' },
+                            { label: 'Courses', name: 'course', type: 'text' },
+                            { label: 'Skills', name: 'skills', type: 'text' },
+                        ].map(({ label, name, type }) => (
+                            <div className="form-group" key={name}>
+                                <label className="control-label">{label}</label>
+                                <div className="input-container">
+                                    {type === 'textarea' ? (
+                                        <textarea
+                                            name={name}
+                                            value={profile[name] || ''}
+                                            className="form-control"
+                                            onChange={handleChange}
+                                            placeholder={`Enter ${label.toLowerCase()}`}
+                                        />
+                                    ) : (
+                                        <input
+                                            name={name}
+                                            type={type}
+                                            value={profile[name] || ''}
+                                            className="form-control"
+                                            onChange={handleChange}
+                                            placeholder={`Enter ${label.toLowerCase()}`}
+                                        />
+                                    )}
+                                </div>
+                            </div>
+                        ))}
+                    </div>
                 </div>
 
                 {/* Contact Info */}
-                <div className="panel panel-default">
-                  <div className="panel-heading">
-                    <h4 className="panel-title">Contact Info</h4>
-                  </div>
-                  <div className="panel-body">
-                    {[
-                      { label: 'Phone Number', name: 'phone_number', type: 'tel' },
-                      { label: 'LinkedIn', name: 'linkedin', type: 'text' },
-                      { label: 'GitHub', name: 'github', type: 'text' },
-                      { label: 'Address', name: 'address', type: 'text' },
-                    ].map(({ label, name, type, disabled }) => (
-                      <div className="form-group" key={name}>
-                        <label className="col-sm-2 control-label">{label}</label>
-                        <div className="col-sm-8">
-                          <input
-                            name={name}
-                            type={type}
-                            value={profile[name] || ''}
-                            className="form-control"
-                            onChange={handleChange}
-                            placeholder={`Enter ${label.toLowerCase()}`}
-                            disabled={disabled || false}
-                          />
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+                <div className="panel">
+                    <div className="panel-heading">
+                        <h4 className="panel-title">Contact Info</h4>
+                    </div>
+                    <div className="panel-body">
+                        {[
+                            { label: 'Phone Number', name: 'phone_number', type: 'tel' },
+                            { label: 'LinkedIn', name: 'linkedin', type: 'text' },
+                            { label: 'GitHub', name: 'github', type: 'text' },
+                            { label: 'Address', name: 'address', type: 'text' },
+                        ].map(({ label, name, type, disabled }) => (
+                            <div className="form-group" key={name}>
+                                <label className="control-label">{label}</label>
+                                <div className="input-container">
+                                    <input
+                                        name={name}
+                                        type={type}
+                                        value={profile[name] || ''}
+                                        className="form-control"
+                                        onChange={handleChange}
+                                        placeholder={`Enter ${label.toLowerCase()}`}
+                                        disabled={disabled || false}
+                                    />
+                                </div>
+                            </div>
+                        ))}
+                    </div>
                 </div>
 
                 {/* Submit and Cancel */}
-                <div className="form-group">
-                  <div className="col-sm-8 col-sm-offset-2">
-                    <button type="submit" className="btn btn-primary">Submit</button>
-                    <a href={`/Profile?user_id=${user.user_id}`} className="btn btn-secondary">Cancel</a>
-                  </div>
+                <div className="button-container">
+                    <button type="submit" className="button-primary">Submit</button>
+                    <a href={`/Profile?user_id=${user.user_id}`} className="button-secondary">Cancel</a>
                 </div>
 
                 {/* Message */}
@@ -272,143 +286,156 @@ useEffect(() => {
               </form>
             </div>
           </div>
-        </div>
       )}
 
       {/* Supervisor Profile */}
       {role === 'supervisor' && (
-        <div className="container bootstrap snippets bootdeys">
-          <div className="row">
-            <div className="col-xs-12 col-sm-9">
-              <form className="form-horizontal" onSubmit={handleSubmit}>
-                {/* Avatar display with edit button */}
-<div className="panel panel-default">
-    <div className="panel-body text-center position-relative">
-        <img
-            src={selectedAvatar}
-            className="img-circle profile-avatar"
-            alt="User avatar"
-        />
-        {/* Edit Button beside avatar */}
-        <button 
-            className="avatar-edit-btn" 
-            onClick={() => handleAvatarModal(true)}
-        >
-            <FaEdit size={20} />
-        </button>
-    </div>
-</div>
+    <div className="profile-container">
+        <div className="profile-card">
+            <form className="form-horizontal" onSubmit={handleSubmit}>
 
-{/* // Avatar Selection Modal */}
-<Modal show={showAvatarModal} onHide={() => handleAvatarModal(false)} centered>
-    <Modal.Header closeButton>
-        <Modal.Title>Select Your Avatar</Modal.Title>
-    </Modal.Header>
-    <Modal.Body className="d-flex flex-wrap justify-content-center">
-        {avatars.map((avatar, index) => (
-            <img
-                key={index}
-                src={avatar}
-                alt={`Avatar ${index}`}
-                className={`avatar-option ${selectedAvatar === avatar ? "selected-avatar" : ""}`}
-                onClick={() => handleAvatarSelection(avatar)}
-                style={{ width: "80px", height: "80px", margin: "10px", cursor: "pointer" }}
-            />
-        ))}
-    </Modal.Body>
-    <Modal.Footer>
-        <button className="btn btn-secondary" onClick={() => handleAvatarModal(false)}>Cancel</button>
-        <button className="btn btn-primary" onClick={saveAvatarSelection}>Save Avatar</button>
-    </Modal.Footer>
-</Modal>
+                {/* Avatar Section */}
+                <div className="panel">
+                    <div className="panel-body text-center position-relative">
+                        {/* Avatar Image */}
+                        <img
+                            src={selectedAvatar}
+                            className="profile-avatar"
+                            alt="User avatar"
+                        />
+                        {/* Edit Button */}
+                        <button 
+                            className="avatar-edit-btn" 
+                            type="button"
+                            onClick={handleOpenAvatarModal}
+                        >
+                            <FaEdit size={20} />
+                        </button>
+                    </div>
+                </div>
+
+                {/* Avatar Selection Modal */}
+                <Modal show={showAvatarModal} onHide={handleCloseAvatarModal} centered>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Select Your Avatar</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <div className="avatar-grid">
+                            {avatars.map((avatar, index) => (
+                                <img 
+                                    key={index} 
+                                    src={avatar} 
+                                    alt={`Avatar ${index + 1}`} 
+                                    className={`avatar-option ${selectedAvatar === avatar ? 'selected' : ''}`} 
+                                    onClick={() => handleAvatarSelection(avatar)}
+                                />
+                            ))}
+                        </div>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={handleCloseAvatarModal}>
+                            Cancel
+                        </Button>
+                        <Button variant="primary" onClick={handleCloseAvatarModal}>
+                            Save Avatar
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
 
                 {/* Supervisor Info */}
-                <div className="panel panel-default">
-                  <div className="panel-heading">
-                    <h4 className="panel-title">Supervisor Info</h4>
-                  </div>
-                  <div className="panel-body">
-                    {[
-                      { label: 'Department', name: 'department', type: 'text' },
-                      { label: 'Domain', name: 'domain', type: 'text' },
-                      { label: 'Bio', name: 'bio', type: 'textarea' },
-                      { label: 'Expertise', name: 'expertise', type: 'text' },
-                      { label: 'Education', name: 'education', type: 'text' },
-                      { label: 'Experience', name: 'experience', type: 'text' },
-                    ].map(({ label, name, type }) => (
-                      <div className="form-group" key={name}>
-                        <label className="col-sm-2 control-label">{label}</label>
-                        <div className="col-sm-10">
-                          {type === 'textarea' ? (
-                            <textarea
-                              name={name}
-                              value={profile[name] || ''}
-                              className="form-control"
-                              onChange={handleChange}
-                              placeholder={`Enter ${label.toLowerCase()}`}
-                            />
-                          ) : (
-                            <input
-                              name={name}
-                              type={type}
-                              value={profile[name] || ''}
-                              className="form-control"
-                              onChange={handleChange}
-                              placeholder={`Enter ${label.toLowerCase()}`}
-                            />
-                          )}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+                <div className="panel">
+                    <div className="panel-heading">
+                        <h4 className="panel-title">Supervisor Info</h4>
+                    </div>
+                    <div className="panel-body">
+                        {[
+                            { label: 'Department', name: 'department', type: 'text' },
+                            { label: 'Domain', name: 'domain', type: 'text' },
+                            { label: 'Bio', name: 'bio', type: 'textarea' },
+                            { label: 'Expertise', name: 'expertise', type: 'text' },
+                            { label: 'Education', name: 'education', type: 'text' },
+                            { label: 'Experience', name: 'experience', type: 'text' },
+                        ].map(({ label, name, type }) => (
+                            <div className="form-group" key={name}>
+                                <label className="control-label">{label}</label>
+                                <div className="input-container">
+                                    {type === 'textarea' ? (
+                                        <textarea
+                                            name={name}
+                                            value={profile[name] || ''}
+                                            className="form-control"
+                                            onChange={handleChange}
+                                            placeholder={`Enter ${label.toLowerCase()}`}
+                                        />
+                                    ) : (
+                                        <input
+                                            name={name}
+                                            type={type}
+                                            value={profile[name] || ''}
+                                            className="form-control"
+                                            onChange={handleChange}
+                                            placeholder={`Enter ${label.toLowerCase()}`}
+                                        />
+                                    )}
+                                </div>
+                            </div>
+                        ))}
+                    </div>
                 </div>
 
                 {/* Contact Info */}
-                <div className="panel panel-default">
-                  <div className="panel-heading">
-                    <h4 className="panel-title">Contact Info</h4>
-                  </div>
-                  <div className="panel-body">
-                    {[
-                      { label: 'Phone Number', name: 'phone_number', type: 'tel' },
-                      { label: 'LinkedIn', name: 'linkedin', type: 'text' },
-                      { label: 'GitHub', name: 'github', type: 'text' },
-                      { label: 'Address', name: 'address', type: 'text' },
-                    ].map(({ label, name, type, disabled }) => (
-                      <div className="form-group" key={name}>
-                        <label className="col-sm-2 control-label">{label}</label>
-                        <div className="col-sm-10">
-                          <input
-                            name={name}
-                            type={type}
-                            value={profile[name] || ''}
-                            className="form-control"
-                            onChange={handleChange}
-                            placeholder={`Enter ${label.toLowerCase()}`}
-                            disabled={disabled || false}
-                          />
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+                <div className="panel">
+                    <div className="panel-heading">
+                        <h4 className="panel-title">Contact Info</h4>
+                    </div>
+                    <div className="panel-body">
+                        {[
+                            { label: 'Phone Number', name: 'phone_number', type: 'tel' },
+                            { label: 'LinkedIn', name: 'linkedin', type: 'text' },
+                            { label: 'GitHub', name: 'github', type: 'text' },
+                            { label: 'Address', name: 'address', type: 'text' },
+                        ].map(({ label, name, type, disabled }) => (
+                            <div className="form-group" key={name}>
+                                <label className="control-label">{label}</label>
+                                <div className="input-container">
+                                    <input
+                                        name={name}
+                                        type={type}
+                                        value={profile[name] || ''}
+                                        className="form-control"
+                                        onChange={handleChange}
+                                        placeholder={`Enter ${label.toLowerCase()}`}
+                                        disabled={disabled || false}
+                                    />
+                                </div>
+                            </div>
+                        ))}
+                    </div>
                 </div>
 
-                {/* Submit and Cancel */}
-                <div className="form-group">
-                  <div className="col-sm-10 col-sm-offset-2">
-                    <button type="submit" className="btn btn-primary">Submit</button>
-                    <a href={`/Profile?user_id=${user.user_id}`} className="btn btn-secondary">Cancel</a>
-                  </div>
+                {/* Submit and Cancel Buttons */}
+                <div className="button-container">
+                    <button type="submit" className="button-primary">Submit</button>
+                    <a href={`/Profile?user_id=${user.user_id}`} className="button-secondary">Cancel</a>
                 </div>
 
-                {/* Message */}
-                {message && <div className="alert alert-success">{message}</div>}
-                {error && <div className="alert alert-danger">{error}</div>}
-              </form>
-            </div>
-          </div>
+                {/* Toast Notifications */}
+                <ToastContainer 
+                    position="top-right"
+                    autoClose={2000}
+                    hideProgressBar={false}
+                    newestOnTop={true}
+                    closeOnClick
+                    rtl={false}
+                    pauseOnFocusLoss
+                    draggable
+                    pauseOnHover
+                    theme="colored"
+                />
+            </form>
         </div>
-      )}
+    </div>
+)}
 
       {/* Business Owner Profile */}
       {role === 'business_owner' && (
@@ -416,114 +443,102 @@ useEffect(() => {
           <div className="row">
             <div className="col-xs-12 col-sm-9">
               <form className="form-horizontal" onSubmit={handleSubmit}>
-                {/* Avatar display with edit button */}
-<div className="panel panel-default">
-    <div className="panel-body text-center position-relative">
-        <img
-            src={selectedAvatar}
-            className="img-circle profile-avatar"
-            alt="User avatar"
-        />
-        {/* Edit Button beside avatar */}
-        <button 
-            className="avatar-edit-btn" 
-            onClick={() => handleAvatarModal(true)}
-        >
-            <FaEdit size={20} />
-        </button>
-    </div>
-</div>
+                {/* Avatar */}
+                <div className="panel panel-default">
+                  <div className="panel-body text-center">
+                      <img
+                          src={selectedAvatar}
+                          className="img-circle profile-avatar"
+                          alt="User avatar"
+                      />
+                  </div>
+              </div>
 
-{/* // Avatar Selection Modal */}
-<Modal show={showAvatarModal} onHide={() => handleAvatarModal(false)} centered>
-    <Modal.Header closeButton>
-        <Modal.Title>Select Your Avatar</Modal.Title>
-    </Modal.Header>
-    <Modal.Body className="d-flex flex-wrap justify-content-center">
-        {avatars.map((avatar, index) => (
-            <img
-                key={index}
-                src={avatar}
-                alt={`Avatar ${index}`}
-                className={`avatar-option ${selectedAvatar === avatar ? "selected-avatar" : ""}`}
-                onClick={() => handleAvatarSelection(avatar)}
-                style={{ width: "80px", height: "80px", margin: "10px", cursor: "pointer" }}
-            />
-        ))}
-    </Modal.Body>
-    <Modal.Footer>
-        <button className="btn btn-secondary" onClick={() => handleAvatarModal(false)}>Cancel</button>
-        <button className="btn btn-primary" onClick={saveAvatarSelection}>Save Avatar</button>
-    </Modal.Footer>
-</Modal>
+              {/* Avatar Selection UI */}
+              {/* <div className="panel panel-default">
+                  <div className="panel-heading">
+                      <h4 className="panel-title">Select Your Avatar</h4>
+                  </div>
+                  <div className="panel-body avatar-grid">
+                      {avatars.map((avatar, index) => (
+                          <img 
+                              key={index} 
+                              src={avatar} 
+                              alt={`Avatar ${index + 1}`} 
+                              className={`avatar-option ${selectedAvatar === avatar ? 'selected' : ''}`} 
+                              onClick={() => handleAvatarSelection(avatar)}
+                          />
+                      ))}
+                  </div>
+              </div> */}
 
 
                 {/* Business Owner Info */}
-                <div className="panel panel-default">
-                  <div className="panel-heading">
-                    <h4 className="panel-title">Business Owner Info</h4>
-                  </div>
-                  <div className="panel-body">
-                    {[
-                      { label: 'Business Type', name: 'business_type', type: 'text' },
-                      { label: 'Domain Type', name: 'domain_type', type: 'text' },
-                      { label: 'Bio', name: 'bio', type: 'textarea' },
-                    ].map(({ label, name, type }) => (
-                      <div className="form-group" key={name}>
-                        <label className="col-sm-2 control-label">{label}</label>
-                        <div className="col-sm-8">
-                          {type === 'textarea' ? (
-                            <textarea
-                              name={name}
-                              value={profile[name] || ''}
-                              className="form-control"
-                              onChange={handleChange}
-                              placeholder={`Enter ${label.toLowerCase()}`}
-                            />
-                          ) : (
-                            <input
-                              name={name}
-                              type={type}
-                              value={profile[name] || ''}
-                              className="form-control"
-                              onChange={handleChange}
-                              placeholder={`Enter ${label.toLowerCase()}`}
-                            />
-                          )}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+                <div className="panel">
+                    <div className="panel-heading">
+                        <h4 className="panel-title">Business Owner Info</h4>
+                    </div>
+                    <div className="panel-body">
+                        {[
+                            { label: 'Business Type', name: 'business_type', type: 'text' },
+                            { label: 'Domain Type', name: 'domain_type', type: 'text' },
+                            { label: 'Bio', name: 'bio', type: 'textarea' },
+                        ].map(({ label, name, type }) => (
+                            <div className="form-group" key={name}>
+                                <label className="control-label">{label}</label>
+                                <div className="input-container">
+                                    {type === 'textarea' ? (
+                                        <textarea
+                                            name={name}
+                                            value={profile[name] || ''}
+                                            className="form-control"
+                                            onChange={handleChange}
+                                            placeholder={`Enter ${label.toLowerCase()}`}
+                                        />
+                                    ) : (
+                                        <input
+                                            name={name}
+                                            type={type}
+                                            value={profile[name] || ''}
+                                            className="form-control"
+                                            onChange={handleChange}
+                                            placeholder={`Enter ${label.toLowerCase()}`}
+                                        />
+                                    )}
+                                </div>
+                            </div>
+                        ))}
+                    </div>
                 </div>
 
                 {/* Contact Info */}
-                <div className="panel panel-default">
-                  <div className="panel-heading">
-                    <h4 className="panel-title">Contact Info</h4>
-                  </div>
-                  <div className="panel-body">
-                    {[
-                      { label: 'Phone Number', name: 'phone_number', type: 'tel' },
-                      { label: 'LinkedIn', name: 'linkedin', type: 'text' },
-                      { label: 'GitHub', name: 'github', type: 'text' },
-                      { label: 'Address', name: 'address', type: 'text' },
-                    ].map(({ label, name, type, disabled }) => (
-                      <div className="form-group" key={name}>
-                        <label className="col-sm-2 control-label">{label}</label>
-                        <div className="col-sm-10">
-                          <input
-                            name={name}
-                            type={type}
-                            value={profile[name] || ''}
-                            className="form-control"
-                            onChange={handleChange}
-                            placeholder={`Enter ${label.toLowerCase()}`}
-                            disabled={disabled || false}
-                          />
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+                <div className="panel">
+                    <div className="panel-heading">
+                        <h4 className="panel-title">Contact Info</h4>
+                    </div>
+                    <div className="panel-body">
+                        {[
+                            { label: 'Phone Number', name: 'phone_number', type: 'tel' },
+                            { label: 'LinkedIn', name: 'linkedin', type: 'text' },
+                            { label: 'GitHub', name: 'github', type: 'text' },
+                            { label: 'Address', name: 'address', type: 'text' },
+                        ].map(({ label, name, type, disabled }) => (
+                            <div className="form-group" key={name}>
+                                <label className="control-label">{label}</label>
+                                <div className="input-container">
+                                    <input
+                                        name={name}
+                                        type={type}
+                                        value={profile[name] || ''}
+                                        className="form-control"
+                                        onChange={handleChange}
+                                        placeholder={`Enter ${label.toLowerCase()}`}
+                                        disabled={disabled || false}
+                                    />
+                                </div>
+                            </div>
+                        ))}
+                    </div>
                 </div>
 
                 {/* Submit and Cancel */}
