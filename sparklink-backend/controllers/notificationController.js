@@ -505,7 +505,17 @@ exports.sendProjectCreatedEmails = async (req, res) => {
       from: process.env.EMAIL_USER,
       to: studentEmails,
       subject: "New Project Available",
-      html: `<p>A new project "<b>${project_name}</b>" has been created. Check it out in the projects section.</p>`,
+      html: `
+        <p style="color: #ffffff;">Dear Student,</p>
+        <p style="color: #dddddd;">A new project "<b>${project_name}</b>" has been created on SparkLink. You can check it out by clicking the button below:</p>
+        <a href="http://localhost:3100/view-project"
+          style="display: inline-block; padding: 12px 24px; background-color: #28a745; color: #ffffff; text-decoration: none; border-radius: 6px; font-weight: bold;">
+          View Project
+        </a>
+        <p style="color: #aaaaaa;">If you did not expect this email, you may ignore it.</p>
+        <p style="color: #888888;">Regards,<br>Team SparkLink</p>
+      `,
+
     };
 
     // Email to Supervisor (Project Creator)
@@ -513,7 +523,17 @@ exports.sendProjectCreatedEmails = async (req, res) => {
       from: process.env.EMAIL_USER,
       to: supervisor_email,
       subject: "Project Created Successfully",
-      html: `<p>Your project "<b>${project_name}</b>" has been successfully created.</p>`,
+      html: `
+        <p style="color: #ffffff;">Dear Supervisor,</p>
+        <p style="color: #dddddd;">Your project "<b>${project_name}</b>" has been successfully created.</p>
+        <a href="http://localhost:3100//view-project"
+          style="display: inline-block; padding: 12px 24px; background-color: #005596; color: #ffffff; text-decoration: none; border-radius: 6px; font-weight: bold;">
+          View Project
+        </a>
+        <p style="color: #aaaaaa;">If this wasn't you, please contact support or ignore this email.</p>
+        <p style="color: #888888;">Regards,<br>Team SparkLink</p>
+      `,
+
     };
 
     // Send emails

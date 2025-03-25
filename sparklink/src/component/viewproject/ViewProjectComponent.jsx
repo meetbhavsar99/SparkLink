@@ -717,8 +717,8 @@ const fetchProjects = async () => {
                     <div className="container-fluid mb-5">
                         <div className="progress_container">
                             <div className="row">
-                                <div className="col-lg-1 col-md-1 col-sm-3"></div>
-                                <div className="col-lg-11 col-md-11 col-sm-9">
+                                {/* <div className="col-lg-1 col-md-1 col-sm-3"></div> */}
+                                <div className="col-lg-12 col-md-10 col-sm-10">
                                     <div className="progress-tracker">
                                     <div className="search-container">
                                             <input 
@@ -1079,7 +1079,11 @@ const fetchProjects = async () => {
                                                                     <div
                                                                         key={`${role}-${user_id}`}
                                                                         className="stakeholder-button"
-                                                                        onClick={() => fetchUserProfile(user_id)} // Navigate to profile on click
+                                                                        onClick={() => {
+                                                                            if (!(user?.role === "4" && role === "business_owner")) {
+    fetchUserProfile(user_id);
+}
+                                                                        }} // Navigate to profile on click
                                                                     >
                                                                         {name}
                                                                         {editFlag &&
@@ -1120,8 +1124,12 @@ const fetchProjects = async () => {
                                             onClick={closeModal}>Close</button>
                                         {editFlag && <button className="ms-3 text-center button_text button-main"
                                             onClick={UpdateProjDetails}>Save Changes</button>}
-                                        {user?.role === "student" && <button className="ms-3 text-center button_text button-main"
-                                            onClick={submitApplication}>Click to Apply</button>}
+                                        {user?.role === "4" && 
+ !projDetailsList?.stakeholder?.some(st => st.role === "student" && st.user_id === user?.user_id) && (
+  <button className="ms-3 text-center button_text button-main" onClick={submitApplication}>
+    Click to Apply
+  </button>
+)}
                                         {(accessVal === 'S' || accessVal === 'E' || accessVal === 'M' || accessVal === 'B' || accessVal === 'SB') && <button className="ms-3 text-center button_text button-main
                                         "
                                             onClick={viewMilestones}>View Milestones</button>}

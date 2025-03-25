@@ -121,6 +121,10 @@ body {
   gap: 10px;
 }
 
+p {
+  margin-bottom: 0px !important;
+}
+
 .contact-icon {
   font-size: 20px;
   color: #ff4757;

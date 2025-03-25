@@ -243,7 +243,7 @@ const handleAvatarSelection = (avatar) => {
         <MenuComponent />
             <MasterComponent />
                         {role === 'admin' && (
-                            <div className="admin-profile">
+                            <div className="admin-profile my-5">
                                 <div className="admin-header">
                                     <h1>Welcome, {userDetails.username}</h1>
                                     <p className="admin-subtitle">You are logged in as an <strong>Administrator</strong>.</p>
@@ -281,8 +281,8 @@ const handleAvatarSelection = (avatar) => {
                                 </div>
                             </div>
                         )}
-{role === 'student' && (
-                                <div className="student-profile-container">
+                        {role === 'student' && (
+                                <div className="student-profile-container mb-4">
                                     <div className="student-profile-card">
                                         <div className="row student-profile-header">
                                             {/* Left Section: Avatar, Role, and Social Media */}
@@ -542,7 +542,7 @@ const handleAvatarSelection = (avatar) => {
             {/* supervisor profile starts */}
              {/* Supervisor Profile */}
 {role === 'supervisor' && (
-    <div className="supervisor-profile-container">
+    <div className="supervisor-profile-container mb-4">
         <div className="supervisor-profile-card">
 
             {/* First Row: Avatar, Role, Social Media & Bio, Contact Info */}
@@ -784,7 +784,7 @@ const handleAvatarSelection = (avatar) => {
             )}
             {/* supervisor profile ends */}
             {role === 'business_owner' && (
-                <div className="business-owner-profile-container">
+                <div className="business-owner-profile-container mb-4">
                     <div className="business-owner-profile-card">
                         {/* 🔹 First Row: Avatar, Role & Contact Info */}
                         <div className="business-owner-header">

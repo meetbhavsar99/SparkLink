@@ -3,8 +3,6 @@
     padding-left: 0px !important;
 }
 
-
-
 /* Container for progress tracker */
 .progress-tracker {
     padding: 20px;
@@ -174,7 +172,7 @@
     padding-top: 20px;
     padding-right: 30px;
     padding-bottom: 20px;
-    padding-left: 30px;
+    /* padding-left: 30px; */
     ;
     /* Equal padding around */
     margin: auto;

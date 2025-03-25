@@ -2,6 +2,8 @@
 .sidemenu-container {
     position: fixed;
     height: 100%;
+    top: 0;
+    left: 0;
     z-index: 1000;
 }
 
@@ -12,11 +14,33 @@
     font-style: normal;
 }
 
+.navBackground_expanded,
+.navBackground {
+    overflow-y: auto;
+}
+
+/* Optional: to improve the scrollbar appearance */
+.navBackground_expanded::-webkit-scrollbar,
+.navBackground::-webkit-scrollbar {
+    width: 8px;
+}
+
+.navBackground_expanded::-webkit-scrollbar-thumb,
+.navBackground::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+}
+
+.navBackground_expanded::-webkit-scrollbar-track,
+.navBackground::-webkit-scrollbar-track {
+    background: transparent;
+}
+
 /* Glassmorphism effect for the menu */
 .menu-glassmorphism {
     backdrop-filter: blur(15px);
     -webkit-backdrop-filter: blur(15px);
-    background: rgba(0, 85, 150, 0.75);
+    background: #005596;
     /* Glass effect with #005596 tint */
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
     border-right: 1px solid rgba(255, 255, 255, 0.15);
@@ -243,31 +267,31 @@
 
 /* Active state styling */
 .nav-item.active {
-    background: rgba(255, 255, 255, 0.1);
+    background: #ffcc00;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
 .nav-item.active .icon-container {
-    background: rgba(52, 152, 219, 0.2);
+    background: rgba(255, 255, 255, 0);
 }
 
 .nav-item.active .menu-text {
     font-weight: 600;
-    color: #ffffff;
+    color: #58585b;
 }
 
 /* Hover effects */
 .nav-item:hover {
-    background: rgba(255, 255, 255, 0.05);
+    background: #58585b;
     transform: translateY(-2px);
 }
 
 .nav-item:hover .icon-container {
-    background: rgba(52, 152, 219, 0.1);
+    background: #ffffff00;
 }
 
 .nav-item:hover .menu-text {
-    color: #3498db;
+    color: #ffcc00;
 }
 
 /* Collapsed items */

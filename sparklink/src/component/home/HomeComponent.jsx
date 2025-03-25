@@ -105,7 +105,7 @@ const HomeComponent = () => {
                             </div>
 
                             <div className="mt-5 button-container">
-                                <button className="btn-primary" onClick={() => window.location.href = "/view-project"}>Know More</button>
+                                <button className="text-center button_text button-card" onClick={() => window.location.href = "/view-project"}>Know More</button>
                             </div>
 
                             <div className="row mt-5 feature-cards">
@@ -126,17 +126,17 @@ const HomeComponent = () => {
                             </div>
 
                             <div className="mt-5 button-container">
-                                <button className="btn-primary" onClick={() => window.location.href = "/view-project"}>Know More</button>
+                                <button className="text-center button_text button-card" onClick={() => window.location.href = "/view-project"}>Know More</button>
                             </div>
                         </div>
 
                         {/* Navigation Buttons for About Us, Contact Us, Login, Register */}
-                        <div className="mt-5 button-group">
+                        {/* <div className="mt-5 button-group">
                             <button className="btn-secondary" onClick={() => window.location.href = "/about"}>About Us</button>
                             <button className="btn-secondary" onClick={() => window.location.href = "/contact"}>Contact Us</button>
                             <button className="btn-primary" onClick={() => window.location.href = "/login"}>Login</button>
                             <button className="btn-primary" onClick={() => window.location.href = "/register"}>Register</button>
-                        </div>
+                        </div> */}
                     </div>
                 </div>
                 <FooterComponent />

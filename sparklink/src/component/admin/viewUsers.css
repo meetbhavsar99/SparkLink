@@ -1,8 +1,8 @@
 /* Main Wrapper */
 .user-management-wrapper {
   padding: 40px 40px;
-  background-color: #ffffff;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  background-color: #F1F0F5;
+  /* box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1); */
   transition: all 0.3s ease-in-out;
   box-sizing: border-box;
 

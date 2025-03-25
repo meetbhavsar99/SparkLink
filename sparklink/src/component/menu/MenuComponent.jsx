@@ -180,7 +180,7 @@ const MenuComponent = () => {
                   <div className="text-menu-category text-start px-3">
                     <span className="category-label">Home</span>
                   </div>
-                  <li className={getNavItemClass("/about")}>
+                  <li className={getNavItemClass("/")}>
                     <span className="menu-item-wrapper">
                       <Link className="text-menu nav-link-item" to="/">
                         <div className="icon-container">

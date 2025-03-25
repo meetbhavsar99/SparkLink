@@ -65,25 +65,29 @@ const LoginComponent = () => {
         form.classList.remove("was-validated"); // Reset validation after successful login
     } catch (error) {
         // Always return a generic error message for invalid credentials
+        // const backendMessage = error.response?.data?.message;
+
+        // if (error.response?.status === 403 && backendMessage === "Please confirm your account before logging in.") {
+        //   setErrorMessage("Please confirm your account before logging in.");
+        // } else if (error.response?.status === 401) {
+        //   setErrorMessage("Invalid credentials. Please try again.");
+        // } else {
+        //   setErrorMessage("Something went wrong. Please try again.");
+        // }
+        console.log("error.response.data.message", error.response?.data?.message);
+
         const backendMessage = error.response?.data?.message;
 
-        if (error.response?.status === 403 && backendMessage === "Please confirm your account before logging in.") {
+        if (error.response?.status === 401 && backendMessage === "Please verify your email before logging in.") {
           setErrorMessage("Please confirm your account before logging in.");
+        } else if (error.response?.status === 401 && backendMessage === "Please verify your email before logging in.") {
+          setErrorMessage("Please verify your email before logging in.");
         } else if (error.response?.status === 401) {
           setErrorMessage("Invalid credentials. Please try again.");
         } else {
-          setErrorMessage("Something went wrong. Please try again.");
+          setErrorMessage(backendMessage || "Something went wrong. Please try again.");
         }
 
-        // if (backendMessage === "Please verify your email before logging in.") {
-        //     setErrorMessage("Please confirm your account before logging in.");
-        // } 
-        // else if (backendMessage === "Your account is not active. Please contact support.") {
-        //     setErrorMessage("Your account is inactive. Please contact admin.");
-        // } 
-        // else {
-        //     setErrorMessage("Invalid credentials. Please try again.");
-        // }
         }
 };
 
@@ -135,7 +139,7 @@ const LoginComponent = () => {
                 <input
                   type={showPassword ? "text" : "password"}  // Toggle input type between text and password
                   id="form3Example4"
-                  className={`password_field form-control form-control-lg {isValidated ? (password ? "is-valid" : "is-invalid" ) : "" }`}
+                  className={`password_field form-control form-control-lg ${isValidated ? (password ? "is-valid" : "is-invalid") : ""}`}
                   value={password}
                   onChange={(e) => { setPassword(e.target.value)
                   }}

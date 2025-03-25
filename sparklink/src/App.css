@@ -1,25 +1,30 @@
 body {
   height: 100vh;
   background: linear-gradient(135deg, #f0f0f0, #f5f0ff);
+  overflow-x: hidden;
 }
 
 .button-home {
   background-color: #005596;
-  color: #58585B;
-  border: none;
+  color: #585858;
+  border: solid;
   font-weight: 700;
   padding: 10px 20px;
   font-size: 16px;
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s ease;
+
 }
 
+
 .button-home:hover {
-  background-color: #58585B;
+  background-color: #585858;
   color: #FFCE00;
-  border: 1px solid #58585B;
+  border: 1px solid #585858;
 }
+
+
 
 .page-container {
   display: flex;
@@ -51,7 +56,31 @@ body {
 }
 
 .button-delete:hover {
-  background-color: #58585B;
+  background-color: #585858;
   color: #FFCE00;
-  border: solid 1px #58585B;
+  border: solid 1px #585858;
+}
+
+
+.button-main {
+  background-color: #005596;
+  color: #fff;
+  border: solid 1px;
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  text-decoration-line: none
+}
+
+.button-main:hover {
+  background-color: #585858;
+  color: #FFCE00;
+  border: solid 1px #585858;
+}
+
+.button-main:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
 }

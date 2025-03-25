@@ -193,14 +193,14 @@ useEffect(() => {
                             className="profile-avatar"
                             alt="User avatar"
                         />
-                        {/* Edit Button */}
+                        {/* Edit Button
                         <button 
                             className="avatar-edit-btn" 
                             type="button"
                             onClick={handleOpenAvatarModal}
                         >
                             <FaEdit size={20} />
-                        </button>
+                        </button> */}
                     </div>
                 </div>
 
@@ -303,14 +303,14 @@ useEffect(() => {
                             className="profile-avatar"
                             alt="User avatar"
                         />
-                        {/* Edit Button */}
+                        {/* Edit Button
                         <button 
                             className="avatar-edit-btn" 
                             type="button"
                             onClick={handleOpenAvatarModal}
                         >
                             <FaEdit size={20} />
-                        </button>
+                        </button> */}
                     </div>
                 </div>
 

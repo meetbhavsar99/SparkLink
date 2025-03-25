@@ -64,7 +64,7 @@ const AboutComponent = () => {
             image: Vinit,
             LinkedIn: 'https://www.linkedin.com/in/vinit-vekariaengineer/',
             Github: 'https://github.com/VekariaVinit',
-            Email: 'vekariav@uwindsor.ca'
+            Email: 'vinitvekaria810@gmail.com'
         },
         {
             id: 2,
@@ -150,17 +150,19 @@ const AboutComponent = () => {
             <MasterComponent />
             <div className="container">
             <div className="content-wrapper">
-                <h1 className="text-center mt-4">About Us</h1>
+                <h1 className="mt-4 text-heading">About Us</h1>
 
                 {/* Project Overview */}
-                <section className="mt-4">
-                    <h2>Project Overview</h2>
-                    <p><strong>Project Title:</strong> UWindsor SparkLink – Empowering IT Solutions through Student Innovation</p>
-                    <p>
-                        UWindsor SparkLink is a platform designed to connect University of Windsor departments with Computer Science students
-                        for IT project support. It provides hands-on experience to students while solving departmental IT challenges. 
-                        Key features include project submission, skill-based matching, and paid opportunities for students.
-                    </p>
+                <section className="project-overview">
+                <h2>Project Overview</h2>
+                <p className="project-title">
+                    <strong>Project Title:</strong> UWindsor SparkLink – Empowering IT Solutions through Student Innovation
+                </p>
+                <p className="project-description">
+                    UWindsor SparkLink is a platform designed to connect University of Windsor departments with Computer Science students for IT project support.
+                    It provides hands-on experience to students while solving departmental IT challenges.
+                    Key features include project submission, skill-based matching, and paid opportunities for students.
+                </p>
                 </section>
 
                 {/* Professor (Expandable) */}
