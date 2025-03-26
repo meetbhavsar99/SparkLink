@@ -62,6 +62,7 @@ const ViewProjectComponent = () => {
     const [accessVal, setAccessVal] = useState('');
     const today = new Date().toISOString().split("T")[0];
     const [currentPage, setCurrentPage] = useState(1);
+    const [isTeamLeader, setIsTeamLeader] = useState(false);
     const projectsPerPage = 6; // Change for more/less projects per page  
 
     const indexOfLastProject = currentPage * projectsPerPage;
@@ -121,6 +122,24 @@ const ViewProjectComponent = () => {
 //         setLoading(false);
 //     }
 // };
+
+const fetchGroupInfo = async () => {
+    try {
+        const response = await axios.get("/api/group/my", {
+            withCredentials: true
+        });
+
+        if (response.status === 200 && response.data.group) {
+            setIsTeamLeader(response.data.isLeader);
+        } else {
+            setIsTeamLeader(false);
+        }
+    } catch (error) {
+        console.error("Error fetching group info:", error);
+        setIsTeamLeader(false); // fallback
+    }
+};
+
 
 const fetchProjects = async () => {
     setLoading(true);
@@ -250,6 +269,9 @@ const fetchProjects = async () => {
     useEffect(() => {
         if (triggerModalFlag && projDetailsList && projDetailsList.proj_id) {
             fetchUserRoles();
+        if (user?.role === "4") {
+            fetchGroupInfo(); // 👈 Only for students
+        }
         }
     }, [triggerModalFlag]);
 
@@ -1124,12 +1146,14 @@ const fetchProjects = async () => {
                                             onClick={closeModal}>Close</button>
                                         {editFlag && <button className="ms-3 text-center button_text button-main"
                                             onClick={UpdateProjDetails}>Save Changes</button>}
-                                        {user?.role === "4" && 
- !projDetailsList?.stakeholder?.some(st => st.role === "student" && st.user_id === user?.user_id) && (
-  <button className="ms-3 text-center button_text button-main" onClick={submitApplication}>
-    Click to Apply
-  </button>
+                                        {user?.role === "4" &&
+  isTeamLeader && // ✅ Must be team leader
+  !projDetailsList?.stakeholder?.some(st => st.role === "student" && st.user_id === user?.user_id) && (
+    <button className="ms-3 text-center button_text button-main" onClick={submitApplication}>
+      Click to Apply
+    </button>
 )}
+
                                         {(accessVal === 'S' || accessVal === 'E' || accessVal === 'M' || accessVal === 'B' || accessVal === 'SB') && <button className="ms-3 text-center button_text button-main
                                         "
                                             onClick={viewMilestones}>View Milestones</button>}

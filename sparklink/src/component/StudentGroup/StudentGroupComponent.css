@@ -29,6 +29,11 @@
     border-radius: 6px;
 }
 
+.group-details h4 {
+    font-weight: bold;
+    color: #005596;
+}
+
 .group-actions button,
 .upload-section button,
 .leave-btn,

@@ -50,10 +50,10 @@ exports.joinGroup = async (req, res) => {
     const alreadyInGroup = await GroupMember.findOne({ where: { user_id } });
     if (alreadyInGroup) return res.status(400).json({ message: "You are already in a group." });
 
-    // ✅ Check group size
+    // Check group size
     const memberCount = await GroupMember.count({ where: { group_id } });
-    if (memberCount >= 7) {
-      return res.status(400).json({ message: "This group already has 7 members." });
+    if (memberCount >= 5) {
+      return res.status(400).json({ message: "This group already has 5 members." });
     }
 
     // Add user to group
@@ -123,6 +123,54 @@ exports.getGroups = async (req, res) => {
     res.status(500).json({ message: "Error fetching groups" });
   }
 };
+
+// Get all groups with members and team leader (for Admins/Supervisors)
+exports.getAllDetailedGroups = async (req, res) => {
+  try {
+    // ✅ Prevent duplicate association error
+    if (!Group.associations.GroupMembers) {
+      Group.hasMany(GroupMember, { foreignKey: 'group_id', as: 'GroupMembers' });
+    }
+
+    if (!GroupMember.associations.User) {
+      GroupMember.belongsTo(User, { foreignKey: 'user_id' });
+    }
+
+    const groups = await Group.findAll({
+      include: [
+        {
+          model: GroupMember,
+          as: 'GroupMembers',
+          include: [
+            {
+              model: User,
+              attributes: ['username', 'user_id']
+            }
+          ]
+        }
+      ]
+    });
+
+    const formatted = groups.map(group => ({
+      group_id: group.group_id,
+      team_leader_id: group.team_leader_id,
+      resume_url: group.resume_pdf,
+      members: group.GroupMembers.map(member => ({
+        user_id: member.user_id,
+        username: member.User?.username || "Unknown",
+        is_leader: member.user_id === group.team_leader_id
+      }))
+    }));
+
+    console.log("Formatted groups:", formatted);
+    res.status(200).json({ groups: formatted });
+  } catch (error) {
+    console.error("Error fetching all groups:", error);
+    res.status(500).json({ message: "Failed to fetch groups" });
+  }
+};
+
+
 
 // Add in groupController.js
 exports.getMyGroup = async (req, res) => {

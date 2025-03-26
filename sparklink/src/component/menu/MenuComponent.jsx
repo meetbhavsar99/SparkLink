@@ -6,6 +6,8 @@ import sparklink_icon from "../../assets/SparkLink_icon.png";
 import view_icon from "../../assets/view_project.png";
 import about_icon from "../../assets/about_us.png";
 import home_icon from "../../assets/home_icon.png";
+import group_icon from "../../assets/group_icon.png";
+
 import contact_icon from "../../assets/contact_us.png";
 import milestone_icon from "../../assets/Milestone_Tracker.png";
 import profile_icon from "../../assets/profile.png";
@@ -247,6 +249,7 @@ const MenuComponent = () => {
                     <div className="text-menu-category text-start px-3">
                       <span className="category-label">Project</span>
                     </div>
+
                     {user && (user.role === '2' || user.role === '3' || user.role === '1') && (
                       <li className={getNavItemClass("/create-project")}>
                         <span className="menu-item-wrapper">
@@ -277,6 +280,18 @@ const MenuComponent = () => {
                         </Link>
                       </span>
                     </li>
+                    {user && (user.role === '1' || user.role === '3') && (
+  <li className={getNavItemClass("/admin-view")}>
+    <span className="menu-item-wrapper">
+      <Link className="text-menu nav-link-item" to="/admin-view">
+        <div className="icon-container">
+          <img src={group_icon} className="nav_sub_menu_icon" alt="" />
+        </div>
+        <span className="menu-text">View All Groups</span>
+      </Link>
+    </span>
+  </li>
+)}
                     {user && user.role === '4' && (
   <>
     <li className={getNavItemClass("/view-Recomended-project")}>
@@ -436,6 +451,16 @@ const MenuComponent = () => {
                 </ul>
                 {isAuthenticated && (
                   <ul className="nav navbar-nav">
+                  {user && (user.role === '1' || user.role === '3') && (
+  <li className="nav-item collapsed-item">
+    <Link to="/admin-view" className="collapsed-link">
+      <span className="icon-only-container">
+        <img src={group_icon} className="nav_sub_menu_icon" alt="" />
+      </span>
+    </Link>
+  </li>
+)}
+
                     {user && (user.role === '2' || user.role === '3' || user.role === '1') && (
                       <li className="nav-item collapsed-item">
                         <Link to="/create-project" className="collapsed-link">

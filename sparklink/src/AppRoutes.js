@@ -24,6 +24,7 @@ import AdminDashboard from "./component/admin/AdminDashboard";
 import AdminLogs from "./component/admin/AdminLogs";
 import LogsComponent from "./component/admin/LogsComponent";
 import GroupComponent from "./component/StudentGroup/StudentGroupComponent";
+import ViewGroupComponent from "./component/StudentGroup/ViewAllGroupsComponent";
 
 const AppRoutes = () => {
     let routes = useRoutes([
@@ -56,6 +57,7 @@ const AppRoutes = () => {
                 { path:"/admin/logs", element: <LogsComponent/>},
                 { path:"/applications", element: <ApplicationComponent />},
                 { path:"/group", element: <GroupComponent />},
+                { path:"/admin-view", element: <ViewGroupComponent />},
             ],
         },
     ]);

@@ -55,6 +55,34 @@ router.get("/view-resume", isAuthenticated, async (req, res) => {
   }
 });
 
+router.get("/admin-view", isAuthenticated, groupController.getAllDetailedGroups);
+
+router.get("/admin-download-resume", isAuthenticated, async (req, res) => {
+  try {
+    const groupId = req.query.groupId;
+
+    const group = await Group.findByPk(groupId);
+    if (!group || !group.resume_pdf) return res.status(404).json({ message: "Resume not found." });
+
+    const filePath = path.resolve(__dirname, "..", group.resume_pdf);
+    if (!fs.existsSync(filePath)) return res.status(404).json({ message: "File not found on disk." });
+
+    res.download(filePath, "merged_resume.pdf", (err) => {
+      if (err) {
+        console.error("Download error:", err);
+        return res.status(500).json({ message: "Error downloading file." });
+      }
+    });
+  } catch (error) {
+    console.error("Admin download error:", error);
+    res.status(500).json({ message: "Error retrieving resume." });
+  }
+});
+
+// router.get("/my-group", isAuthenticated, groupController.getMyGroup);
+
+
+
 
 
 // router.get("/my", isAuthenticated, async (req, res) => {
