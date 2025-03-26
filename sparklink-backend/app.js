@@ -6,6 +6,7 @@ require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const path = require('path');
 const sequelize = require('./config/db'); // Import the database connection
 const passport = require('./config/passportConfig'); 
 const session = require('express-session');
@@ -30,6 +31,8 @@ const contactRoutes = require('./routes/contactRoutes');
 const systemSettingsRoutes = require("./routes/systemSettingsRoutes");
 const analyticsRoutes = require("./routes/analyticsRoutes");
 const logRoutes = require("./routes/logs");
+const groupRoutes = require('./routes/groupRoutes');
+
 //const adminRoutes = require("./routes/adminRoutes");
 
 const app = express();
@@ -101,6 +104,7 @@ app.use("/api/settings", systemSettingsRoutes);
 app.use("/api/analytics", analyticsRoutes);
 app.use("/api", logRoutes);
 app.use("/api/notifications", notificationRouter);
+app.use('/api/group', groupRoutes);
 //app.use("/api/admin", adminRoutes);
 // Error handling middleware
 
@@ -124,6 +128,8 @@ app.use('/editProfile', EditProfileRouter);
 app.use('/apply', projApplicationRouter);
 app.use('/alloc', projAllocationRouter);
 app.use('/notify', notificationRouter);
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 
 
 

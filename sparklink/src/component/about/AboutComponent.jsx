@@ -48,13 +48,13 @@ const AboutComponent = () => {
         },
         {
             id: 3,
-            name: 'Chaitanya  Parikh',
+            name: 'Chaitanya  Panchal',
             role: 'Frontend Developer & VM Deployment',
             responsibilities: 'Worked on Virtual Machine setup and deployment, contributed to frontend development, and implemented UI enhancements to improve the application’s design and usability.',
             image: Chaitanya,
             LinkedIn: 'https://www.linkedin.com/in/chaitanyap310/',
             Github: 'https://github.com/Chaitanya-0310',
-            Email: 'pancha9c@uwindsor.ca'
+            Email: 'chaitanyapp03@gmail.com'
         },
         {
             id: 4,

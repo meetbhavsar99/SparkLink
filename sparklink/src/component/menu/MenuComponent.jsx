@@ -300,6 +300,18 @@ const MenuComponent = () => {
         </Link>
       </span>
     </li>
+
+    <li className={getNavItemClass("/group")}>
+  <span className="menu-item-wrapper">
+    <Link className="text-menu nav-link-item" to="/group">
+      <div className="icon-container">
+        <img src={require("../../assets/group_icon.png")} className="nav_sub_menu_icon" alt="" />
+      </div>
+      <span className="menu-text">Group</span>
+    </Link>
+  </span>
+</li>
+
   </>
 )}
 

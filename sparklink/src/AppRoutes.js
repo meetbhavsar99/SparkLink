@@ -23,6 +23,7 @@ import AdminAnalytics from "./component/admin/AdminAnalytics";
 import AdminDashboard from "./component/admin/AdminDashboard";
 import AdminLogs from "./component/admin/AdminLogs";
 import LogsComponent from "./component/admin/LogsComponent";
+import GroupComponent from "./component/StudentGroup/StudentGroupComponent";
 
 const AppRoutes = () => {
     let routes = useRoutes([
@@ -54,6 +55,7 @@ const AppRoutes = () => {
                 { path:"/admin/admin-logs", element: <AdminLogs/>},
                 { path:"/admin/logs", element: <LogsComponent/>},
                 { path:"/applications", element: <ApplicationComponent />},
+                { path:"/group", element: <GroupComponent />},
             ],
         },
     ]);

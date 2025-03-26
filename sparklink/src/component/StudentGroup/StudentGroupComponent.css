@@ -1,0 +1,80 @@
+.group-title {
+    text-align: left;
+    font-weight: 700 !important;
+    letter-spacing: 0.5px !important;
+    margin: 20px 0;
+    margin-left: 90px;
+    color: #005596;
+}
+
+.group-container {
+    max-width: 800px;
+    margin: 20px 20px 20px 90px;
+    padding: 2rem;
+    background-color: #f5f7fa;
+    border-radius: 12px;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.group-actions input {
+    margin: 0 10px;
+    padding: 6px 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+.upload-section input {
+    margin: 0 10px;
+    padding: 7.5px 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
+.group-actions button,
+.upload-section button,
+.leave-btn,
+.download-btn,
+.upload-btn,
+.btn {
+    padding: 10px 18px;
+    font-weight: bold;
+    border: none;
+    border-radius: 6px;
+    margin-top: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+/* .upload-btn {
+    margin-top: 0 !important;
+} */
+
+.group-actions button,
+.upload-section button,
+.download-btn,
+.btn:not(.leave-btn) {
+    background-color: #005596;
+    color: white;
+}
+
+.group-actions button:hover,
+.upload-section button:hover,
+.download-btn:hover,
+.btn:not(.leave-btn):hover {
+    background-color: #585858;
+    color: #FFCE00;
+}
+
+.leave-btn {
+    background-color: #F30;
+    color: white;
+}
+
+.leave-btn:hover {
+    background-color: #b32400;
+    color: white;
+}
+
+.success-msg {
+    color: green;
+    margin-top: 0.5rem;
+}
