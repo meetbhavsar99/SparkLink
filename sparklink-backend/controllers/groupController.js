@@ -2,6 +2,8 @@
 const Group = require("../models/group");
 const GroupMember = require("../models/group_member");
 const User = require("../models/user");
+const Project = require("../models/project");
+const ProjAllocation = require("../models/proj_allocation");
 const { v4: uuidv4 } = require("uuid");
 const path = require("path");
 
@@ -172,6 +174,8 @@ exports.getAllDetailedGroups = async (req, res) => {
 
 
 
+
+
 // Add in groupController.js
 exports.getMyGroup = async (req, res) => {
   try {
@@ -219,5 +223,36 @@ exports.getMyGroup = async (req, res) => {
     res.status(500).json({ message: "Error fetching group info" });
   }
 };
+
+exports.getMyGroupProjects = async (req, res) => {
+  try {
+    const user_id = req.user.user_id;
+
+    const membership = await GroupMember.findOne({ where: { user_id } });
+    if (!membership) return res.status(403).json({ message: "You are not in any group." });
+
+    const group = await Group.findByPk(membership.group_id);
+    if (!group) return res.status(404).json({ message: "Group not found." });
+
+    const leaderId = group.team_leader_id;
+
+    const allocations = await ProjAllocation.findAll({
+      where: { user_id: leaderId, is_active: "Y" },
+    });
+
+    const projectIds = allocations.map((a) => a.proj_id);
+    const projects = await Project.findAll({ where: { proj_id: projectIds } });
+
+    console.log("Leader ID:", leaderId);
+    console.log("Project IDs for leader:", projectIds);
+    console.log("Projects fetched:", projects.map(p => p.project_name));
+
+    return res.status(200).json({ projects });
+  } catch (error) {
+    console.error("Error fetching group projects:", error);
+    return res.status(500).json({ message: "Error fetching group projects" });
+  }
+};
+
 
 

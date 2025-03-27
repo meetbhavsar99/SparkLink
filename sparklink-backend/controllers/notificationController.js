@@ -256,7 +256,56 @@ exports.fetchNotifications = async (req, res) => {
           });
         }
       });
-    }
+    } else if (user.role === "1") {
+  // Admin
+  const adminProjects = await Project.findAll({
+    where: {
+      user_id: user.user_id,
+      is_active: "Y",
+    },
+    attributes: ["proj_id"],
+  });
+
+  const projIds = adminProjects.map((project) => project.proj_id);
+
+  const applications = await ProjApplication.findAll({
+    where: {
+      proj_id: projIds,
+      is_active: "Y",
+      is_approved: "N",
+      is_rejected: "N",
+    },
+    include: [
+      {
+        model: User,
+        attributes: ["user_id", "username"],
+        as: "user",
+      },
+      {
+        model: Project,
+        attributes: ["proj_id", "project_name"],
+        as: "project",
+      },
+    ],
+  });
+
+  applications.forEach((application) => {
+    const { proj_id, role, created_on } = application;
+    const project_name = application.project.project_name;
+    const user_id = application.user.user_id;
+    const user_name = application.user.username;
+
+    notifications.push({
+      code: "SA",
+      user_id,
+      user_name,
+      proj_id,
+      proj_name: project_name,
+      created_on,
+    });
+  });
+}
+
 
     notifications.sort((a, b) => {
       const dateA = new Date(a.created_on);
@@ -368,7 +417,27 @@ exports.fetchNotificationCount = async (req, res) => {
           notification: "Y",
         },
       });
-    }
+    } else if (user.role === "1") {
+  const adminProjects = await Project.findAll({
+    where: {
+      user_id: user.user_id,
+      is_active: "Y",
+    },
+    attributes: ["proj_id"],
+  });
+
+  const projIds = adminProjects.map((project) => project.proj_id);
+
+  notifCount = await ProjApplication.count({
+    where: {
+      proj_id: projIds,
+      is_active: "Y",
+      is_approved: "N",
+      is_rejected: "N",
+    },
+  });
+}
+
     console.log("notifCount ---> ", notifCount);
     res.status(200).json({
       message: "Notification count fetched successfully.",

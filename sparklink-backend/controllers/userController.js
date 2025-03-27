@@ -19,7 +19,27 @@ const { createLog } = require("../controllers/logsController");
 
 exports.register = async (req, res) => {
   try {
-    const { username, email, password, name, role } = req.body;
+    // const { username, email, password, name, role } = req.body;
+
+    const { username, email, password, name, role, secret } = req.body;
+
+    const SUPERVISOR_SECRET = "secret123";
+    const ADMIN_SECRET = "admin456";
+    const userRole = String(role); // Just in case role is a number
+
+
+    console.log("Backend received:", { role, secret });
+    // Step 1: Secure role validation
+    if (userRole !== "4") {
+      if (
+        (userRole === "1" && secret !== ADMIN_SECRET) ||
+        ((userRole === "2" || userRole === "3") && secret !== SUPERVISOR_SECRET)
+      ) {
+        console.log("❌ Secret mismatch or invalid role");
+        return res.status(403).json({ message: "Unauthorized access to elevated role." });
+      }
+    }
+
 
     // Check if required fields are missing
     if (!username || !email || !password || !name || !role) {
@@ -105,6 +125,56 @@ const mailOptions = {
 
 await transporter.sendMail(mailOptions);
 console.log("Confirmation email sent!");
+
+// 📧 Notify all admins if elevated role is registered
+if (role !== "4") {
+  const admins = await User.findAll({
+    where: { role: "1", is_active: "Y" },
+    attributes: ["email"],
+  });
+
+  const adminEmails = admins.map((admin) => admin.email);
+
+  const adminProfileLink = `http://localhost:3100/admin/view-users`; // Optional: if you want to include a link
+
+const mailHTML = `
+  <div style="font-family: Arial, sans-serif; background-color: #1a1a1a; color: #ffffff; padding: 20px; border-radius: 8px;">
+    <h2 style="color: #FFCE00;">New Elevated Role Registration</h2>
+    <p>A new user has registered with elevated access on SparkLink:</p>
+    <ul style="line-height: 1.6;">
+      <li><strong>Name:</strong> ${name}</li>
+      <li><strong>Email:</strong> ${email}</li>
+      <li><strong>Username:</strong> ${username}</li>
+      <li><strong>Role:</strong> ${role}</li>
+    </ul>
+
+    ${
+      adminProfileLink
+        ? `<a href="${adminProfileLink}" style="display: inline-block; margin-top: 20px; padding: 12px 24px; background-color: #005596; color: #ffffff; text-decoration: none; border-radius: 6px; font-weight: bold;">
+            View Users
+          </a>`
+        : ""
+    }
+
+    <p style="margin-top: 30px;">Regards,<br><strong>Team SparkLink</strong></p>
+  </div>
+`;
+
+
+  if (adminEmails.length > 0) {
+    await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: adminEmails,
+      subject: "New Elevated Role Registration",
+      html: mailHTML,
+    });
+        console.log("📧 Admins notified of elevated role registration.");
+      } else {
+        console.log("⚠️ No admins found to notify.");
+      }
+    }
+
+
 
 
   } catch (error) {

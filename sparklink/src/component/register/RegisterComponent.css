@@ -7,6 +7,15 @@
   margin-right: 2rem; /* Space between image and form */
 }
 
+.signup-icon {
+  background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    width: 100%;
+      max-width: 500px !important;
+      height: auto;
+}
+
 .signup-image img {
   width: 100%; /* Ensure image is responsive */
   max-width: 400px; /* Set a maximum width for the image */

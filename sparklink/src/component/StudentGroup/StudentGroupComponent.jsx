@@ -2,8 +2,24 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import MenuComponent from '../menu/MenuComponent';
 import MasterComponent from '../MasterComponent';
+import Modal from 'react-bootstrap/Modal';
+import Table from 'react-bootstrap/Table';
 import FooterComponent from '../footer/FooterComponent';
 import "./StudentGroupComponent.css";
+
+import photo1 from '../../assets/project_images/photo1.jpg';
+import photo2 from '../../assets/project_images/photo2.jpg';
+import photo3 from '../../assets/project_images/photo3.jpg';
+import photo4 from '../../assets/project_images/photo4.jpg';
+import photo5 from '../../assets/project_images/photo5.jpg';
+import photo6 from '../../assets/project_images/photo6.jpg';
+import photo7 from '../../assets/project_images/photo7.jpg';
+import photo8 from '../../assets/project_images/photo8.jpg';
+import photo9 from '../../assets/project_images/photo9.jpg';
+import photo10 from '../../assets/project_images/photo10.jpg';
+
+// Array of images
+const imageArray = [photo1, photo2, photo3, photo4, photo5, photo6, photo7, photo8, photo9, photo10];
 
 const StudentGroupComponent = () => {
   const [groupId, setGroupId] = useState("");
@@ -11,7 +27,23 @@ const StudentGroupComponent = () => {
   const [resume, setResume] = useState(null);
   const [isLeader, setIsLeader] = useState(false);
   const [uploadSuccess, setUploadSuccess] = useState("");
+  const [groupProjects, setGroupProjects] = useState([]);
+
   const [error, setError] = useState("");
+  const [selectedProject, setSelectedProject] = useState(null);
+const [showModal, setShowModal] = useState(false);
+
+const openModal = (project) => {
+  setSelectedProject(project);
+  setShowModal(true);
+};
+
+const closeModal = () => {
+  setSelectedProject(null);
+  setShowModal(false);
+};
+
+  
 
   useEffect(() => {
     fetchGroupInfo();
@@ -108,6 +140,23 @@ const StudentGroupComponent = () => {
   }
 };
 
+const fetchGroupProjects = async () => {
+  try {
+    const response = await axios.get("/api/group/my-projects", { withCredentials: true });
+    setGroupProjects(response.data.projects || []);
+  } catch (error) {
+    console.error("Error fetching group projects:", error);
+  }
+};
+
+useEffect(() => {
+  if (groupInfo) {
+    fetchGroupProjects();
+  }
+}, [groupInfo]);
+
+
+
 
 
   return (
@@ -176,6 +225,82 @@ const StudentGroupComponent = () => {
             </button>
           </div>
         )}
+
+        {groupProjects.length > 0 && (
+  <div className="group-projects-section">
+    <h3>Projects Your Group is Working On</h3>
+    <div className="project-card-container">
+      <div className="group-projects-section">
+  <div className="project-card-container">
+    {groupProjects.map((project, index) => (
+      <div
+        className="student-project-card"
+        key={project.proj_id}
+        onClick={() => openModal(project)}
+      >
+        <div
+          className="project-image"
+          style={{
+            backgroundImage: `url(${imageArray[Number(project.image_url)] || ''})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            height: '200px'
+          }}
+        ></div>
+        <div className="project-info">
+          <h5>{project.project_name}</h5>
+          <p>{project.description?.substring(0, 100) || 'No description available.'}</p>
+        </div>
+      </div>
+    ))}
+  </div>
+</div>
+
+<Modal show={showModal} onHide={closeModal} size="xl" scrollable>
+  <Modal.Header closeButton>
+    <Modal.Title>Project Details</Modal.Title>
+  </Modal.Header>
+  <Modal.Body>
+    {selectedProject && (
+      <Table responsive bordered hover>
+        <tbody>
+          <tr>
+            <td colSpan={2}><strong>Project Name:</strong> {selectedProject.project_name}</td>
+          </tr>
+          <tr>
+            <td><strong>Description</strong></td>
+            <td>{selectedProject.description}</td>
+          </tr>
+          <tr>
+            <td><strong>Features</strong></td>
+            <td>{selectedProject.features}</td>
+          </tr>
+          <tr>
+            <td><strong>Skills Required</strong></td>
+            <td>{selectedProject.skills_req}</td>
+          </tr>
+          <tr>
+            <td><strong>Budget</strong></td>
+            <td>{selectedProject.budget}</td>
+          </tr>
+          <tr>
+            <td><strong>End Date</strong></td>
+            <td>{new Date(selectedProject.end_date).toLocaleDateString()}</td>
+          </tr>
+        </tbody>
+      </Table>
+    )}
+  </Modal.Body>
+  <Modal.Footer>
+    <button className="button-home" onClick={closeModal}>Close</button>
+  </Modal.Footer>
+</Modal>
+
+
+    </div>
+  </div>
+)}
+
       </div>
       <FooterComponent />
     </div>

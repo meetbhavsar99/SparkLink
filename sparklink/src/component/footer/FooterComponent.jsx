@@ -7,7 +7,7 @@ const FooterComponent = () => {
         <>
             <div className="footer-container">
                 <div className="container-fluid footer-background">
-                    <div className="row mt-4">
+                    <div className="row mt-4 align-items-center">
                         <div className="col-lg-3 col-md-3 col-sm-12 px-4">
                             <img src={UWindsor_logo} alt="Logo" className='UWindsor-footer-logo' />
                         </div>

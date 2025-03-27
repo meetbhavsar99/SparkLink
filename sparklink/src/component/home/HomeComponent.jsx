@@ -19,7 +19,7 @@ import caption_6 from '../../assets/Caption_6.png';
 const HomeComponent = () => {
     return (
         <>
-        <MenuComponent></MenuComponent>
+            <MenuComponent />
             <div className="page-container">
                 <div className="content-container">
                     <MasterComponent />
@@ -28,121 +28,115 @@ const HomeComponent = () => {
                             <div style={{ height: 'auto' }}>
                                 <Carousel>
                                     <Carousel.Item>
-                                        <div className="row">
-                                            <div className="col-7 px-3 text-center">
-                                                <span className='text_caption'>Real-World Experience for Students</span>
-                                                <br />
-                                                <span className='text_sub_caption'>
-                                                    Gain Hands-On Skills, Build a Portfolio,
-                                                    <br /> and Earn Money by Solving IT Problems Across Campus
-                                                </span>
-                                            </div>
-                                            <div className="col-5">
-                                                <img src={Homepage_1} className='homepage_caption_img' alt="" />
-                                            </div>
+                                    <div className="carousel-slide row align-items-center">
+                                        <div className="col-md-6 text-center carousel-left">
+                                        <div>
+                                            <span className='text_caption'>Real-World Experience for Students</span>
+                                            <br />
+                                            <span className='text_sub_caption'>
+                                            Gain Hands-On Skills, Build a Portfolio,
+                                            <br /> and Earn Money by Solving IT Problems Across Campus
+                                            </span>
                                         </div>
+                                        </div>
+                                        <div className="col-md-6 text-center">
+                                        <img src={Homepage_1} className='carousel_img' alt="" />
+                                        </div>
+                                    </div>
                                     </Carousel.Item>
                                     <Carousel.Item>
-                                        <div className="row">
-                                            <div className="col-5 text-center">
-                                                <img src={Homepage_2} className='homepage_caption_img' alt="" />
-                                            </div>
-                                            <div className="col-7 px-3 text-center">
-                                                <span className='text_caption'>Empowering IT Solutions for Campus Needs</span>
-                                                <br />
-                                                <span className='text_sub_caption'>
-                                                    Connecting University of Windsor Departments
-                                                    <br />with Talented Students to Tackle Tech Challenges
-                                                </span>
-                                            </div>
+                                    <div className="carousel-slide row align-items-center">
+                                        <div className="col-md-6 text-center carousel-left">
+                                        <div>
+                                            <span className='text_caption'>Empowering IT Solutions for Campus Needs</span>
+                                            <br />
+                                            <span className='text_sub_caption'>
+                                            Connecting University of Windsor Departments <br />with Talented Students to Tackle Tech Challenges
+                                            </span>
                                         </div>
+                                        </div>
+                                        <div className="col-md-6 text-center">
+                                        <img src={Homepage_2} className='carousel_img' alt="" />
+                                        </div>
+                                    </div>
                                     </Carousel.Item>
+
                                     <Carousel.Item>
-                                        <div className="row mt-4">
-                                            <div className="col-7 px-3 text-center">
-                                                <span className='text_caption'>Simplifying Collaboration and Project Management</span>
-                                                <br />
-                                                <span className="text_sub_caption">
-                                                    Seamlessly Match Departments with Skilled Students
-                                                    <br /> to Complete Technology Projects Efficiently
-                                                </span>
-                                            </div>
-                                            <div className="col-5">
-                                                <img src={Homepage_3} className='homepage_caption_img' alt="" />
-                                            </div>
+                                    <div className="carousel-slide row align-items-center">
+                                        <div className="col-md-6 text-center carousel-left">
+                                        <div>
+                                            <span className='text_caption'>Simplifying Collaboration and Project Management</span>
+                                            <br />
+                                            <span className='text_sub_caption'>
+                                            Seamlessly Match Departments with Skilled Students
+                                            <br /> to Complete Technology Projects Efficiently
+                                            </span>
                                         </div>
+                                        </div>
+                                        <div className="col-md-6 text-center">
+                                        <img src={Homepage_3} className='carousel_img' alt="" />
+                                        </div>
+                                    </div>
                                     </Carousel.Item>
                                 </Carousel>
                             </div>
                         </div>
 
                         <div className="container-fluid">
-                            <div className="row">
-                                <div className="mt-5 col-lg-12 col-md-12 col-sm-12 text-center">
-                                    <div className="text_tagline">
-                                        Bring Your Projects to Life. Shape Your Future
-                                        <br />
-                                        Stay on Track, Stay Ahead
+                            <div className="text-center my-5">
+                                <h2 className="text_tagline mb-3">Explore What SparkLink Offers</h2>
+                                <p className="text_subtagline">Discover the tools and benefits designed to help you grow and succeed.</p>
+                            </div>
+
+                            <div className="row row-cols-1 row-cols-md-3 g-4">
+                                {[caption_1, caption_2, caption_3].map((img, idx) => (
+                                    <div className="col" key={idx}>
+                                        <div className="homepage_card text-center p-4 h-100">
+                                            <img src={img} className="homepage_img mb-3" alt="" />
+                                            <p className="card_subcaption">
+                                                {[
+                                                    "Bring your IT visions to life with UWindsor SparkLink, connecting you to top Computer Science talent",
+                                                    "Collaborate with UWindsor SparkLink to deliver impactful IT solutions while enhancing your skills",
+                                                    "Showcase your skills with SparkLink, gaining real-world experience and building a standout portfolio"
+                                                ][idx]}
+                                            </p>
+                                        </div>
                                     </div>
-                                </div>
+                                ))}
                             </div>
 
-                            <div className="row mt-4 feature-cards">
-                                <div className="col-12 col-lg-4 text-center">
-                                    <img src={caption_1} className='homepage_img' alt="" />
-                                    <span className='card_subcaption'>Bring your IT visions to life with UWindsor SparkLink, connecting you to top Computer Science talent</span>
-                                </div>
-                                <div className="col-12 col-lg-4 text-center">
-                                    <img src={caption_2} className='homepage_img' alt="" />
-                                    <span className="card_subcaption">Collaborate with UWindsor SparkLink to deliver impactful IT solutions while enhancing your skills</span>
-                                </div>
-                                <div className="col-12 col-lg-4 text-center">
-                                    <img src={caption_3} className='homepage_img' alt="" />
-                                    <span className="card_subcaption">
-                                        Showcase your skills with SparkLink, gaining real-world experience and building a standout portfolio
-                                    </span>
-                                </div>
+                            <div className="row row-cols-1 row-cols-md-3 g-4 mt-4">
+                                {[caption_4, caption_5, caption_6].map((img, idx) => (
+                                    <div className="col" key={idx}>
+                                        <div className="homepage_card text-center p-4 h-100">
+                                            <img src={img} className="homepage_img mb-3" alt="" />
+                                            <p className="card_subcaption">
+                                                {[
+                                                    "Empower your growth with UWindsor SparkLink—bridging classroom knowledge and real-world IT skills",
+                                                    "Track progress and milestones with UWindsor SparkLink, staying organized as you achieve impactful IT solutions",
+                                                    "Transform ideas into impactful IT solutions with SparkLink, enhancing your skills and solving real-world problems"
+                                                ][idx]}
+                                            </p>
+                                        </div>
+                                    </div>
+                                ))}
                             </div>
 
-                            <div className="mt-5 button-container">
-                                <button className="text-center button_text button-card" onClick={() => window.location.href = "/view-project"}>Know More</button>
-                            </div>
-
-                            <div className="row mt-5 feature-cards">
-                                <div className="col-12 col-lg-4 text-center">
-                                    <img src={caption_4} className='homepage_img' alt="" />
-                                    <span className='card_subcaption'>Empower your growth with UWindsor SparkLink—bridging classroom knowledge and real-world IT skills</span>
-                                </div>
-                                <div className="col-12 col-lg-4 text-center">
-                                    <img src={caption_5} className='homepage_img' alt="" />
-                                    <span className="card_subcaption">Track progress and milestones with UWindsor SparkLink, staying organized as you achieve impactful IT solutions</span>
-                                </div>
-                                <div className="col-12 col-lg-4 text-center">
-                                    <img src={caption_6} className='homepage_img' alt="" />
-                                    <span className="card_subcaption">
-                                        Transform ideas into impactful IT solutions with SparkLink, enhancing your skills and solving real-world problems
-                                    </span>
-                                </div>
-                            </div>
-
-                            <div className="mt-5 button-container">
-                                <button className="text-center button_text button-card" onClick={() => window.location.href = "/view-project"}>Know More</button>
+                            <div className="mt-5 text-center">
+                                <button className="button_text button-card mx-2" onClick={() => window.location.href = "/about"}>
+                                    About Us
+                                </button>
+                                <button className="button_text button-card mx-2" onClick={() => window.location.href = "/contact"}>
+                                    Contact us
+                                </button>
                             </div>
                         </div>
-
-                        {/* Navigation Buttons for About Us, Contact Us, Login, Register */}
-                        {/* <div className="mt-5 button-group">
-                            <button className="btn-secondary" onClick={() => window.location.href = "/about"}>About Us</button>
-                            <button className="btn-secondary" onClick={() => window.location.href = "/contact"}>Contact Us</button>
-                            <button className="btn-primary" onClick={() => window.location.href = "/login"}>Login</button>
-                            <button className="btn-primary" onClick={() => window.location.href = "/register"}>Register</button>
-                        </div> */}
                     </div>
                 </div>
                 <FooterComponent />
             </div>
         </>
     );
-}
+};
 
 export default HomeComponent;

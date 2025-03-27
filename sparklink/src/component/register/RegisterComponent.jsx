@@ -1,15 +1,19 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
+import { useLocation } from "react-router-dom";
+import { useEffect } from "react";
 import "./RegisterComponent.css";
 import sparklink_icon from "../../assets/SparkLink_icon.png";
 import backgroundImage from "../../assets/background3.jpg"; // Add your background image here
-import signupImage from "../../assets/signup-image.jpg";
+import signupImage from "../../assets/signup_icon.png";
 import sparklink_logo from "../../assets/SparkLink_Logo_3.png";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 
 const RegistrationForm = () => {
   const [isValidated, setIsValidated] = useState(false);
+  const location = useLocation();
+  const [secret, setSecret] = useState("");
 
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
@@ -23,6 +27,19 @@ const RegistrationForm = () => {
   const [showPassword, setShowPassword] = useState(false); 
   const [showPassword2, setShowPassword2] = useState(false); 
   const navigate = useNavigate();
+
+  useEffect(() => {
+  const params = new URLSearchParams(location.search);
+  const querySecret = params.get("q");
+
+  if (querySecret) {
+    setSecret(querySecret);
+
+    // Optional: Remove query from URL
+    window.history.replaceState({}, document.title, location.pathname);
+  }
+}, [location]);
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -61,6 +78,7 @@ const RegistrationForm = () => {
             confirmPassword,
             name,
             role,
+            secret,
         });
 
         setSuccessMessage("Registration successful! Please check your email to confirm your account.");
@@ -82,6 +100,31 @@ const RegistrationForm = () => {
         setLoading(false);
     }
 };
+
+const SUPERVISOR_SECRET = "secret123";
+const ADMIN_SECRET = "admin456";
+
+const getAllowedRoles = () => {
+  if (secret === ADMIN_SECRET) {
+    return [
+      { value: "1", label: "Admin" },
+      { value: "2", label: "Business Owner" },
+      { value: "3", label: "Supervisor" },
+      { value: "4", label: "Student" },
+    ];
+  } else if (secret === SUPERVISOR_SECRET) {
+    return [
+      { value: "2", label: "Business Owner" },
+      { value: "3", label: "Supervisor" },
+      { value: "4", label: "Student" },
+    ];
+  } else {
+    return [{ value: "4", label: "Student" }];
+  }
+};
+
+const allowedRoles = getAllowedRoles();
+
 
 
   return (
@@ -199,7 +242,7 @@ const RegistrationForm = () => {
                   <label htmlFor="roleSelect" className="form-label">
                     Roles
                   </label>
-                  <select
+                  {/* <select
                     id="roleSelect"
                     className={`form-select ${isValidated && !role ? "is-invalid" : "" }`} 
                     value={role} // Assuming `selectedRole` is the state holding the selected role
@@ -212,7 +255,24 @@ const RegistrationForm = () => {
                     <option value="2">Business Owner</option>
                     <option value="3">Supervisor</option>
                     <option value="4">Student</option>
+                  </select> */}
+                  <select
+                    id="roleSelect"
+                    className={`form-select ${isValidated && !role ? "is-invalid" : "" }`} 
+                    value={role}
+                    onChange={(e) => setRole(e.target.value)}
+                    required
+                  >
+                    <option value="" disabled>
+                      Select a Role
+                    </option>
+                    {allowedRoles.map((r) => (
+                      <option key={r.value} value={r.value}>
+                        {r.label}
+                      </option>
+                    ))}
                   </select>
+
                   <div className="invalid-feedback">
                       Please select a role.
                   </div>
@@ -239,7 +299,7 @@ const RegistrationForm = () => {
                 {/* Contact Us Button */}
               <p className="small fw-bold mt-2 pt-1 mb-0">
                   Need help?{" "}
-                  <a href="/contact" className="link-primary">Contact Us</a>
+                  <a href="/contact" className="link-primary link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover">Contact Us</a>
               </p>
               </form>
             </div>
@@ -248,7 +308,7 @@ const RegistrationForm = () => {
             <div className="signup-image col-md-9 col-lg-6 col-xl-5">
               <img
                 src={signupImage} // Use the path of your image
-                className="img-fluid"
+                className="img-fluid signup-icon"
                 alt="Sign up image"
               ></img>
             </div>

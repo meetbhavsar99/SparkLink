@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "./ResetPasswordEmailComponent.css";
 import axios from "axios";
 import { useLocation, Link } from "react-router-dom";
-import signupImage from "../../assets/signup-image.jpg";
+import signupImage from "../../assets/register_icon.png";
 import sparklink_logo from "../../assets/SparkLink_Logo_3.png";
 
 const ResetPasswordEmailComponent = () => {
@@ -59,9 +59,9 @@ const ResetPasswordEmailComponent = () => {
         <div className="row d-flex justify-content-center align-items-center h-100">
           <div className="col-md-9 col-lg-6 col-xl-5">
             <img
-              src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.webp"
-              className="img-fluid"
-              alt="Sample image"
+              src={signupImage}
+              alt="Password reset image"
+              className="img-thumbnail reset-image"
             ></img>
           </div>
           <div className="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
@@ -105,7 +105,7 @@ const ResetPasswordEmailComponent = () => {
               </div>
               <p className="small fw-bold mt-2 pt-1 mb-0">
                 Do you have an account?{" "}
-                <a href="/register" className="link-primary">
+                <a href="/register" className="link-primary link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover">
                   Login
                 </a>
               </p>

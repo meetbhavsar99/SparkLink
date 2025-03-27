@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useSearchParams, useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import "./ResetPasswordComponent.css";
-import signupImage from "../../assets/signup-image.jpg";
+import signupImage from "../../assets/register_icon.png";
 import sparklink_logo from "../../assets/SparkLink_Logo_3.png";
 
 const ResetPasswordComponent = () => {

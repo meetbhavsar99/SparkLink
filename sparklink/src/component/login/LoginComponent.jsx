@@ -5,6 +5,7 @@ import "./LoginComponent.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import { useAuth } from "../../AuthContext";
 import sparklink_logo from "../../assets/SparkLink_Logo_3.png";
+import login_icon from "../../assets/login_icon.png";
 
 const LoginComponent = () => {
   const [email, setEmail] = useState("");
@@ -105,9 +106,8 @@ const LoginComponent = () => {
         <div className="row d-flex justify-content-center align-items-center h-100">
           <div className="col-md-9 col-lg-6 col-xl-5">
             <img
-              src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.webp"
-              className="img-fluid"
-              alt="Sample image"
+            className="img-fluid img-thumbnail login-icon-image"
+              src={login_icon} alt="Login Icon"
             ></img>
           </div>
           <div className="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
@@ -176,13 +176,13 @@ const LoginComponent = () => {
               </div>
               <p className="small fw-bold mt-2 pt-1 mb-0">
                   Don't have an account?{" "}
-                  <a href="/register" className="link-danger">Register</a>
+                  <a href="/register" className="link-danger link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover">Register</a>
               </p>
 
               {/* Contact Us Button */}
               <p className="small fw-bold mt-2 pt-1 mb-0">
                   Need help?{" "}
-                  <a href="/contact" className="link-primary">Contact Us</a>
+                  <a href="/contact" className="link-primary link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover">Contact Us</a>
               </p>
 
             </form>

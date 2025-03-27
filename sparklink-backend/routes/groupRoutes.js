@@ -79,6 +79,11 @@ router.get("/admin-download-resume", isAuthenticated, async (req, res) => {
   }
 });
 
+router.get("/my-projects", isAuthenticated, groupController.getMyGroupProjects);
+
+
+
+
 // router.get("/my-group", isAuthenticated, groupController.getMyGroup);
 
 
