@@ -6,7 +6,7 @@
     padding: 20px 35px 35px 65px !important;
 }
 
-.container-fluid.background {
+.hero-section {
     background: rgba(0, 85, 150, 0.8);
     backdrop-filter: blur(15px);
     border-radius: 20px;
@@ -14,32 +14,139 @@
     margin: 30px 0;
     box-shadow: 11px 11px 16px rgba(0, 0, 0, 0.2);
     transition: all 0.3s ease-in-out;
+    overflow: hidden;
 }
 
-.carousel-indicators,
-.carousel-control-prev,
-.carousel-control-next {
-    display: none !important;
+.hero-content {
+    position: relative;
+    width: 100%;
 }
 
-.text_caption {
+.hero-slider {
+    display: flex;
+    transition: transform 0.8s cubic-bezier(0.65, 0.05, 0.36, 1);
+    width: 300%;
+}
+
+.hero-slide {
+    flex: 0 0 33.333%;
+    opacity: 0.3;
+    transform: scale(0.9);
+    transition: all 0.8s cubic-bezier(0.65, 0.05, 0.36, 1);
+    display: flex;
+    align-items: center;
+    pointer-events: none;
+}
+
+.hero-slide.active {
+    opacity: 1;
+    transform: scale(1);
+    pointer-events: auto;
+}
+
+.hero-text {
+    flex: 1;
+    padding-right: 40px;
+    transform: translateX(-50px);
+    opacity: 0;
+    transition: all 0.8s cubic-bezier(0.65, 0.05, 0.36, 1);
+}
+
+.hero-slide.active .hero-text {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+.hero-text h1 {
     font-family: "Poppins", system-ui;
     font-weight: 700;
     color: #fff;
     font-size: 2.8rem;
     text-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-    margin-bottom: 10px;
+    margin-bottom: 15px;
+    transform: translateY(20px);
+    opacity: 0;
+    transition: all 0.8s cubic-bezier(0.65, 0.05, 0.36, 1) 0.2s;
 }
 
-.text_sub_caption {
+.hero-slide.active .hero-text h1 {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.hero-text p {
     font-family: "Poppins", system-ui;
     font-weight: 400;
     color: #dbdbdb;
     font-size: 1.4rem;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transform: translateY(30px);
+    opacity: 0;
+    transition: all 0.8s cubic-bezier(0.65, 0.05, 0.36, 1) 0.4s;
 }
 
-.text_tagline {
+.hero-slide.active .hero-text p {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.hero-image {
+    flex: 1;
+    text-align: center;
+    transform: translateX(50px);
+    opacity: 0;
+    transition: all 0.8s cubic-bezier(0.65, 0.05, 0.36, 1) 0.6s;
+}
+
+.hero-slide.active .hero-image {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+.hero-image img {
+    max-width: 85%;
+    height: auto;
+    border-radius: 12px;
+    transition: transform 0.3s ease;
+}
+
+.hero-image img:hover {
+    transform: scale(1.02);
+}
+
+.hero-navigation {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.nav-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.5);
+    margin: 0 10px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.nav-dot.active {
+    background-color: #FFCE00;
+    width: 24px;
+    border-radius: 12px;
+}
+
+.features-section {
+    margin-top: 50px;
+}
+
+.section-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.section-header h2 {
     font-family: "Poppins", system-ui;
     font-weight: 700;
     background: linear-gradient(135deg, #2b2b2b, #555555 70%, #888888);
@@ -47,24 +154,23 @@
     background-clip: text;
     color: #005595;
     font-size: 3rem;
-    text-align: center;
-    margin-top: 40px;
+    margin-bottom: 15px;
 }
 
-.text_subtagline {
+.section-header p {
     font-family: "Poppins", system-ui;
     font-weight: 400;
     font-size: 1.5rem;
+    color: #666;
 }
 
-.feature-grid {
+.features-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 32px;
-    margin-top: 40px;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
 }
 
-.homepage_card {
+.feature-card {
     background-color: #fff;
     border-radius: 16px;
     padding: 28px 20px;
@@ -72,36 +178,40 @@
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
     transition: all 0.3s ease-in-out;
     height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-.homepage_card:hover {
+.feature-card:hover {
     transform: translateY(-6px);
     box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
 }
 
-.homepage_img {
+.feature-icon img {
     height: 100px;
     object-fit: contain;
     margin-bottom: 20px;
     transition: transform 0.3s ease-in-out;
 }
 
-.homepage_img:hover {
+.feature-card:hover .feature-icon img {
     transform: scale(1.05);
 }
 
-.card_subcaption {
+.feature-description p {
     font-family: "Poppins", system-ui;
     font-weight: 400;
     font-size: 1.15rem;
     color: #333;
-    padding: 0 10px;
     line-height: 1.6;
 }
 
-.button-container {
-    text-align: center;
-    margin: 40px 0;
+.cta-buttons {
+    display: flex;
+    justify-content: center;
+    margin-top: 40px;
+    gap: 20px;
 }
 
 .button-card {
@@ -122,54 +232,28 @@
     border: 1px solid #58585B;
 }
 
-.homepage_caption_img {
-    max-width: 100%;
-    height: auto;
-    object-fit: cover;
-    border-radius: 12px;
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-    padding: 10px;
-}
-.carousel-slide {
-    padding: 40px 20px;
-}
-
-.carousel-left {
-    padding-left: 50px;
-    text-align: left;
-}
-
-.carousel_img {
-    max-width: 85%;
-    height: auto;
-    border-radius: 12px;
-    /* box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); */
-    transition: transform 0.3s ease;
-}
-
-.carousel_img:hover {
-    transform: scale(1.02);
-}
-
 @media (max-width: 768px) {
-    .text_caption {
-        font-size: 2rem;
+    .features-grid {
+        grid-template-columns: 1fr;
     }
 
-    .text_sub_caption {
-        font-size: 1.1rem;
+    .hero-slide {
+        flex-direction: column;
     }
 
-    .text_tagline {
+    .hero-text,
+    .hero-image {
+        flex: none;
+        width: 100%;
+        padding-right: 0;
+        text-align: center;
+    }
+
+    .section-header h2 {
         font-size: 1.5rem;
     }
 
-    .button-card {
-        font-size: 14px;
-        padding: 10px 22px;
-    }
-
-    .container-fluid.background {
-        padding: 20px;
+    .section-header p {
+        font-size: 1rem;
     }
 }
