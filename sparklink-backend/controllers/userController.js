@@ -1,5 +1,6 @@
+// Controller to manage user-related operations including registration, authentication, password reset, and recommendation engine
 require("dotenv").config();
-const Role = require("../models/role");  // ✅ Import Role model
+const Role = require("../models/role"); // Import Role model
 const User = require("../models/user");
 const SupervisorProfile = require("../models/supervisor_profile");
 const BusinessOwner = require("../models/owner_profile");
@@ -10,13 +11,11 @@ const crypto = require("crypto");
 const passport = require("../config/passportConfig");
 const { Op } = require("sequelize");
 const { getTop5RecommendedProjects } = require("../queue/skillextraction");
-const  sequelize  = require("../config/db");
-
+const sequelize = require("../config/db");
 
 const { createLog } = require("../controllers/logsController");
 
-// Register a new user with role
-
+// Register a new user and send confirmation email (includes elevated role validation and admin notification)
 exports.register = async (req, res) => {
   try {
     // const { username, email, password, name, role } = req.body;
@@ -25,8 +24,7 @@ exports.register = async (req, res) => {
 
     const SUPERVISOR_SECRET = "secret123";
     const ADMIN_SECRET = "admin456";
-    const userRole = String(role); // Just in case role is a number
-
+    const userRole = String(role);
 
     console.log("Backend received:", { role, secret });
     // Step 1: Secure role validation
@@ -35,11 +33,12 @@ exports.register = async (req, res) => {
         (userRole === "1" && secret !== ADMIN_SECRET) ||
         ((userRole === "2" || userRole === "3") && secret !== SUPERVISOR_SECRET)
       ) {
-        console.log("❌ Secret mismatch or invalid role");
-        return res.status(403).json({ message: "Unauthorized access to elevated role." });
+        console.log("Secret mismatch or invalid role");
+        return res
+          .status(403)
+          .json({ message: "Unauthorized access to elevated role." });
       }
     }
-
 
     // Check if required fields are missing
     if (!username || !email || !password || !name || !role) {
@@ -77,19 +76,23 @@ exports.register = async (req, res) => {
       password,
       name,
       role,
-      created_by: 1, // ✅ Replace with actual user ID if available
-      modified_by: 1, // ✅ Replace with actual user ID if available
-      confirmation_token, // ✅ Store token
+      created_by: 1,
+      modified_by: 1,
+      confirmation_token, // Store token
       is_active: "N", // Initially inactive
-      is_verified: 'N'
+      is_verified: "N",
     });
 
     // Log user registration
-    await createLog(newUser.user_id, "User Registration", `User ${newUser.username} registered with role ${roleExists.role_desc}.`, "user");
+    await createLog(
+      newUser.user_id,
+      "User Registration",
+      `User ${newUser.username} registered with role ${roleExists.role_desc}.`,
+      "user"
+    );
 
     // Send email with confirmation link
     const confirmationLink = `http://localhost:5100/api/users/confirm-email?token=${confirmation_token}`;
-    
 
     res.status(201).json({
       message: "User registered successfully! Please confirm your email.",
@@ -97,20 +100,18 @@ exports.register = async (req, res) => {
     });
 
     const transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
+      service: "gmail",
+      auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS,
-    },
-});
+      },
+    });
 
-const mailOptions = {
-    from: process.env.EMAIL_USER,
-    to: email,
-    subject: "Confirm Your Email",
-    // html: `<p>Click the link below to confirm your email:</p>
-    //          <a href="${confirmationLink}">${confirmationLink}</a>`,
-    html: `
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: "Confirm Your Email",
+      html: `
       <p>Dear ${username},</p>
       <p>Thank you for registering with SparkLink! Please confirm your email address by clicking the button below:</p>
       <a href="${confirmationLink}" 
@@ -120,24 +121,23 @@ const mailOptions = {
       <p>If you did not register, please ignore this email.</p>
       <p>Regards,<br>Team SparkLink</p>
     `,
+    };
 
-};
+    await transporter.sendMail(mailOptions);
+    console.log("Confirmation email sent!");
 
-await transporter.sendMail(mailOptions);
-console.log("Confirmation email sent!");
+    // Notify all admins if elevated role is registered
+    if (role !== "4") {
+      const admins = await User.findAll({
+        where: { role: "1", is_active: "Y" },
+        attributes: ["email"],
+      });
 
-// 📧 Notify all admins if elevated role is registered
-if (role !== "4") {
-  const admins = await User.findAll({
-    where: { role: "1", is_active: "Y" },
-    attributes: ["email"],
-  });
+      const adminEmails = admins.map((admin) => admin.email);
 
-  const adminEmails = admins.map((admin) => admin.email);
+      const adminProfileLink = `http://localhost:3100/admin/view-users`;
 
-  const adminProfileLink = `http://localhost:3100/admin/view-users`; // Optional: if you want to include a link
-
-const mailHTML = `
+      const mailHTML = `
   <div style="font-family: Arial, sans-serif; background-color: #1a1a1a; color: #ffffff; padding: 20px; border-radius: 8px;">
     <h2 style="color: #FFCE00;">New Elevated Role Registration</h2>
     <p>A new user has registered with elevated access on SparkLink:</p>
@@ -160,29 +160,28 @@ const mailHTML = `
   </div>
 `;
 
-
-  if (adminEmails.length > 0) {
-    await transporter.sendMail({
-      from: process.env.EMAIL_USER,
-      to: adminEmails,
-      subject: "New Elevated Role Registration",
-      html: mailHTML,
-    });
-        console.log("📧 Admins notified of elevated role registration.");
+      if (adminEmails.length > 0) {
+        await transporter.sendMail({
+          from: process.env.EMAIL_USER,
+          to: adminEmails,
+          subject: "New Elevated Role Registration",
+          html: mailHTML,
+        });
+        console.log("Admins notified of elevated role registration.");
       } else {
-        console.log("⚠️ No admins found to notify.");
+        console.log("No admins found to notify.");
       }
     }
-
-
-
-
   } catch (error) {
-    console.error("❌ Registration error:", error);
-    res.status(500).json({ message: "Registration failed. Try again.", error: error.message });
+    console.error("Registration error:", error);
+    res.status(500).json({
+      message: "Registration failed. Try again.",
+      error: error.message,
+    });
   }
 };
 
+// Confirm user's email using token and activate the account
 exports.confirmEmail = async (req, res) => {
   try {
     const { token } = req.query;
@@ -198,13 +197,12 @@ exports.confirmEmail = async (req, res) => {
     }
 
     // Mark user as verified
-    user.is_verified = 'Y'
+    user.is_verified = "Y";
     // Activate the user account
     user.is_active = "Y";
     user.confirmation_token = null; // Clear the token after confirmation
     await user.save();
 
-    //  res.status(200).json({ message: 'Email confirmed successfully. You can now log in.' });
     return res.redirect(
       "http://localhost:3100/login?message=Email confirmed successfully. You can now log in."
     );
@@ -215,9 +213,10 @@ exports.confirmEmail = async (req, res) => {
   }
 };
 
+// Placeholder for registering supervisor (not implemented)
 exports.registerSupervisor = async (req, res) => {};
 
-// Login user with role
+// Authenticate user and start session if login is successful
 exports.login = async (req, res, next) => {
   passport.authenticate("local", async (err, user, info) => {
     if (err) {
@@ -226,24 +225,28 @@ exports.login = async (req, res, next) => {
         .json({ message: "Authentication error", error: err });
     }
     if (!user) {
-      await createLog(null, "Failed Login", `Attempted login for ${req.body.username}`, "error");
+      await createLog(
+        null,
+        "Failed Login",
+        `Attempted login for ${req.body.username}`,
+        "error"
+      );
       return res
         .status(401)
         .json({ message: info.message || "Invalid credentials" });
-    };
-
-    if (user.is_verified === 'N') {
-      await createLog(user.user_id, "Unverified Login Attempt", `Unverified user ${user.username} attempted login.`, "error");
-      return res.status(403).json({ message: "Please confirm your account before logging in." });
     }
 
-
-    // // Check if email is verified before logging in
-    // if (user.is_verified === 'N') {
-    //   console.log("❌ User not verified. Blocking login.");
-    //   return res.status(403).json({ message: "Please verify your email before logging in." });
-    // }
-
+    if (user.is_verified === "N") {
+      await createLog(
+        user.user_id,
+        "Unverified Login Attempt",
+        `Unverified user ${user.username} attempted login.`,
+        "error"
+      );
+      return res
+        .status(403)
+        .json({ message: "Please confirm your account before logging in." });
+    }
 
     // Debugging: Log the stored hashed password for comparison
     console.log("Stored Hashed Password:", user.password);
@@ -253,9 +256,13 @@ exports.login = async (req, res, next) => {
         return res.status(500).json({ message: "Login failed", error: err });
       }
 
-      // ✅ Log user login
-      await createLog(user.user_id, "User Login", `User ${user.username} logged in successfully.`, "user");
-
+      // Log user login
+      await createLog(
+        user.user_id,
+        "User Login",
+        `User ${user.username} logged in successfully.`,
+        "user"
+      );
 
       // Send success message, user data, and redirect URL in the response
       return res.status(200).json({
@@ -267,14 +274,14 @@ exports.login = async (req, res, next) => {
           isAuthenticated: true,
           user_id: user.user_id,
           is_verified: user.is_verified,
-          is_active: user.is_active
+          is_active: user.is_active,
         },
-        // Adjust this to the desired path
       });
     });
   })(req, res, next);
 };
-// Logout Controller
+
+// Logout the current authenticated user and destroy session
 exports.logout = (req, res) => {
   if (!req.user) return res.status(401).json({ message: "User not logged in" });
 
@@ -294,13 +301,14 @@ exports.logout = (req, res) => {
   });
 };
 
+// Check if session exists and return basic user info
 exports.checkSession = (req, res) => {
   if (req.isAuthenticated()) {
     // User is authenticated, send back user details
-    const { username, email, role, user_id} = req.user; // Assuming req.user contains these fields
+    const { username, email, role, user_id } = req.user;
     return res.status(200).json({
       isAuthenticated: true,
-      user: { username, email, role , user_id},
+      user: { username, email, role, user_id },
     });
   } else {
     // User is not authenticated
@@ -310,6 +318,7 @@ exports.checkSession = (req, res) => {
   }
 };
 
+// Check if the user is an Admin or Supervisor
 exports.authStatus = (req, res) => {
   if (req.isAuthenticated()) {
     if (
@@ -328,6 +337,7 @@ exports.authStatus = (req, res) => {
   }
 };
 
+// Check if user is Supervisor or Admin (specialized auth check)
 exports.authStatusSupervisorOrAdmin = (req, res) => {
   if (req.isAuthenticated()) {
     if (req.user.role === "1" || req.user.role === "2") console.log("hi");
@@ -338,6 +348,7 @@ exports.authStatusSupervisorOrAdmin = (req, res) => {
   }
 };
 
+// Initiate password reset by generating and emailing reset token
 exports.forgotPassword = async (req, res) => {
   try {
     const { email } = req.body;
@@ -389,8 +400,13 @@ exports.forgotPassword = async (req, res) => {
     `,
     });
 
-    // ✅ Log password reset request
-    await createLog(user.user_id, "Password Reset Requested", `User ${user.username} requested a password reset.`, "action");
+    // Log password reset request
+    await createLog(
+      user.user_id,
+      "Password Reset Requested",
+      `User ${user.username} requested a password reset.`,
+      "action"
+    );
 
     res
       .status(200)
@@ -403,7 +419,7 @@ exports.forgotPassword = async (req, res) => {
   }
 };
 
-// Verify the token (GET)
+// Verify if the provided password reset token is valid and not expired
 exports.verifyToken = async (req, res) => {
   try {
     const { token } = req.query;
@@ -431,7 +447,7 @@ exports.verifyToken = async (req, res) => {
   }
 };
 
-// Reset the password (POST)
+// Reset the user's password using the verified reset token
 exports.resetPassword = async (req, res) => {
   try {
     const { token, newPassword } = req.body;
@@ -460,8 +476,13 @@ exports.resetPassword = async (req, res) => {
 
     await user.save();
 
-    // ✅ Log successful password reset
-    await createLog(user.user_id, "Password Reset Success", `User ${user.username} successfully reset their password.`, "action");
+    // Log successful password reset
+    await createLog(
+      user.user_id,
+      "Password Reset Success",
+      `User ${user.username} successfully reset their password.`,
+      "action"
+    );
 
     res.status(200).json({ message: "Password has been successfully reset." });
   } catch (error) {
@@ -470,7 +491,8 @@ exports.resetPassword = async (req, res) => {
       .json({ message: "Error resetting password.", error: error.message });
   }
 };
- 
+
+// Fetch all users from the database
 exports.getallusers = async (req, res) => {
   try {
     const users = await User.findAll();
@@ -480,6 +502,7 @@ exports.getallusers = async (req, res) => {
   }
 };
 
+// Update user details by user ID (admin or self-edit)
 exports.updateuser = async (req, res) => {
   try {
     const { id } = req.params; // User ID from the route
@@ -494,7 +517,6 @@ exports.updateuser = async (req, res) => {
         role,
         is_active,
         modified_by: req.user.user_id,
-        // Optional: Track who modified
       },
       { where: { user_id: id }, returning: true }
     );
@@ -505,7 +527,12 @@ exports.updateuser = async (req, res) => {
         .json({ message: "User not found or no changes made." });
     }
 
-    await createLog(id, "Profile Update", `User ${username} updated their profile`, "action");
+    await createLog(
+      id,
+      "Profile Update",
+      `User ${username} updated their profile`,
+      "action"
+    );
 
     // Return the updated user
     const updatedUser = await User.findByPk(id);
@@ -518,7 +545,7 @@ exports.updateuser = async (req, res) => {
   }
 };
 
-
+// Soft-delete a user by marking their account as inactive
 exports.deleteUser = async (req, res) => {
   try {
     const { id } = req.params; // User ID from the route
@@ -534,9 +561,16 @@ exports.deleteUser = async (req, res) => {
     await User.update({ is_active: "N" }, { where: { user_id: id } });
 
     // Log user deletion
-    await createLog(user.user_id, "User Deletion", `User ${user.username} was deleted (marked inactive).`, "action");
+    await createLog(
+      user.user_id,
+      "User Deletion",
+      `User ${user.username} was deleted (marked inactive).`,
+      "action"
+    );
 
-    res.status(200).json({ message: "User successfully deleted (marked inactive)." });
+    res
+      .status(200)
+      .json({ message: "User successfully deleted (marked inactive)." });
   } catch (error) {
     res
       .status(500)
@@ -544,6 +578,7 @@ exports.deleteUser = async (req, res) => {
   }
 };
 
+// Get top 5 recommended projects for a student based on profile and project skills
 exports.get5recommendedProjects = async (req, res) => {
   try {
     const user = req.user; // Get the whole user object from req.user
@@ -552,19 +587,19 @@ exports.get5recommendedProjects = async (req, res) => {
     // Fetching the student profile based on user_id
     const studentProfile = await StudentProfile.findOne({
       where: { user_id: user.user_id }, // Querying by user_id (from req.user)
-      attributes: ['skills'], // Only fetch the specified fields
+      attributes: ["skills"], // Only fetch the specified fields
     });
 
     if (!studentProfile) {
-      return res.status(404).json({ message: 'Student profile not found' });
+      return res.status(404).json({ message: "Student profile not found" });
     }
 
     // Split and trim the skills list
     const skillsList = studentProfile.skills
       ? studentProfile.skills
-          .split(',')
-          .map(skill => skill.trim())  // Remove any surrounding spaces
-          .filter(skill => skill.length > 0)  // Remove any empty strings
+          .split(",")
+          .map((skill) => skill.trim()) // Remove any surrounding spaces
+          .filter((skill) => skill.length > 0) // Remove any empty strings
       : [];
 
     // Fetch projects associated with the user
@@ -584,17 +619,17 @@ exports.get5recommendedProjects = async (req, res) => {
 
     // Extract and combine skills from the fetched projects
     const projectSkills = projectsWithSkills
-      .map(project => project.skills_req)  // Get the required skills field
-      .filter(skills => skills)  // Make sure skills_req exists
-      .map(skills => skills.split(','))
+      .map((project) => project.skills_req) // Get the required skills field
+      .filter((skills) => skills) // Make sure skills_req exists
+      .map((skills) => skills.split(","))
       .flat()
-      .map(skill => skill.trim())
-      .filter(skill => skill.length > 0);
+      .map((skill) => skill.trim())
+      .filter((skill) => skill.length > 0);
 
     console.log(projectSkills);
 
     const allSkills = [...new Set([...skillsList, ...projectSkills])];
-    console.log('Merged Skills List:', allSkills);
+    console.log("Merged Skills List:", allSkills);
     // Fetch all projects with required skills
     const projectsWithSkillsa = await sequelize.query(
       `
@@ -608,8 +643,10 @@ AND NOT EXISTS (
     AND tpa.user_id = :userId -- Exclude projects where the user is already allocated
 )
       `,
-      { replacements: { userId: user.user_id },
-        type: sequelize.QueryTypes.SELECT }
+      {
+        replacements: { userId: user.user_id },
+        type: sequelize.QueryTypes.SELECT,
+      }
     );
 
     const recommendedProjects = [];
@@ -621,15 +658,18 @@ AND NOT EXISTS (
       if (skills_req) {
         // Split and trim the project's required skills
         const projectSkills = skills_req
-          .split(',')
-          .map(skill => skill.trim())
-          .filter(skill => skill.length > 0);
+          .split(",")
+          .map((skill) => skill.trim())
+          .filter((skill) => skill.length > 0);
 
         // Find the intersection of user skills and project skills
-        const commonSkills = allSkills.filter(skill => projectSkills.includes(skill));
+        const commonSkills = allSkills.filter((skill) =>
+          projectSkills.includes(skill)
+        );
 
         // Calculate the match percentage
-        const matchPercentage = (commonSkills.length / projectSkills.length) * 100;
+        const matchPercentage =
+          (commonSkills.length / projectSkills.length) * 100;
 
         // If matchPercentage is more than 60%, add to recommended list
         if (matchPercentage > 40) {
@@ -650,8 +690,10 @@ AND NOT EXISTS (
     // Limit to top 5 recommended projects
     const top5Projects = recommendedProjects.slice(0, 5);
 
-    console.log(top5Projects)
-    const recommendedProjectIds = top5Projects.map(project => project.proj_id); // Extracting the proj_id of the top 5 recommended projects
+    console.log(top5Projects);
+    const recommendedProjectIds = top5Projects.map(
+      (project) => project.proj_id
+    ); // Extracting the proj_id of the top 5 recommended projects
 
     const projectsQuery = `
   SELECT pr.*, ps.status_desc
@@ -662,15 +704,15 @@ AND NOT EXISTS (
   ORDER BY pr.created_on DESC
   LIMIT 50;
 `;
-const projects = await sequelize.query(projectsQuery, {
-  replacements: { recommendedProjectIds: recommendedProjectIds },
-  type: sequelize.QueryTypes.SELECT,
-});
+    const projects = await sequelize.query(projectsQuery, {
+      replacements: { recommendedProjectIds: recommendedProjectIds },
+      type: sequelize.QueryTypes.SELECT,
+    });
 
-if (projects && projects.length > 0) {
-  const projIds = projects.map(project => project.proj_id);
+    if (projects && projects.length > 0) {
+      const projIds = projects.map((project) => project.proj_id);
 
-  const stakeholdersQuery = `
+      const stakeholdersQuery = `
     SELECT pa.proj_id, u.username || ' ' || u.name as name, u.user_id,
     CASE 
       WHEN pa.role = 2 THEN 'business_owner'
@@ -683,25 +725,25 @@ if (projects && projects.length > 0) {
     and pa.proj_id IN (:projIds)
     order by proj_id desc;
   `;
-  const stakeholders = await sequelize.query(stakeholdersQuery, {
-    replacements: { projIds },
-    type: sequelize.QueryTypes.SELECT,
-  });
+      const stakeholders = await sequelize.query(stakeholdersQuery, {
+        replacements: { projIds },
+        type: sequelize.QueryTypes.SELECT,
+      });
 
-  const stakeholderMap = stakeholders.reduce((map, stakeholder) => {
-    if (!map[stakeholder.proj_id]) {
-      map[stakeholder.proj_id] = [];
-    }
-    map[stakeholder.proj_id].push({
-      name: stakeholder.name,
-      role: stakeholder.role,
-      user_id: stakeholder.user_id,
-      proj_id: stakeholder.proj_id
-    });
-    return map;
-  }, {});
+      const stakeholderMap = stakeholders.reduce((map, stakeholder) => {
+        if (!map[stakeholder.proj_id]) {
+          map[stakeholder.proj_id] = [];
+        }
+        map[stakeholder.proj_id].push({
+          name: stakeholder.name,
+          role: stakeholder.role,
+          user_id: stakeholder.user_id,
+          proj_id: stakeholder.proj_id,
+        });
+        return map;
+      }, {});
 
-  const milestonesQuery = `
+      const milestonesQuery = `
     SELECT proj_id, 
       COUNT(CASE WHEN is_active = 'Y' THEN 1 END) AS active_milestones,
       COUNT(CASE WHEN is_active = 'Y' AND is_completed = 'Y' THEN 1 END) AS completed_milestones
@@ -709,49 +751,50 @@ if (projects && projects.length > 0) {
     WHERE proj_id IN (:projIds)
     GROUP BY proj_id;
   `;
-  const milestones = await sequelize.query(milestonesQuery, {
-    replacements: { projIds },
-    type: sequelize.QueryTypes.SELECT,
-  });
+      const milestones = await sequelize.query(milestonesQuery, {
+        replacements: { projIds },
+        type: sequelize.QueryTypes.SELECT,
+      });
 
-  // Map milestones by project
-  const milestoneMap = milestones.reduce((map, milestone) => {
-    const progress = milestone.active_milestones > 0
-      ? Math.round((milestone.completed_milestones / milestone.active_milestones) * 100)
-      : 0;
-    map[milestone.proj_id] = progress || 0;
-    return map;
-  }, {});
+      // Map milestones by project
+      const milestoneMap = milestones.reduce((map, milestone) => {
+        const progress =
+          milestone.active_milestones > 0
+            ? Math.round(
+                (milestone.completed_milestones / milestone.active_milestones) *
+                  100
+              )
+            : 0;
+        map[milestone.proj_id] = progress || 0;
+        return map;
+      }, {});
 
-  // Combine all data into the projects array
-  projects.forEach(project => {
-    project.status_desc = project.status_desc || '';
-    project.stakeholder = stakeholderMap[project.proj_id] || [];
-    project.progress = milestoneMap[project.proj_id] || 0;
-  });
-}
+      // Combine all data into the projects array
+      projects.forEach((project) => {
+        project.status_desc = project.status_desc || "";
+        project.stakeholder = stakeholderMap[project.proj_id] || [];
+        project.progress = milestoneMap[project.proj_id] || 0;
+      });
+    }
 
-res.status(200).json({
-  projects,
-  user: {
-    user_id: user.user_id,
-    username: user.username,
-    email: user.email,
-    role: user.role,
-    isAuthenticated: true,
-  },
-});
+    res.status(200).json({
+      projects,
+      user: {
+        user_id: user.user_id,
+        username: user.username,
+        email: user.email,
+        role: user.role,
+        isAuthenticated: true,
+      },
+    });
 
     // Respond with the projects whose match percentage is more than 60%
-    
+
     // Handle case where no projects with required skills were found
-    
-
-   
-    
-
   } catch (error) {
-    console.error('Error fetching recommended projects:', error);
-    return res.status(500).json({ message: 'Error fetching recommended projects' });
+    console.error("Error fetching recommended projects:", error);
+    return res
+      .status(500)
+      .json({ message: "Error fetching recommended projects" });
   }
 };

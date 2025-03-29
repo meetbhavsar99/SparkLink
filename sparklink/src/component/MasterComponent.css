@@ -28,7 +28,8 @@
 }
 
 .sparklink_logo {
-    height: 45px;
+    height: 95px;
+    width: 160px;
     cursor: pointer !important;
 }
 

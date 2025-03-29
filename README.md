@@ -33,13 +33,13 @@ SparkLink-main/
    npm install
    ```
 3. Configure environment variables:
+
    - Create a `.env` file in `sparklink-backend` and set the required database credentials and email configurations.
 
 4. Start the backend server:
    ```sh
    npx nodemon app.js
    ```
-
 
 ## Frontend Setup (React.js)
 
@@ -52,6 +52,7 @@ SparkLink-main/
    npm install
    ```
 3. Start the React development server:
+
    ```sh
    npm start
    ```
@@ -90,12 +91,14 @@ Make sure both the backend and frontend are running simultaneously for full func
 ## Contributors
 
 Team of Winter 2025 -
+
 - [Meet Bhavsar](https://www.linkedin.com/in/meetkumar-bhavsar-0059ba1b5/)
 - [Heet Patel](https://www.linkedin.com/in/heet2002/)
 - [Chaitanya Parikh](https://www.linkedin.com/in/chaitanyap310/)
 - [Vinit Vekaria](https://www.linkedin.com/in/vinit-vekariaengineer/)
 
 Team of Fall 2024 -
+
 - [Kausar Fatema](https://www.linkedin.com/in/kausar-fatema-9060871b1/)
 - [Pooja Vishwakarma](https://www.linkedin.com/in/pooja-vishwakarma95/)
 - [Fajuko Michael](https://www.linkedin.com/in/fajuko-odunayo-5256a1265/)
@@ -106,4 +109,3 @@ Team of Fall 2024 -
 ## License
 
 This project is licensed under the MIT License.
-

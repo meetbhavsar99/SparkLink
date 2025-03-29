@@ -1,24 +1,11 @@
+// Controller for creating a new project application and notifying the project creator
+
 const ProjApplication = require("../models/proj_application");
 
-// exports.createApplication = async (req, res) => {
-//   try {
-//     const { projectList } = req.body;
+const User = require("../models/user");
+const Project = require("../models/project");
 
-//     const projData = await ProjApplication.create(projectList);
-//     res
-//       .status(201)
-//       .json({ message: "Project Application saved successfully", projData });
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({
-//       message: "Error saving project application",
-//       error: error.message,
-//     });
-//   }
-// };
-const User = require('../models/user');
-const Project = require('../models/project');
-
+// Save application details to the database
 exports.createApplication = async (req, res) => {
   try {
     const { projectList } = req.body;
@@ -28,7 +15,7 @@ exports.createApplication = async (req, res) => {
 
     // Fetch project to get creator
     const project = await Project.findOne({
-      where: { proj_id: projectList.proj_id }
+      where: { proj_id: projectList.proj_id },
     });
 
     if (!project) {
@@ -42,12 +29,12 @@ exports.createApplication = async (req, res) => {
       recipient_id: project.created_by, // notify the creator
       code: "SA", // Student Applied
       created_on: new Date(),
-      is_read: "N"
+      is_read: "N",
     });
 
     return res.status(201).json({
       message: "Project Application saved and notification sent",
-      projData
+      projData,
     });
   } catch (error) {
     console.error(error);
@@ -57,5 +44,3 @@ exports.createApplication = async (req, res) => {
     });
   }
 };
-
-

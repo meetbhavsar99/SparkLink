@@ -1,80 +1,82 @@
-/* Footer container */
 .footer-container {
-    padding: 0 0 0 70px;
-    /* Adjust padding to account for the sidebar */
     background: #005596;
-    z-index: -1;
-    position: relative;
     width: 100%;
     box-sizing: border-box;
+    padding: 0;
+    position: relative;
+    z-index: -1;
 }
 
-/* Footer background */
-.container-fluid.footer-background {
+.footer-background {
     background: #005596;
     color: #fff;
     font-weight: 500;
     font-size: 1.1rem;
-    padding: 20px;
-    align-items: center;
-    /* box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.2); */
+    padding: 20px 20px;
 }
 
-/* UWindsor logo */
+/* New content wrapper to limit width on high resolution displays */
+.footer-content {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1400px;
+    /* Limits width on very large screens */
+    margin: 0 auto;
+    /* Centers the content */
+}
+
+/* Logo and text styles */
 .UWindsor-footer-logo {
     max-width: 150px;
     height: auto;
-    margin: 0 auto;
+    margin: 0 auto 10px;
     display: block;
-    margin-bottom: 10px;
 }
 
-/* Text styling */
 .text-footer {
     font-size: 1rem;
     line-height: 1.6;
-    text-align: center;
     margin: 10px 0;
+    text-align: center;
 }
 
-/* Responsive adjustments */
-@media (min-width: 769px) {
-    .footer-container {
-        padding-left: 250px;
-        /* Adjust for expanded sidebar */
+/* Desktop layout */
+@media (min-width: 768px) {
+    .footer-content {
+        flex-direction: row;
     }
 
-    .UWindsor-footer-logo {
-        padding-left: 0;
+    .footer-background .col-lg-3,
+    .footer-background .col-lg-5,
+    .footer-background .col-lg-4 {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
     }
 
     .text-footer {
         text-align: left;
+        margin: 4px 0;
     }
 }
 
-@media (max-width: 768px) {
-    .footer-container {
-        padding: 20px;
-        /* Reset padding for mobile */
-        text-align: center;
-    }
-
-    .row {
-        display: flex;
+/* Mobile layout */
+@media (max-width: 767px) {
+    .footer-content {
         flex-direction: column;
         align-items: center;
     }
 
-    .col-lg-2,
-    .col-lg-5 {
+    .footer-background .col-lg-3,
+    .footer-background .col-lg-5,
+    .footer-background .col-lg-4 {
         width: 100%;
-        text-align: center;
-        padding: 0;
-    }
-
-    .col-lg-5.col-md-5.text-footer.text-end {
-        text-align: center;
+        padding: 10px 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }
 
     .UWindsor-footer-logo {
@@ -82,20 +84,15 @@
     }
 
     .text-footer {
-        margin-top: 10px;
+        font-size: 0.95rem;
+        margin: 5px 0;
+        text-align: center;
     }
+}
 
-    .col-lg-5.col-md-5.text-end.px-5 {
-        padding: 0;
-    }
-
-    .col-lg-5.col-md-5.col-sm-12.text-end.px-5 {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .text-footer {
-        margin-bottom: 5px;
+/* Extra adjustment for ultra-high resolution displays */
+@media (min-width: 1400px) {
+    .footer-content {
+        padding: 0 40px;
     }
 }

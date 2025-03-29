@@ -1,4 +1,3 @@
-// controllers/groupController.js
 const Group = require("../models/group");
 const GroupMember = require("../models/group_member");
 const User = require("../models/user");
@@ -7,19 +6,21 @@ const ProjAllocation = require("../models/proj_allocation");
 const { v4: uuidv4 } = require("uuid");
 const path = require("path");
 
-// Create Group
+// Create a new group and make the creator the team leader
 exports.createGroup = async (req, res) => {
   try {
     const user_id = req.user.user_id;
 
     // Check if already in a group
-    const existingMembership = await GroupMember.findOne({ where: { user_id } });
+    const existingMembership = await GroupMember.findOne({
+      where: { user_id },
+    });
     if (existingMembership) {
       return res.status(400).json({ message: "You are already in a group." });
     }
 
     // Auto-generate numeric group ID
-    const lastGroup = await Group.findOne({ order: [['group_id', 'DESC']] });
+    const lastGroup = await Group.findOne({ order: [["group_id", "DESC"]] });
     const nextGroupId = lastGroup ? parseInt(lastGroup.group_id) + 1 : 1001;
 
     const group = await Group.create({
@@ -36,9 +37,7 @@ exports.createGroup = async (req, res) => {
   }
 };
 
-
-
-// Join Group
+// Join an existing group if not already in one and group has space
 exports.joinGroup = async (req, res) => {
   try {
     const user_id = req.user.user_id;
@@ -50,12 +49,15 @@ exports.joinGroup = async (req, res) => {
 
     // Check if user is already in a group
     const alreadyInGroup = await GroupMember.findOne({ where: { user_id } });
-    if (alreadyInGroup) return res.status(400).json({ message: "You are already in a group." });
+    if (alreadyInGroup)
+      return res.status(400).json({ message: "You are already in a group." });
 
     // Check group size
     const memberCount = await GroupMember.count({ where: { group_id } });
     if (memberCount >= 5) {
-      return res.status(400).json({ message: "This group already has 5 members." });
+      return res
+        .status(400)
+        .json({ message: "This group already has 5 members." });
     }
 
     // Add user to group
@@ -68,11 +70,10 @@ exports.joinGroup = async (req, res) => {
   }
 };
 
-
-// Leave Group
+// Allow users to leave their group
 exports.leaveGroup = async (req, res) => {
   try {
-    const user_id = req.user.user_id; // ✅ Correct source
+    const user_id = req.user.user_id;
 
     const membership = await GroupMember.findOne({ where: { user_id } });
     if (!membership) return res.status(404).json({ message: "Not in a group" });
@@ -86,14 +87,14 @@ exports.leaveGroup = async (req, res) => {
   }
 };
 
-
-// Upload PDF
+// Upload a merged resume PDF for the group (by any member)
 exports.uploadPDF = async (req, res) => {
   try {
     const user_id = req.user.user_id;
 
     const membership = await GroupMember.findOne({ where: { user_id } });
-    if (!membership) return res.status(400).json({ message: "Not part of any group" });
+    if (!membership)
+      return res.status(400).json({ message: "Not part of any group" });
 
     const group = await Group.findByPk(membership.group_id);
     if (!group) return res.status(404).json({ message: "Group not found" });
@@ -112,7 +113,7 @@ exports.uploadPDF = async (req, res) => {
   }
 };
 
-// View Groups
+// Fetch all groups with their members (basic)
 exports.getGroups = async (req, res) => {
   try {
     const groups = await Group.findAll({
@@ -126,42 +127,45 @@ exports.getGroups = async (req, res) => {
   }
 };
 
-// Get all groups with members and team leader (for Admins/Supervisors)
+// Admin/Supervisor view: Fetch all groups with member and leader info
 exports.getAllDetailedGroups = async (req, res) => {
   try {
-    // ✅ Prevent duplicate association error
+    // Prevent duplicate association error
     if (!Group.associations.GroupMembers) {
-      Group.hasMany(GroupMember, { foreignKey: 'group_id', as: 'GroupMembers' });
+      Group.hasMany(GroupMember, {
+        foreignKey: "group_id",
+        as: "GroupMembers",
+      });
     }
 
     if (!GroupMember.associations.User) {
-      GroupMember.belongsTo(User, { foreignKey: 'user_id' });
+      GroupMember.belongsTo(User, { foreignKey: "user_id" });
     }
 
     const groups = await Group.findAll({
       include: [
         {
           model: GroupMember,
-          as: 'GroupMembers',
+          as: "GroupMembers",
           include: [
             {
               model: User,
-              attributes: ['username', 'user_id']
-            }
-          ]
-        }
-      ]
+              attributes: ["username", "user_id"],
+            },
+          ],
+        },
+      ],
     });
 
-    const formatted = groups.map(group => ({
+    const formatted = groups.map((group) => ({
       group_id: group.group_id,
       team_leader_id: group.team_leader_id,
       resume_url: group.resume_pdf,
-      members: group.GroupMembers.map(member => ({
+      members: group.GroupMembers.map((member) => ({
         user_id: member.user_id,
         username: member.User?.username || "Unknown",
-        is_leader: member.user_id === group.team_leader_id
-      }))
+        is_leader: member.user_id === group.team_leader_id,
+      })),
     }));
 
     console.log("Formatted groups:", formatted);
@@ -172,11 +176,7 @@ exports.getAllDetailedGroups = async (req, res) => {
   }
 };
 
-
-
-
-
-// Add in groupController.js
+// Get the current user's group info and their members
 exports.getMyGroup = async (req, res) => {
   try {
     const user_id = req.user.user_id;
@@ -187,24 +187,24 @@ exports.getMyGroup = async (req, res) => {
     }
 
     // Manually associate here
-    GroupMember.belongsTo(User, { foreignKey: 'user_id' });
-    Group.hasMany(GroupMember, { foreignKey: 'group_id' });
+    GroupMember.belongsTo(User, { foreignKey: "user_id" });
+    Group.hasMany(GroupMember, { foreignKey: "group_id" });
 
     const group = await Group.findOne({
       where: { group_id: membership.group_id },
       include: [
         {
           model: GroupMember,
-          as: "GroupMembers", // ❗Use default alias Sequelize generates (or match your actual naming)
-          include: [{ model: User, attributes: ['username', 'user_id'] }]
-        }
-      ]
+          as: "GroupMembers",
+          include: [{ model: User, attributes: ["username", "user_id"] }],
+        },
+      ],
     });
 
-    const formattedMembers = group.GroupMembers.map(member => ({
+    const formattedMembers = group.GroupMembers.map((member) => ({
       user_id: member.user_id,
       username: member.User?.username || "Unknown",
-      is_leader: member.user_id === group.team_leader_id
+      is_leader: member.user_id === group.team_leader_id,
     }));
 
     const leader = await User.findByPk(group.team_leader_id);
@@ -214,9 +214,9 @@ exports.getMyGroup = async (req, res) => {
         group_id: group.group_id,
         resume_url: group.resume_pdf || null,
         members: formattedMembers,
-        team_leader_name: leader?.username || "N/A"
+        team_leader_name: leader?.username || "N/A",
       },
-      isLeader: user_id === group.team_leader_id
+      isLeader: user_id === group.team_leader_id,
     });
   } catch (err) {
     console.error("Error fetching group info:", err);
@@ -224,12 +224,14 @@ exports.getMyGroup = async (req, res) => {
   }
 };
 
+// Get list of projects that the group (via team leader) is working on
 exports.getMyGroupProjects = async (req, res) => {
   try {
     const user_id = req.user.user_id;
 
     const membership = await GroupMember.findOne({ where: { user_id } });
-    if (!membership) return res.status(403).json({ message: "You are not in any group." });
+    if (!membership)
+      return res.status(403).json({ message: "You are not in any group." });
 
     const group = await Group.findByPk(membership.group_id);
     if (!group) return res.status(404).json({ message: "Group not found." });
@@ -245,7 +247,10 @@ exports.getMyGroupProjects = async (req, res) => {
 
     console.log("Leader ID:", leaderId);
     console.log("Project IDs for leader:", projectIds);
-    console.log("Projects fetched:", projects.map(p => p.project_name));
+    console.log(
+      "Projects fetched:",
+      projects.map((p) => p.project_name)
+    );
 
     return res.status(200).json({ projects });
   } catch (error) {
@@ -253,6 +258,3 @@ exports.getMyGroupProjects = async (req, res) => {
     return res.status(500).json({ message: "Error fetching group projects" });
   }
 };
-
-
-

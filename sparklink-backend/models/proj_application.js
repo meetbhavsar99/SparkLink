@@ -1,12 +1,15 @@
+// Sequelize model for tracking project applications submitted by users (students or supervisors).
+// Stores application status (approved, rejected, pending) and ties each entry to a project, user, and role.
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/db");
 const User = require("../models/user");
 const Project = require("../models/project");
-const Role = require("../models/role"); // ✅ Added Role model reference
+const Role = require("../models/role");
 
 const ProjApplication = sequelize.define(
   "ProjApplication",
   {
+    // Auto-generated primary key for each application entry
     id: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
@@ -16,7 +19,7 @@ const ProjApplication = sequelize.define(
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: Project, // ✅ Use Sequelize model reference instead of raw table name
+        model: Project,
         key: "proj_id",
       },
       onUpdate: "CASCADE",
@@ -26,7 +29,7 @@ const ProjApplication = sequelize.define(
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: Role, // ✅ Use Sequelize model reference
+        model: Role,
         key: "id",
       },
       onUpdate: "CASCADE",
@@ -36,7 +39,7 @@ const ProjApplication = sequelize.define(
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: User, // ✅ Use Sequelize model reference
+        model: User,
         key: "user_id",
       },
       onUpdate: "CASCADE",
@@ -49,7 +52,7 @@ const ProjApplication = sequelize.define(
     created_on: {
       type: DataTypes.DATE,
       allowNull: false,
-      defaultValue: DataTypes.NOW, // ✅ Fixed default value for MySQL
+      defaultValue: DataTypes.NOW,
     },
     modified_by: {
       type: DataTypes.INTEGER,
@@ -58,7 +61,7 @@ const ProjApplication = sequelize.define(
     modified_on: {
       type: DataTypes.DATE,
       allowNull: false,
-      defaultValue: DataTypes.NOW, // ✅ Fixed default value for MySQL
+      defaultValue: DataTypes.NOW,
     },
     is_active: {
       type: DataTypes.CHAR(1),
@@ -88,7 +91,7 @@ const ProjApplication = sequelize.define(
   {
     tableName: "t_proj_application",
     timestamps: false,
-    charset: "utf8mb4", // ✅ Added for compatibility
+    charset: "utf8mb4",
     collate: "utf8mb4_unicode_ci",
     indexes: [
       {
@@ -103,7 +106,7 @@ const ProjApplication = sequelize.define(
   }
 );
 
-// 🟢 Define Associations
+// Define model associations to connect users and projects with their respective applications
 ProjApplication.belongsTo(User, {
   foreignKey: "user_id",
   targetKey: "user_id",

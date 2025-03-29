@@ -1,25 +1,33 @@
+// Sequelize model for 'student_group_members' table, linking students to their respective groups
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/db");
 
-const GroupMember = sequelize.define("GroupMember", {
-  id: {
-    type: DataTypes.INTEGER,
-    autoIncrement: true,
-    primaryKey: true,
+// Define the GroupMember model schema
+const GroupMember = sequelize.define(
+  "GroupMember",
+  {
+    // Auto-incremented primary key
+    id: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true,
+    },
+    // Group ID to which the student belongs
+    group_id: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    user_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
   },
-  group_id: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  user_id: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-  },
-}, {
-  tableName: 'student_group_members',
-});
+  {
+    tableName: "student_group_members",
+  }
+);
 
-// ✅ Attach the associate method to the model
+// Define associations between GroupMember and related models
 GroupMember.associate = (models) => {
   GroupMember.belongsTo(models.Group, {
     foreignKey: "group_id",

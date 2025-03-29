@@ -1,32 +1,36 @@
+// Sequelize model for managing allocations of users (students, supervisors, business owners) to projects.
+// Tracks role-based assignments, activity status, and notification preferences for each user-project pair.
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/db");
 const User = require("../models/user");
 const Project = require("../models/project");
-const Role = require("../models/role"); // ✅ Added Role model reference
+const Role = require("../models/role");
 
 const ProjAllocation = sequelize.define(
   "ProjAllocation",
   {
+    // Auto-incremented primary key for each allocation entry
     id: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
       primaryKey: true,
     },
+    // Foreign key: associated project
     proj_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: Project, // ✅ Use Sequelize model reference
+        model: Project,
         key: "proj_id",
       },
-      onUpdate: "CASCADE", // ✅ Fixed from "NO ACTION"
+      onUpdate: "CASCADE",
       onDelete: "CASCADE",
     },
     user_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: User, // ✅ Use Sequelize model reference
+        model: User,
         key: "user_id",
       },
       onUpdate: "CASCADE",
@@ -36,7 +40,7 @@ const ProjAllocation = sequelize.define(
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: Role, // ✅ Use Sequelize model reference
+        model: Role,
         key: "id",
       },
       onUpdate: "CASCADE",
@@ -49,7 +53,7 @@ const ProjAllocation = sequelize.define(
     created_on: {
       type: DataTypes.DATE,
       allowNull: false,
-      defaultValue: DataTypes.NOW, // ✅ Ensures correct timestamp behavior in MySQL
+      defaultValue: DataTypes.NOW,
     },
     modified_by: {
       type: DataTypes.INTEGER,
@@ -58,7 +62,7 @@ const ProjAllocation = sequelize.define(
     modified_on: {
       type: DataTypes.DATE,
       allowNull: false,
-      defaultValue: DataTypes.NOW, // ✅ Fixed for MySQL
+      defaultValue: DataTypes.NOW,
     },
     is_active: {
       type: DataTypes.CHAR(1),
@@ -96,7 +100,7 @@ const ProjAllocation = sequelize.define(
   {
     tableName: "t_proj_allocation",
     timestamps: false,
-    charset: "utf8mb4", // ✅ Added for compatibility
+    charset: "utf8mb4",
     collate: "utf8mb4_unicode_ci",
     indexes: [
       {
@@ -111,7 +115,7 @@ const ProjAllocation = sequelize.define(
   }
 );
 
-// 🟢 Define Associations
+// Model associations for user, project, and reverse mapping
 ProjAllocation.belongsTo(User, {
   foreignKey: "user_id",
   targetKey: "user_id",

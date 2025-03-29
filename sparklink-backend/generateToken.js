@@ -1,3 +1,8 @@
+/**
+ * Utility script to generate JWT tokens for predefined users.
+ * - Used for testing or development purposes
+ * - Uses a shared secret and signs tokens with a 1-hour expiration
+ */
 const jwt = require("jsonwebtoken");
 
 // Common secret key
@@ -10,8 +15,11 @@ const users = [
   { user_id: 3, username: "BusinessOwner", role: 2 }, // Business Owner
 ];
 
-// Generate tokens
+// Generate and print a JWT token for each user with role-based payload
 users.forEach((user) => {
   const token = jwt.sign(user, secret, { expiresIn: "1h" });
-  console.log(`Generated Token for ${user.username} (Role: ${user.role}):`, token);
+  console.log(
+    `Generated Token for ${user.username} (Role: ${user.role}):`,
+    token
+  );
 });

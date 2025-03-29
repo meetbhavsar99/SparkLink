@@ -614,7 +614,7 @@ p {
   color: #003366;
 }
 
-/* 🔹 Right Column: Bio & Contact Info */
+/* ðŸ”¹ Right Column: Bio & Contact Info */
 .business-owner-right {
   flex: 2;
   display: flex;
@@ -690,7 +690,7 @@ p {
   word-wrap: break-word;
 }
 
-/* 🔹 Second Row: Projects */
+/* ðŸ”¹ Second Row: Projects */
 .business-owner-projects-container {
   margin-top: 20px;
 }
@@ -775,7 +775,7 @@ p {
   color: #585858;
 }
 
-/* 🔹 Responsive Adjustments */
+/* ðŸ”¹ Responsive Adjustments */
 @media (max-width: 1024px) {
   .business-owner-profile-card {
     padding: 20px;
@@ -859,7 +859,7 @@ p {
   gap: 20px;
 }
 
-/* 🔹 First Row: Avatar + Bio + Contact Info */
+/* ðŸ”¹ First Row: Avatar + Bio + Contact Info */
 .supervisor-profile-header {
   display: flex;
   justify-content: space-between;
@@ -946,7 +946,7 @@ p {
   background: #585858;
 }
 
-/* 🔹 Right Section - Bio & Contact Info */
+/* ðŸ”¹ Right Section - Bio & Contact Info */
 .supervisor-right {
   flex: 2;
 }
@@ -1008,7 +1008,7 @@ p {
   color: #585858;
 }
 
-/* 🔹 Second Row: Projects Section */
+/* ðŸ”¹ Second Row: Projects Section */
 .supervisor-projects-container {
   margin-top: 20px;
   width: 100%;
@@ -1100,7 +1100,7 @@ p {
   color: #585858;
 }
 
-/* 🔹 Responsive Adjustments */
+/* ðŸ”¹ Responsive Adjustments */
 @media (max-width: 1024px) {
   .supervisor-profile-header {
     flex-direction: column;
@@ -1140,4 +1140,16 @@ p {
   .supervisor-welcome {
     font-size: 24px;
   }
+}
+
+
+.profile-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+
+.profile-content {
+  flex: 1;
 }

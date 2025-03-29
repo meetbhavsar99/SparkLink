@@ -1,3 +1,15 @@
+/* New container rules */
+.viewallgroups-page {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.viewallgroups-content {
+    flex: 1;
+}
+
+/* Existing styles */
 .group-title {
     margin-left: 90px;
     margin-top: 30px;

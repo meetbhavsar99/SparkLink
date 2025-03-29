@@ -1,3 +1,53 @@
+/* Ensure html and body take full height */
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/* Full-page container for Create Project page */
+.createproject-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Make main content expand to push footer down */
+.container-fluid.flex-grow-1 {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Constrain the form layout so it doesn't stretch too wide */
+.createproject_layout {
+  max-width: 900px;
+  /* Adjust maximum width as needed */
+  width: 100%;
+  margin: 0 auto;
+  /* Center horizontally */
+  padding: 20px;
+  background-color: rgba(211, 211, 211, 0.1);
+  border: 1px solid transparent;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s, box-shadow 0.2s;
+  overflow-y: auto;
+}
+
+/* Override input and textarea widths for larger screens */
+@media (min-width: 769px) {
+
+  .createproject_form input[type="text"],
+  .createproject_form input[type="number"],
+  .form_textarea {
+    width: 100% !important;
+  }
+}
+
+/* Existing styles from your CreateProjectComponent.css follow... */
+
 /* Main Container */
 .container-fluid {
   padding-left: 0px !important;
@@ -15,7 +65,6 @@
 
 .ml-custom {
   margin-left: 90px;
-  /* or try 20px or 30px */
 }
 
 .message {
@@ -34,6 +83,7 @@
   margin: 10px 0;
 }
 
+/* Create project layout container */
 .createproject_layout {
   height: auto;
   max-width: 100% !important;
@@ -48,61 +98,13 @@
   overflow-y: auto;
 }
 
+/* Form label styling */
 .form_label {
   font-weight: 600 !important;
   display: block;
   font-size: 1.1rem;
-  /* font-weight: 500; */
   color: #000;
   margin-top: 10px;
-}
-
-@media (max-width: 768px) {
-  .radio_button_container input[type="checkbox"] {
-    margin-left: 15px;
-    margin-top: 10px;
-    margin-bottom: 5px;
-    cursor: pointer;
-  }
-
-  .createproject_Heading {
-    background: linear-gradient(135deg, #2b2b2b, #555555 70%, #888888);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    -webkit-text-fill-color: transparent;
-    margin-left: 10px;
-    font-family: "Poppins", system-ui;
-    font-weight: 500 !important;
-    font-style: normal;
-    font-size: xx-large !important;
-    text-align: center;
-  }
-
-  .createproject_title {
-    color: #005596 !important;
-  }
-
-  .form_label {
-    font-weight: 500 !important;
-    display: block;
-    font-size: 1rem;
-    /* font-weight: 500; */
-    color: #000;
-  }
-
-  .createproject_form input[type="text"],
-  .createproject_form input[type="number"],
-  .project_image,
-  .form_textarea,
-  .createproject_datepicker {
-    width: 95% !important;
-  }
-
-  .createproject_layout {
-    width: 100%;
-    margin-left: 15px;
-  }
 }
 
 /* Toggle Switch Container */
@@ -121,13 +123,11 @@
   cursor: pointer;
 }
 
-/* On State */
 .form-check-input:checked {
   background-color: #005596;
   border-color: #004680;
 }
 
-/* Off State */
 .form-check-input:not(:checked) {
   background-color: #ccc;
   border-color: #aaa;
@@ -138,51 +138,40 @@
   margin-bottom: 10px;
 }
 
-@media (min-width: 769px) {
-  .radio_button_container input[type="checkbox"]:first-of-type {
-    margin-left: 15px;
-  }
-
-  .radio_button_container input[type="checkbox"]:not(:first-child) {
-    margin-left: 50px;
-  }
-
-  .radio_button_container input[type="checkbox"] {
-    margin-top: 10px;
-    margin-bottom: 10px;
-    cursor: pointer;
-  }
-
-  .createproject_Heading {
-    background: linear-gradient(135deg, #2b2b2b, #555555 70%, #888888);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: #005596;
-    /* color: transparent;
-    -webkit-text-fill-color: transparent; */
-    margin-left: 10px;
-    font-family: "Poppins", system-ui;
-    font-weight: 600 !important;
-    font-style: normal;
-    font-size: xxx-large !important;
-  }
+/* Radio button container */
+.radio_button_container input[type="checkbox"] {
+  margin: 10px 0;
+  cursor: pointer;
 }
 
+/* Create project heading styling */
+.createproject_Heading {
+  background: linear-gradient(135deg, #2b2b2b, #555555 70%, #888888);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: #005596;
+  margin-left: 10px;
+  font-family: "Poppins", system-ui;
+  font-weight: 600 !important;
+  font-style: normal;
+  font-size: xxx-large !important;
+}
+
+/* Input styling */
 .createproject_form input[type="text"],
 .createproject_form input[type="number"],
 .form_textarea {
   display: block;
   width: 75%;
   padding: 10px;
-  /* margin: 10px; */
   border: 2px solid #6a6a6a;
   border-radius: 12px;
   font-size: 16px;
   color: #333;
   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
-  /* margin-bottom: 10px; */
 }
 
+/* Disabled textarea styling */
 .disabled-textarea {
   background-color: #e0e0e0 !important;
   color: #666 !important;
@@ -190,16 +179,17 @@
   opacity: 0.7;
 }
 
+/* Submit button styling */
 .submit {
   display: block;
   margin: 20px auto;
-  /* Auto margin centers the button horizontally */
   padding: 10px 20px;
   border: 2px solid #6a6a6a;
   border-radius: 5px;
   cursor: pointer;
 }
 
+/* Margin for radio button labels */
 .radio_button_container span {
   font-family: "Poppins", system-ui;
   margin-left: 5px;
@@ -229,17 +219,15 @@
   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
 }
 
+/* Loading overlay styling */
 .loading-overlay {
   position: fixed;
-  ;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.3);
-  /* Semi-transparent background */
   z-index: 1100;
-  /* Ensure the overlay is above the form */
 }
 
 .disabled-textarea {

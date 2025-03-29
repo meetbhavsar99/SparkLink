@@ -1,3 +1,15 @@
+/* New container rules */
+.studentgroup-page {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.studentgroup-content {
+    flex: 1;
+}
+
+/* Existing styles */
 .group-title {
     text-align: left;
     font-weight: 700 !important;
@@ -22,6 +34,7 @@
     border: 1px solid #ccc;
     border-radius: 6px;
 }
+
 .upload-section input {
     margin: 0 10px;
     padding: 7.5px 10px;
@@ -48,10 +61,6 @@
     cursor: pointer;
     transition: all 0.2s ease;
 }
-
-/* .upload-btn {
-    margin-top: 0 !important;
-} */
 
 .group-actions button,
 .upload-section button,
@@ -89,24 +98,6 @@
     padding: 20px;
     background: #f2f2f2;
     border-radius: 10px;
-}
-
-.project-card-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-}
-
-.project-card {
-    background: white;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-    overflow: hidden;
-    width: 300px;
-}
-
-.project-info {
-    padding: 15px;
 }
 
 .project-card-container {

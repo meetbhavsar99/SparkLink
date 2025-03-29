@@ -4,12 +4,11 @@ import { ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage
 import { storage } from "../../firebase_script";
 import "./CreateProjectComponent.css";
 import MenuComponent from "../../component/menu/MenuComponent";
-import MasterComponent from '../MasterComponent';
+import MasterComponent from "../MasterComponent";
 import FooterComponent from "../footer/FooterComponent";
 import Select from "react-select";
-import { WithContext as ReactTags } from "react-tag-input";
 import axios from "axios";
-import { useAuth } from '../../AuthContext';
+import { useAuth } from "../../AuthContext";
 import { useNotification } from "../../notificationContext";
 import Swal from "sweetalert2";
 
@@ -27,7 +26,7 @@ const CreateProjectComponent = () => {
   const [otherProduct, setOtherProduct] = useState("");
   const [projectBudget, setProjectBudget] = useState("");
   const [projectDescription, setProjectDescription] = useState("");
-  const [features, setFeatures] = useState([]);
+  const [features, setFeatures] = useState("");
   const [featuresNA, setFeaturesNA] = useState(false);
   const [projectDeadline, setProjectDeadline] = useState("");
   const [category, setCategory] = useState("");
@@ -40,7 +39,6 @@ const CreateProjectComponent = () => {
   const [successMessage, setSuccessMessage] = useState("");
   const { isAuthenticated, user } = useAuth();
   const [isValidated, setIsValidated] = useState(false);
-
 
   const purposeOptions = [
     { value: "E-Commerce", label: "E-Commerce" },
@@ -67,31 +65,31 @@ const CreateProjectComponent = () => {
   const customSelectStyles = {
     control: (provided) => ({
       ...provided,
-      borderRadius: '12px',
-      border: '1px solid rgba(106, 106, 106, 0.3)',
-      boxShadow: '0 4px 10px rgba(0, 0, 0, 0.05)',
-      padding: '5px',
-      background: 'rgba(255, 255, 255, 0.7)',
-      '&:hover': {
-        borderColor: '#6a85b6',
-      }
+      borderRadius: "12px",
+      border: "1px solid rgba(106, 106, 106, 0.3)",
+      boxShadow: "0 4px 10px rgba(0, 0, 0, 0.05)",
+      padding: "5px",
+      background: "rgba(255, 255, 255, 0.7)",
+      "&:hover": {
+        borderColor: "#6a85b6",
+      },
     }),
     option: (provided, state) => ({
       ...provided,
-      backgroundColor: state.isSelected 
-        ? 'rgba(106, 133, 182, 0.9)' 
-        : state.isFocused 
-          ? 'rgba(106, 133, 182, 0.2)'
-          : 'transparent',
-      color: state.isSelected ? 'white' : '#333',
+      backgroundColor: state.isSelected
+        ? "rgba(106, 133, 182, 0.9)"
+        : state.isFocused
+        ? "rgba(106, 133, 182, 0.2)"
+        : "transparent",
+      color: state.isSelected ? "white" : "#333",
     }),
     menu: (provided) => ({
       ...provided,
-      borderRadius: '12px',
-      overflow: 'hidden',
-      boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
-      background: 'rgba(255, 255, 255, 0.95)',
-      backdropFilter: 'blur(10px)',
+      borderRadius: "12px",
+      overflow: "hidden",
+      boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)",
+      background: "rgba(255, 255, 255, 0.95)",
+      backdropFilter: "blur(10px)",
     }),
   };
 
@@ -101,7 +99,7 @@ const CreateProjectComponent = () => {
   });
 
   useEffect(() => {
-    console.log("The user logged in is", user);
+    console.log("User:", user);
   }, [user]);
 
   const emptyForm = () => {
@@ -112,7 +110,7 @@ const CreateProjectComponent = () => {
     setOtherProduct("");
     setProjectBudget("");
     setProjectDescription("");
-    setFeatures([]);
+    setFeatures("");
     setProjectDeadline("");
     setCategory("");
     setNumStudents("");
@@ -120,48 +118,33 @@ const CreateProjectComponent = () => {
     setImageFile(null);
   };
 
-  const handleDeleteFeature = (index) => {
-    setFeatures(features.filter((_, i) => i !== index));
+  const handleNAChange = (field) => {
+    if (field === "features") {
+      setFeaturesNA(!featuresNA);
+      if (!featuresNA) setFeatures("");
+    }
+    if (field === "students") {
+      setNumStudentsNA(!numStudentsNA);
+      if (!numStudentsNA) setNumStudents("");
+    }
+    if (field === "skills") {
+      setSkillsNA(!skillsNA);
+      if (!skillsNA) setSkillsRequired("");
+    }
   };
-
-  const handleAddFeature = (tag) => {
-    const newFeature = { id: tag.id || tag, text: tag.text || tag };
-    setFeatures([...features, newFeature]);
-  };
-
-  const handleNAChange=(field)=> {
-  if (field==="features") {
-    setFeaturesNA( !featuresNA);
-    if ( !featuresNA) setFeatures([]);
-  }
-
-  if (field==="students") {
-    setNumStudentsNA( !numStudentsNA);
-    if ( !numStudentsNA) setNumStudents("");
-  }
-
-  if (field==="skills") {
-    setSkillsNA( !skillsNA);
-    if ( !skillsNA) setSkillsRequired("");
-  }
-};
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    setIsValidated(true); // Mark form as validated after first submit
-
+    setIsValidated(true);
     const form = e.target;
     if (!form.checkValidity() || purpose.length === 0 || product.length === 0 || !projectDeadline) {
-    e.stopPropagation();
-    form.classList.add("was-validated");
-    return;
+      e.stopPropagation();
+      form.classList.add("was-validated");
+      return;
     }
-
     setErrorMessage("");
     setSuccessMessage("");
     setLoading(true);
-
     try {
       const form_data = {
         project_name: projectName,
@@ -172,49 +155,45 @@ const CreateProjectComponent = () => {
         category,
         features: featuresNA ? "N/A" : features,
         project_deadline: projectDeadline,
-        skills_required: skillsNA ? "N/A" : skillsRequired, // Handle empty input
-        num_students: numStudentsNA ? null : parseInt(numStudents, 10) || null, // Ensure it's a number
+        skills_required: skillsNA ? "N/A" : skillsRequired,
+        num_students: numStudentsNA ? null : parseInt(numStudents, 10) || null,
         image_url: imageFile ? imageFile.name : "",
         user_id: user.user_id,
       };
 
       const response = await axios.post("/project", form_data);
-      console.log("Received Category:", category);
-      console.log("Received skills:", skillsRequired);
-      console.log("Received students number:", numStudents);
       if (response) {
-        // Send email notifications
         await axios.post("/api/notifications/project-created", {
           project_name: projectName,
-          supervisor_email: user.email, // Supervisor's email
+          supervisor_email: user.email,
         });
-        Swal.fire({ 
-          title: 'Success', 
-          text: 'Project Created Successfully & Emails Sent', 
-          icon: 'success', 
-          confirmButtonText: 'Ok',
-          confirmButtonColor: '#6a85b6',
+        Swal.fire({
+          title: "Success",
+          text: "Project Created Successfully & Emails Sent",
+          icon: "success",
+          confirmButtonText: "Ok",
+          confirmButtonColor: "#6a85b6",
           customClass: {
-            popup: 'glass-swal-popup',
-            title: 'swal-title',
-            confirmButton: 'swal-confirm-button'
-          } 
+            popup: "glass-swal-popup",
+            title: "swal-title",
+            confirmButton: "swal-confirm-button",
+          },
         });
         updateNotifyCount();
         emptyForm();
       }
     } catch (error) {
       Swal.fire({
-        title: 'Error',
+        title: "Error",
         text: error.response ? error.response.data.message : error.message,
-        icon: 'error',
-        confirmButtonText: 'Ok',
-        confirmButtonColor: '#6a85b6',
+        icon: "error",
+        confirmButtonText: "Ok",
+        confirmButtonColor: "#6a85b6",
         customClass: {
-          popup: 'glass-swal-popup',
-          title: 'swal-title',
-          confirmButton: 'swal-confirm-button'
-        }
+          popup: "glass-swal-popup",
+          title: "swal-title",
+          confirmButton: "swal-confirm-button",
+        },
       });
     } finally {
       setLoading(false);
@@ -222,13 +201,12 @@ const CreateProjectComponent = () => {
   };
 
   return (
-    <>
-      <div className="container-fluid">
+    <div className="createproject-page">
+      <div className="container-fluid flex-grow-1">
         <MenuComponent />
         <div className="row">
           <MasterComponent />
-          {/* <div className="col-1"></div> */}
-          <div className=" col-11 ml-custom">
+          <div className="col-11 ml-custom">
             <div className="progress-tracker">
               <div className="createproject_Heading">
                 <span className="createproject_title">Tell us about your project</span>
@@ -245,7 +223,8 @@ const CreateProjectComponent = () => {
                       name="project_name"
                       value={projectName}
                       placeholder="Please enter the project name..."
-                      onChange={(e) => { setProjectName(e.target.value);
+                      onChange={(e) => {
+                        setProjectName(e.target.value);
                         e.target.classList.remove("is-invalid");
                         e.target.classList.add(e.target.checkValidity() ? "is-valid" : "is-invalid");
                       }}
@@ -261,11 +240,11 @@ const CreateProjectComponent = () => {
                     <Select
                       isMulti
                       name="purpose"
-                      className={`margin-down $${isValidated && purpose.length === 0 ? "is-invalid" : ""}`}
+                      className={`margin-down ${isValidated && purpose.length === 0 ? "is-invalid" : ""}`}
                       options={purposeOptions}
                       styles={customSelectStyles}
                       value={purpose.map((p) => ({ value: p, label: p }))}
-                      onChange={(selected) => { 
+                      onChange={(selected) => {
                         setPurpose(selected.map((s) => s.value));
                       }}
                     />
@@ -288,11 +267,11 @@ const CreateProjectComponent = () => {
                     <Select
                       isMulti
                       name="product"
-                      className={`margin-down $${isValidated && product.length === 0 ? "is-invalid" : ""}`}
+                      className={`margin-down ${isValidated && product.length === 0 ? "is-invalid" : ""}`}
                       options={productOptions}
                       styles={customSelectStyles}
                       value={product.map((p) => ({ value: p, label: p }))}
-                      onChange={(selected) => { 
+                      onChange={(selected) => {
                         setProduct(selected.map((s) => s.value));
                       }}
                     />
@@ -316,7 +295,8 @@ const CreateProjectComponent = () => {
                       type="number"
                       name="project_budget"
                       value={projectBudget}
-                      onChange={(e) => { setProjectBudget(e.target.value);
+                      onChange={(e) => {
+                        setProjectBudget(e.target.value);
                         e.target.classList.add(e.target.checkValidity() ? "is-valid" : "is-invalid");
                       }}
                       placeholder="Enter your budget"
@@ -333,7 +313,8 @@ const CreateProjectComponent = () => {
                       name="project_Description"
                       className="form_textarea"
                       value={projectDescription}
-                      onChange={(e) => { setProjectDescription(e.target.value);
+                      onChange={(e) => {
+                        setProjectDescription(e.target.value);
                         e.target.classList.add(e.target.checkValidity() ? "is-valid" : "is-invalid");
                       }}
                       placeholder="Please enter the brief description for this project"
@@ -357,40 +338,39 @@ const CreateProjectComponent = () => {
                       required
                     />
 
-<div className="feature-section">
-  <label className="form_label">
-    What are the main features or functionalities you want to include in the project?
-  </label>
-  <textarea
-    id="features"
-    name="features"
-    value={features}
-    onChange={(e) => setFeatures(e.target.value)}
-    placeholder="Enter features separated by commas (e.g., User login, Sign up)"
-    rows="4"
-    disabled={featuresNA}
-    className={`form_textarea feature-textarea ${featuresNA ? "disabled-textarea" : ""}`}
-  />
-  {user.role === "2" && (
-    <div className="toggle-switch-container">
-      <label className="form_label">Features N/A</label>
-      <div className="form-check form-switch">
-        <input
-          className="form-check-input"
-          type="checkbox"
-          role="switch"
-          id="featuresNA"
-          checked={featuresNA}
-          onChange={() => handleNAChange("features")}
-        />
-        <label className="form-check-label" htmlFor="featuresNA">
-          {featuresNA ? "Enabled" : "Disabled"}
-        </label>
-      </div>
-    </div>
-  )}
-</div>
-
+                    <div className="feature-section">
+                      <label className="form_label">
+                        What are the main features or functionalities you want to include in the project?
+                      </label>
+                      <textarea
+                        id="features"
+                        name="features"
+                        value={features}
+                        onChange={(e) => setFeatures(e.target.value)}
+                        placeholder="Enter features separated by commas (e.g., User login, Sign up)"
+                        rows="4"
+                        disabled={featuresNA}
+                        className={`form_textarea feature-textarea ${featuresNA ? "disabled-textarea" : ""}`}
+                      />
+                      {user.role === "2" && (
+                        <div className="toggle-switch-container">
+                          <label className="form_label">Features N/A</label>
+                          <div className="form-check form-switch">
+                            <input
+                              className="form-check-input"
+                              type="checkbox"
+                              role="switch"
+                              id="featuresNA"
+                              checked={featuresNA}
+                              onChange={() => handleNAChange("features")}
+                            />
+                            <label className="form-check-label" htmlFor="featuresNA">
+                              {featuresNA ? "Enabled" : "Disabled"}
+                            </label>
+                          </div>
+                        </div>
+                      )}
+                    </div>
 
                     <label className="form_label">
                       What is the expected timeline or deadline for the project completion?
@@ -400,15 +380,12 @@ const CreateProjectComponent = () => {
                       type="date"
                       value={projectDeadline}
                       name="project_deadline"
-                      className={`createproject_datepicker date margin-down $${isValidated && !projectDeadline ? "is-invalid" : ""}`}
+                      className={`createproject_datepicker date margin-down ${isValidated && !projectDeadline ? "is-invalid" : ""}`}
                       min={today}
-                      onChange={(e) => { 
-                        setProjectDeadline(e.target.value);
-                      }}
+                      onChange={(e) => setProjectDeadline(e.target.value)}
                       required
                     />
                     <div className="invalid-feedback">Please select a valid project deadline.</div>
-
 
                     <label className="form_label">
                       Upload file(s) for reference...
@@ -423,75 +400,71 @@ const CreateProjectComponent = () => {
                     </div>
 
                     <div className="students-section">
-  <label className="form_label">
-    Please enter the number of students you want for this project?
-    <span className="text-danger"> *</span>
-  </label>
-  <input
-    type="number"
-    className={`margin-down form-control ${numStudentsNA ? "disabled-textarea" : ""}`}
-    value={numStudents}
-    placeholder="Enter number of students..."
-    min="1"
-    onChange={(e) => setNumStudents(e.target.value)}
-    disabled={numStudentsNA}
-  />
-
-  {user.role === "2" && (
-    <div className="toggle-switch-container">
-      <label className="form_label">Number of Students N/A</label>
-      <div className="form-check form-switch">
-        <input
-          className="form-check-input"
-          type="checkbox"
-          role="switch"
-          id="numStudentsNA"
-          checked={numStudentsNA}
-          onChange={() => handleNAChange("students")}
-        />
-        <label className="form-check-label" htmlFor="numStudentsNA">
-          {numStudentsNA ? "Enabled" : "Disabled"}
-        </label>
-      </div>
-    </div>
-  )}
-</div>
-
+                      <label className="form_label">
+                        Please enter the number of students you want for this project?
+                        <span className="text-danger"> *</span>
+                      </label>
+                      <input
+                        type="number"
+                        className={`margin-down form-control ${numStudentsNA ? "disabled-textarea" : ""}`}
+                        value={numStudents}
+                        placeholder="Enter number of students..."
+                        min="1"
+                        onChange={(e) => setNumStudents(e.target.value)}
+                        disabled={numStudentsNA}
+                      />
+                      {user.role === "2" && (
+                        <div className="toggle-switch-container">
+                          <label className="form_label">Number of Students N/A</label>
+                          <div className="form-check form-switch">
+                            <input
+                              className="form-check-input"
+                              type="checkbox"
+                              role="switch"
+                              id="numStudentsNA"
+                              checked={numStudentsNA}
+                              onChange={() => handleNAChange("students")}
+                            />
+                            <label className="form-check-label" htmlFor="numStudentsNA">
+                              {numStudentsNA ? "Enabled" : "Disabled"}
+                            </label>
+                          </div>
+                        </div>
+                      )}
+                    </div>
 
                     <div className="skills-section">
-  <label className="form_label">
-    Please enter the required skills (technology) for this project?
-    <span className="text-danger"> *</span>
-  </label>
-  <textarea
-    value={skillsRequired}
-    className={`margin-down form_textarea ${skillsNA ? "disabled-textarea" : ""}`}
-    style={{ width: "75%" }}
-    placeholder="Enter the skills, and add comma between them..."
-    onChange={(e) => setSkillsRequired(e.target.value)}
-    disabled={skillsNA}
-  />
-  
-  {user.role === "2" && (
-    <div className="toggle-switch-container">
-      <label className="form_label">Skills Required N/A</label>
-      <div className="form-check form-switch">
-        <input
-          className="form-check-input"
-          type="checkbox"
-          role="switch"
-          id="skillsNA"
-          checked={skillsNA}
-          onChange={() => handleNAChange("skills")}
-        />
-        <label className="form-check-label" htmlFor="skillsNA">
-          {skillsNA ? "Enabled" : "Disabled"}
-        </label>
-      </div>
-    </div>
-  )}
-</div>
-
+                      <label className="form_label">
+                        Please enter the required skills (technology) for this project?
+                        <span className="text-danger"> *</span>
+                      </label>
+                      <textarea
+                        value={skillsRequired}
+                        className={`margin-down form_textarea ${skillsNA ? "disabled-textarea" : ""}`}
+                        style={{ width: "75%" }}
+                        placeholder="Enter the skills, and add comma between them..."
+                        onChange={(e) => setSkillsRequired(e.target.value)}
+                        disabled={skillsNA}
+                      />
+                      {user.role === "2" && (
+                        <div className="toggle-switch-container">
+                          <label className="form_label">Skills Required N/A</label>
+                          <div className="form-check form-switch">
+                            <input
+                              className="form-check-input"
+                              type="checkbox"
+                              role="switch"
+                              id="skillsNA"
+                              checked={skillsNA}
+                              onChange={() => handleNAChange("skills")}
+                            />
+                            <label className="form-check-label" htmlFor="skillsNA">
+                              {skillsNA ? "Enabled" : "Disabled"}
+                            </label>
+                          </div>
+                        </div>
+                      )}
+                    </div>
 
                     <div className="message">
                       {errorMessage && <div className="error-message">{errorMessage}</div>}
@@ -519,10 +492,8 @@ const CreateProjectComponent = () => {
           </div>
         )}
       </div>
-      <div className="footer-fixed">
-        <FooterComponent />
-      </div>
-    </>
+      <FooterComponent />
+    </div>
   );
 };
 

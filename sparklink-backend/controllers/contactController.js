@@ -1,62 +1,65 @@
-const nodemailer = require('nodemailer');
-const { v4: uuidv4 } = require('uuid');  // Import UUID for generating unique token IDs
-const ContactRequest = require('../models/ContactRequest');  // Import the ContactRequest model
-require('dotenv').config();
+const nodemailer = require("nodemailer");
+const { v4: uuidv4 } = require("uuid"); // Import UUID for generating unique token IDs
+const ContactRequest = require("../models/ContactRequest"); // Import the ContactRequest model
+require("dotenv").config();
 
+// Configure nodemailer transporter with environment credentials
 const transporter = nodemailer.createTransport({
-    service: process.env.EMAIL_SERVICE,
-    auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS
-    }
+  service: process.env.EMAIL_SERVICE,
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
 });
 
+// Publicly available contact details (for frontend use)
 const getContactInfo = (req, res) => {
-    try {
-        const contactDetails = {
-            email: process.env.EMAIL_RECEIVER,
-            phone: "+1 123-456-7890",
-            address: "123 SparkLink Ave, Windsor, ON"
-        };
-        res.status(200).json(contactDetails);
-    } catch (error) {
-        console.error("Error fetching contact details:", error);
-        res.status(500).json({ message: "Error fetching contact details" });
-    }
+  try {
+    const contactDetails = {
+      email: process.env.EMAIL_RECEIVER,
+      phone: "+1 123-456-7890",
+      address: "123 SparkLink Ave, Windsor, ON",
+    };
+    res.status(200).json(contactDetails);
+  } catch (error) {
+    console.error("Error fetching contact details:", error);
+    res.status(500).json({ message: "Error fetching contact details" });
+  }
 };
 
+// Handles contact form submission (stores + sends emails)
 const submitContactForm = async (req, res) => {
-    try {
-        console.log("📩 Contact Form Submission Received:");
-        console.log("Request Body:", req.body);
+  try {
+    console.log("📩 Contact Form Submission Received:");
+    console.log("Request Body:", req.body);
 
-        if (!req.body.name || !req.body.email || !req.body.message) {
-            return res.status(400).json({ message: "All fields are required!" });
-        }
+    if (!req.body.name || !req.body.email || !req.body.message) {
+      return res.status(400).json({ message: "All fields are required!" });
+    }
 
-        console.log("⚡ Email Config:");
-        console.log("User:", process.env.EMAIL_USER);
-        console.log("Receiver:", process.env.EMAIL_RECEIVER);
-    
-        const { name, email, message } = req.body;
-        const tokenId = uuidv4();  // Generate a unique token ID
+    console.log("⚡ Email Config:");
+    console.log("User:", process.env.EMAIL_USER);
+    console.log("Receiver:", process.env.EMAIL_RECEIVER);
 
-        // Save request to database
-        await ContactRequest.create({
-            tokenId,
-            name,
-            email,
-            message
-        });
+    const { name, email, message } = req.body;
+    const tokenId = uuidv4(); // Generate a unique token ID
 
-        console.log("✅ Contact request stored with Token ID:", tokenId);
+    // Save request to database
+    await ContactRequest.create({
+      tokenId,
+      name,
+      email,
+      message,
+    });
 
-        // 📧 Email to the User
-        const userMailOptions = {
-          from: process.env.EMAIL_USER,
-          to: email,
-          subject: `Your Contact Request Has Been Received`,
-          html: `
+    console.log("Contact request stored with Token ID:", tokenId);
+
+    // Email to the User
+    const userMailOptions = {
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: `Your Contact Request Has Been Received`,
+      html: `
             <p>Dear ${name},</p>
             <p>Thank you for reaching out to SparkLink! We've received your message and will get back to you shortly.</p>
             <p><strong>📩 Your Message:</strong></p>
@@ -66,15 +69,15 @@ const submitContactForm = async (req, res) => {
             <p><strong>🔹 Token ID:</strong> ${tokenId}</p>
             <p>If you didn’t make this request, please ignore this email.</p>
             <p>Regards,<br>SparkLink Support Team</p>
-            `
-        };
+            `,
+    };
 
-        // 📧 Email to the Receiver
-        const receiverMailOptions = {
-          from: process.env.EMAIL_USER,
-          to: process.env.EMAIL_RECEIVER,
-          subject: `New Contact Request - Token ID: ${tokenId}`,
-          html: `
+    // Email to the Receiver
+    const receiverMailOptions = {
+      from: process.env.EMAIL_USER,
+      to: process.env.EMAIL_RECEIVER,
+      subject: `New Contact Request - Token ID: ${tokenId}`,
+      html: `
             <p>Hello Admin,</p>
             <p>A new contact request has been submitted on SparkLink. Here are the details:</p>
             <ul>
@@ -88,20 +91,25 @@ const submitContactForm = async (req, res) => {
             </blockquote>
             <p>Please follow up with the user at your earliest convenience.</p>
             <p>Regards,<br>SparkLink System</p>
-        `
-        };
+        `,
+    };
 
-        console.log("📩 Sending emails...");
-        await transporter.sendMail(userMailOptions);
-        await transporter.sendMail(receiverMailOptions);
-        console.log("✅ Emails sent successfully!");
+    console.log("📩 Sending emails...");
+    await transporter.sendMail(userMailOptions);
+    await transporter.sendMail(receiverMailOptions);
+    console.log("Emails sent successfully!");
 
-        res.status(200).json({ message: 'Request submitted successfully!', tokenId });
-    } catch (error) {
-        console.error("❌ Error processing contact form:", error);
-        res.status(500).json({ message: 'Error submitting contact request', error: error.message });
-    }
+    res
+      .status(200)
+      .json({ message: "Request submitted successfully!", tokenId });
+  } catch (error) {
+    console.error("Error processing contact form:", error);
+    res.status(500).json({
+      message: "Error submitting contact request",
+      error: error.message,
+    });
+  }
 };
 
-// ✅ Export all functions correctly
+// Export controller functions
 module.exports = { getContactInfo, submitContactForm };
