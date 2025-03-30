@@ -1,3 +1,9 @@
+/**
+ * Group Routes
+ * Handles all student group operations such as creation, joining, leaving,
+ * resume upload/download, project association, and admin views.
+ */
+
 // routes/groupRoutes.js
 const express = require("express");
 const router = express.Router();
@@ -8,6 +14,7 @@ const GroupMember = require("../models/group_member");
 const Group = require("../models/group");
 const upload = require("../middlewares/uploadMiddleware");
 
+// Middleware to check if user is authenticated
 function isAuthenticated(req, res, next) {
   if (req.isAuthenticated()) {
     return next();
@@ -18,7 +25,12 @@ function isAuthenticated(req, res, next) {
 router.post("/create", isAuthenticated, groupController.createGroup);
 router.post("/join", isAuthenticated, groupController.joinGroup);
 router.post("/leave", isAuthenticated, groupController.leaveGroup);
-router.post("/upload", isAuthenticated, upload.single("pdf"), groupController.uploadPDF);
+router.post(
+  "/upload",
+  isAuthenticated,
+  upload.single("pdf"),
+  groupController.uploadPDF
+);
 router.get("/all", isAuthenticated, groupController.getGroups);
 router.get("/my", isAuthenticated, groupController.getMyGroup);
 
@@ -30,10 +42,12 @@ router.get("/view-resume", isAuthenticated, async (req, res) => {
     const GroupMember = require("../models/group_member");
 
     const membership = await GroupMember.findOne({ where: { user_id } });
-    if (!membership) return res.status(403).json({ message: "You are not in any group." });
+    if (!membership)
+      return res.status(403).json({ message: "You are not in any group." });
 
     const group = await Group.findByPk(membership.group_id);
-    if (!group || !group.resume_pdf) return res.status(404).json({ message: "Resume not found." });
+    if (!group || !group.resume_pdf)
+      return res.status(404).json({ message: "Resume not found." });
 
     const filePath = path.resolve(__dirname, "..", group.resume_pdf);
     console.log("Resolved file path:", filePath);
@@ -55,17 +69,23 @@ router.get("/view-resume", isAuthenticated, async (req, res) => {
   }
 });
 
-router.get("/admin-view", isAuthenticated, groupController.getAllDetailedGroups);
+router.get(
+  "/admin-view",
+  isAuthenticated,
+  groupController.getAllDetailedGroups
+);
 
 router.get("/admin-download-resume", isAuthenticated, async (req, res) => {
   try {
     const groupId = req.query.groupId;
 
     const group = await Group.findByPk(groupId);
-    if (!group || !group.resume_pdf) return res.status(404).json({ message: "Resume not found." });
+    if (!group || !group.resume_pdf)
+      return res.status(404).json({ message: "Resume not found." });
 
     const filePath = path.resolve(__dirname, "..", group.resume_pdf);
-    if (!fs.existsSync(filePath)) return res.status(404).json({ message: "File not found on disk." });
+    if (!fs.existsSync(filePath))
+      return res.status(404).json({ message: "File not found on disk." });
 
     res.download(filePath, "merged_resume.pdf", (err) => {
       if (err) {
@@ -80,49 +100,5 @@ router.get("/admin-download-resume", isAuthenticated, async (req, res) => {
 });
 
 router.get("/my-projects", isAuthenticated, groupController.getMyGroupProjects);
-
-
-
-
-// router.get("/my-group", isAuthenticated, groupController.getMyGroup);
-
-
-
-
-
-// router.get("/my", isAuthenticated, async (req, res) => {
-//   try {
-//     const user_id = req.user.user_id;
-
-//     const membership = await GroupMember.findOne({ where: { user_id } });
-//     if (!membership) return res.status(404).json({ message: "Not in any group" });
-
-//     const group = await Group.findByPk(membership.group_id, {
-//       include: [{
-//         model: GroupMember,
-//         as: "members",
-//         include: [{ model: User, attributes: ["user_id", "username"] }],
-//       }]
-//     });
-
-//     const formattedGroup = {
-//       group_id: group.group_id,
-//       resume_url: group.resume_pdf ? `${process.env.SERVER_BASE_URL}/${group.resume_pdf}` : null,
-//       team_leader_id: group.team_leader_id,
-//       team_leader_name: group.members.find(m => m.user_id === group.team_leader_id)?.user?.username,
-//       members: group.members.map(m => ({
-//         user_id: m.user_id,
-//         username: m.user?.username,
-//         is_leader: m.user_id === group.team_leader_id
-//       }))
-//     };
-
-//     res.status(200).json({ group: formattedGroup, isLeader: user_id === group.team_leader_id });
-//   } catch (error) {
-//     console.error("Error fetching group info:", error);
-//     res.status(500).json({ message: "Error fetching group info" });
-//   }
-// });
-
 
 module.exports = router;

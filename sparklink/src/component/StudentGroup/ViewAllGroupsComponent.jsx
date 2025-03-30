@@ -15,7 +15,9 @@ const ViewAllGroupsComponent = () => {
 
   const fetchGroups = async () => {
     try {
-      const res = await axios.get("/api/group/admin-view", { withCredentials: true });
+      const res = await axios.get("/api/group/admin-view", {
+        withCredentials: true,
+      });
       setGroups(res.data.groups || []);
     } catch (err) {
       console.error("Error fetching groups:", err);
@@ -24,10 +26,13 @@ const ViewAllGroupsComponent = () => {
 
   const handleDownload = async (groupId) => {
     try {
-      const res = await axios.get(`/api/group/admin-download-resume?groupId=${groupId}`, {
-        withCredentials: true,
-        responseType: "blob",
-      });
+      const res = await axios.get(
+        `/api/group/admin-download-resume?groupId=${groupId}`,
+        {
+          withCredentials: true,
+          responseType: "blob",
+        }
+      );
       const blob = new Blob([res.data], { type: "application/pdf" });
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
@@ -83,7 +88,10 @@ const ViewAllGroupsComponent = () => {
                   ))}
                 </ul>
                 {group.resume_url ? (
-                  <button className="btn" onClick={() => handleDownload(group.group_id)}>
+                  <button
+                    className="btn"
+                    onClick={() => handleDownload(group.group_id)}
+                  >
                     Download Resume
                   </button>
                 ) : (

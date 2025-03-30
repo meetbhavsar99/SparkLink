@@ -106,7 +106,7 @@ app.use("/api", roleRoutes); // Route for role-related requests
 app.use("/projectstatus", projectStatusRouter);
 app.use("/department", departmentRoutes);
 app.use("/project", projectRouter);
-app.use("/profile", profileRouter);
+app.use("/api/profile", profileRouter);
 app.use("/editProfile", EditProfileRouter);
 app.use("/contact", contactRoutes);
 app.use("/progressTracker", progressTrackerRouter);

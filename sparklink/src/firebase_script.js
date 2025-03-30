@@ -11,7 +11,7 @@ const firebaseConfig = {
   projectId: "sparklink-f261c",
   storageBucket: "sparklink-f261c.appspot.com",
   messagingSenderId: "625563137423",
-  appId: "1:625563137423:web:de80f5ecde432ba1de87fa"
+  appId: "1:625563137423:web:de80f5ecde432ba1de87fa",
 };
 
 // Initialize Firebase

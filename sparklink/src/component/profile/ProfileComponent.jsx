@@ -65,7 +65,7 @@ const ProfileComponent = () => {
       return;
     }
     try {
-      const response = await axios.get("http://localhost:3100/profile", {
+      const response = await axios.get("/api/profile", {
         params: { user_id },
       });
       setRole(response.data.role || "student"); // fallback to 'student'
@@ -92,7 +92,9 @@ const ProfileComponent = () => {
   // Open project modal
   const openModal = (project) => {
     setSelectedProject(project);
-    setSelectedProjectDetails(projectList.find((p) => p.proj_id === project.proj_id));
+    setSelectedProjectDetails(
+      projectList.find((p) => p.proj_id === project.proj_id)
+    );
     setIsModalOpen(true);
   };
 
@@ -284,7 +286,8 @@ const ProfileComponent = () => {
                         <li>
                           <div className="contact-row">
                             <div className="contact-label">
-                              <i className="fas fa-envelope text-pink"></i> Email:
+                              <i className="fas fa-envelope text-pink"></i>{" "}
+                              Email:
                             </div>
                             <div className="contact-value">
                               {userDetails.email}
@@ -376,9 +379,7 @@ const ProfileComponent = () => {
                         </td>
                       </tr>
                       <tr>
-                        <td className="proj-details-sub-header">
-                          Description
-                        </td>
+                        <td className="proj-details-sub-header">Description</td>
                         <td className="proj-details-data">
                           {selectedProjectDetails.description}
                         </td>
@@ -421,36 +422,34 @@ const ProfileComponent = () => {
                           {selectedProjectDetails.status_desc}
                         </td>
                       </tr>
-                      {["business_owner", "supervisor", "student"].map(
-                        (r) => {
-                          const stakeholdersByRole =
-                            selectedProjectDetails?.stakeholder?.filter(
-                              (s) => s.role === r
-                            ) || [];
-                          if (stakeholdersByRole.length > 0) {
-                            return (
-                              <tr key={r}>
-                                <td className="proj-details-sub-header">
-                                  {r === "business_owner" && "Business Owner"}
-                                  {r === "supervisor" && "Supervisor(s)"}
-                                  {r === "student" && "Student(s)"}
-                                </td>
-                                <td className="proj-details-data">
-                                  {stakeholdersByRole.map(({ name, user_id }) => (
-                                    <div
-                                      key={`${r}-${user_id}`}
-                                      className="stakeholder-button"
-                                    >
-                                      {name}
-                                    </div>
-                                  ))}
-                                </td>
-                              </tr>
-                            );
-                          }
-                          return null;
+                      {["business_owner", "supervisor", "student"].map((r) => {
+                        const stakeholdersByRole =
+                          selectedProjectDetails?.stakeholder?.filter(
+                            (s) => s.role === r
+                          ) || [];
+                        if (stakeholdersByRole.length > 0) {
+                          return (
+                            <tr key={r}>
+                              <td className="proj-details-sub-header">
+                                {r === "business_owner" && "Business Owner"}
+                                {r === "supervisor" && "Supervisor(s)"}
+                                {r === "student" && "Student(s)"}
+                              </td>
+                              <td className="proj-details-data">
+                                {stakeholdersByRole.map(({ name, user_id }) => (
+                                  <div
+                                    key={`${r}-${user_id}`}
+                                    className="stakeholder-button"
+                                  >
+                                    {name}
+                                  </div>
+                                ))}
+                              </td>
+                            </tr>
+                          );
                         }
-                      )}
+                        return null;
+                      })}
                     </tbody>
                   </Table>
                 )}
@@ -542,11 +541,31 @@ const ProfileComponent = () => {
                             name: "education",
                             icon: "fas fa-graduation-cap",
                           },
-                          { label: "Experience", name: "experience", icon: "fas fa-gem" },
-                          { label: "Courses", name: "course", icon: "fas fa-file" },
-                          { label: "Address", name: "address", icon: "fas fa-map-marker-alt" },
-                          { label: "Phone", name: "phone_number", icon: "fas fa-mobile-alt" },
-                          { label: "Email", name: "email", icon: "fas fa-envelope" },
+                          {
+                            label: "Experience",
+                            name: "experience",
+                            icon: "fas fa-gem",
+                          },
+                          {
+                            label: "Courses",
+                            name: "course",
+                            icon: "fas fa-file",
+                          },
+                          {
+                            label: "Address",
+                            name: "address",
+                            icon: "fas fa-map-marker-alt",
+                          },
+                          {
+                            label: "Phone",
+                            name: "phone_number",
+                            icon: "fas fa-mobile-alt",
+                          },
+                          {
+                            label: "Email",
+                            name: "email",
+                            icon: "fas fa-envelope",
+                          },
                         ].map(({ label, name, icon }) => (
                           <li key={name}>
                             <div className="contact-row">
@@ -556,9 +575,11 @@ const ProfileComponent = () => {
                               <div className="contact-value">
                                 {/* If profile[name] is empty, show a placeholder */}
                                 {profile?.[name] ||
-                                (name === "email"
-                                  ? userDetails.email
-                                  : "Add your " + label + " in Manage Profile")}
+                                  (name === "email"
+                                    ? userDetails.email
+                                    : "Add your " +
+                                      label +
+                                      " in Manage Profile")}
                               </div>
                             </div>
                           </li>
@@ -589,7 +610,9 @@ const ProfileComponent = () => {
                         }}
                       ></div>
                       <div className="project-info">
-                        <div className="project-title">{project.project_name}</div>
+                        <div className="project-title">
+                          {project.project_name}
+                        </div>
                         <div className="project-progress-container">
                           <div className="project-progress-bar">
                             <div
@@ -642,9 +665,7 @@ const ProfileComponent = () => {
                         </td>
                       </tr>
                       <tr>
-                        <td className="proj-details-sub-header">
-                          Description
-                        </td>
+                        <td className="proj-details-sub-header">Description</td>
                         <td className="proj-details-data">
                           {selectedProjectDetails.description}
                         </td>
@@ -687,36 +708,34 @@ const ProfileComponent = () => {
                           {selectedProjectDetails.status_desc}
                         </td>
                       </tr>
-                      {["business_owner", "supervisor", "student"].map(
-                        (r) => {
-                          const stakeholdersByRole =
-                            selectedProjectDetails?.stakeholder?.filter(
-                              (s) => s.role === r
-                            ) || [];
-                          if (stakeholdersByRole.length > 0) {
-                            return (
-                              <tr key={r}>
-                                <td className="proj-details-sub-header">
-                                  {r === "business_owner" && "Business Owner"}
-                                  {r === "supervisor" && "Supervisor(s)"}
-                                  {r === "student" && "Student(s)"}
-                                </td>
-                                <td className="proj-details-data">
-                                  {stakeholdersByRole.map(({ name, user_id }) => (
-                                    <div
-                                      key={`${r}-${user_id}`}
-                                      className="stakeholder-button"
-                                    >
-                                      {name}
-                                    </div>
-                                  ))}
-                                </td>
-                              </tr>
-                            );
-                          }
-                          return null;
+                      {["business_owner", "supervisor", "student"].map((r) => {
+                        const stakeholdersByRole =
+                          selectedProjectDetails?.stakeholder?.filter(
+                            (s) => s.role === r
+                          ) || [];
+                        if (stakeholdersByRole.length > 0) {
+                          return (
+                            <tr key={r}>
+                              <td className="proj-details-sub-header">
+                                {r === "business_owner" && "Business Owner"}
+                                {r === "supervisor" && "Supervisor(s)"}
+                                {r === "student" && "Student(s)"}
+                              </td>
+                              <td className="proj-details-data">
+                                {stakeholdersByRole.map(({ name, user_id }) => (
+                                  <div
+                                    key={`${r}-${user_id}`}
+                                    className="stakeholder-button"
+                                  >
+                                    {name}
+                                  </div>
+                                ))}
+                              </td>
+                            </tr>
+                          );
                         }
-                      )}
+                        return null;
+                      })}
                     </tbody>
                   </Table>
                 )}
@@ -852,7 +871,8 @@ const ProfileComponent = () => {
                         <li>
                           <div className="contact-row">
                             <div className="contact-label">
-                              <i className="fas fa-envelope text-pink"></i> Email:
+                              <i className="fas fa-envelope text-pink"></i>{" "}
+                              Email:
                             </div>
                             <div className="contact-value">
                               {userDetails.email}
@@ -885,7 +905,9 @@ const ProfileComponent = () => {
                         }}
                       ></div>
                       <div className="project-info">
-                        <div className="project-title">{project.project_name}</div>
+                        <div className="project-title">
+                          {project.project_name}
+                        </div>
                         <div className="project-progress-container">
                           <div className="project-progress-bar">
                             <div
@@ -939,9 +961,7 @@ const ProfileComponent = () => {
                         </td>
                       </tr>
                       <tr>
-                        <td className="proj-details-sub-header">
-                          Description
-                        </td>
+                        <td className="proj-details-sub-header">Description</td>
                         <td className="proj-details-data">
                           {selectedProjectDetails.description}
                         </td>
@@ -984,36 +1004,34 @@ const ProfileComponent = () => {
                           {selectedProjectDetails.status_desc}
                         </td>
                       </tr>
-                      {["business_owner", "supervisor", "student"].map(
-                        (r) => {
-                          const stakeholdersByRole =
-                            selectedProjectDetails?.stakeholder?.filter(
-                              (s) => s.role === r
-                            ) || [];
-                          if (stakeholdersByRole.length > 0) {
-                            return (
-                              <tr key={r}>
-                                <td className="proj-details-sub-header">
-                                  {r === "business_owner" && "Business Owner"}
-                                  {r === "supervisor" && "Supervisor(s)"}
-                                  {r === "student" && "Student(s)"}
-                                </td>
-                                <td className="proj-details-data">
-                                  {stakeholdersByRole.map(({ name, user_id }) => (
-                                    <div
-                                      key={`${r}-${user_id}`}
-                                      className="stakeholder-button"
-                                    >
-                                      {name}
-                                    </div>
-                                  ))}
-                                </td>
-                              </tr>
-                            );
-                          }
-                          return null;
+                      {["business_owner", "supervisor", "student"].map((r) => {
+                        const stakeholdersByRole =
+                          selectedProjectDetails?.stakeholder?.filter(
+                            (s) => s.role === r
+                          ) || [];
+                        if (stakeholdersByRole.length > 0) {
+                          return (
+                            <tr key={r}>
+                              <td className="proj-details-sub-header">
+                                {r === "business_owner" && "Business Owner"}
+                                {r === "supervisor" && "Supervisor(s)"}
+                                {r === "student" && "Student(s)"}
+                              </td>
+                              <td className="proj-details-data">
+                                {stakeholdersByRole.map(({ name, user_id }) => (
+                                  <div
+                                    key={`${r}-${user_id}`}
+                                    className="stakeholder-button"
+                                  >
+                                    {name}
+                                  </div>
+                                ))}
+                              </td>
+                            </tr>
+                          );
                         }
-                      )}
+                        return null;
+                      })}
                     </tbody>
                   </Table>
                 )}

@@ -1,9 +1,17 @@
-const express = require('express');
+/**
+ * Project Allocation Routes
+ * Handles accepting or rejecting project applications by supervisors/admins.
+ */
 
-const { acceptProject,rejectProject } = require('../controllers/projAllocationController');
+const express = require("express");
+
+const {
+  acceptProject,
+  rejectProject,
+} = require("../controllers/projAllocationController");
 const router = express.Router();
 
-router.post('/accept', acceptProject);
-router.post('/reject', rejectProject);
+router.post("/accept", acceptProject);
+router.post("/reject", rejectProject);
 
 module.exports = router;

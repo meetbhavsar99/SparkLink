@@ -71,41 +71,57 @@ const ResetPasswordEmailComponent = () => {
             {successMessage && (
               <div className="alert alert-success">{successMessage}</div>
             )}
-            <form className={`form needs-validation ${wasValidated ? "was-validated" : ""}`} noValidate onSubmit={handleEmail}>
+            <form
+              className={`form needs-validation ${
+                wasValidated ? "was-validated" : ""
+              }`}
+              noValidate
+              onSubmit={handleEmail}
+            >
               <h2 className="form-title"> Enter Your Email </h2>
 
               <div data-mdb-input-init className="form-outline mb-4">
                 <input
                   type="email"
                   id="form3Example3"
-                  className={`email_field form-control form-control-lg${wasValidated && (!email || !email.includes("@")) ? "is-invalid" : email ? "is-valid" : ""}`}
+                  className={`email_field form-control form-control-lg${
+                    wasValidated && (!email || !email.includes("@"))
+                      ? "is-invalid"
+                      : email
+                      ? "is-valid"
+                      : ""
+                  }`}
                   value={email}
                   onChange={(e) => {
-                     setEmail(e.target.value);
-        setErrorMessage(""); // Remove error when typing
-                     }}
+                    setEmail(e.target.value);
+                    setErrorMessage(""); // Remove error when typing
+                  }}
                   placeholder="Email address"
                   required
                 />
-                <div className="invalid-feedback">Please enter a valid email.</div>
+                <div className="invalid-feedback">
+                  Please enter a valid email.
+                </div>
               </div>
 
-
               <div className="d-flex justify-content-between align-items-center  mt-4 pt-2">
-              <div className="text-center text-lg-start">
-                <button
-                  type="submit"
-                  data-mdb-button-init
-                  data-mdb-ripple-init
-                  className="submit-button button_text button-card"
-                >
-                  Submit
-                </button>
+                <div className="text-center text-lg-start">
+                  <button
+                    type="submit"
+                    data-mdb-button-init
+                    data-mdb-ripple-init
+                    className="submit-button button_text button-card"
+                  >
+                    Submit
+                  </button>
                 </div>
               </div>
               <p className="small fw-bold mt-2 pt-1 mb-0">
                 Do you have an account?{" "}
-                <a href="/register" className="link-primary link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover">
+                <a
+                  href="/register"
+                  className="link-primary link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover"
+                >
                   Login
                 </a>
               </p>
@@ -114,17 +130,18 @@ const ResetPasswordEmailComponent = () => {
         </div>
       </div>
       {loading && (
-          <div className="loading-overlay d-flex justify-content-center align-items-center">
-            <div className="text-center">
-              <div
-                className="spinner-border text-light"
-                style={{ width: "5rem", height: "5rem" }}
-                role="status"
-              ></div>
-              <div className="text-light mt-2">Processing...</div>
-            </div>
+        <div className="loading-overlay d-flex justify-content-center align-items-center">
+          <div className="text-center">
+            <div
+              className="spinner-border text-light"
+              style={{ width: "5rem", height: "5rem" }}
+              role="status"
+            ></div>
+            <div className="text-light mt-2">Processing...</div>
           </div>
-        )}
-    </section>  );
+        </div>
+      )}
+    </section>
+  );
 };
 export default ResetPasswordEmailComponent;

@@ -1,6 +1,11 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useDropzone } from "react-dropzone";
-import { ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
+import {
+  ref,
+  uploadBytes,
+  getDownloadURL,
+  deleteObject,
+} from "firebase/storage";
 import { storage } from "../../firebase_script";
 import "./CreateProjectComponent.css";
 import MenuComponent from "../../component/menu/MenuComponent";
@@ -137,7 +142,12 @@ const CreateProjectComponent = () => {
     e.preventDefault();
     setIsValidated(true);
     const form = e.target;
-    if (!form.checkValidity() || purpose.length === 0 || product.length === 0 || !projectDeadline) {
+    if (
+      !form.checkValidity() ||
+      purpose.length === 0 ||
+      product.length === 0 ||
+      !projectDeadline
+    ) {
       e.stopPropagation();
       form.classList.add("was-validated");
       return;
@@ -209,11 +219,19 @@ const CreateProjectComponent = () => {
           <div className="col-11 ml-custom">
             <div className="progress-tracker">
               <div className="createproject_Heading">
-                <span className="createproject_title">Tell us about your project</span>
+                <span className="createproject_title">
+                  Tell us about your project
+                </span>
               </div>
               <div className="createproject_layout">
                 <div className="createproject_form">
-                  <form className={`needs-validation ${isValidated ? "was-validated" : ""}`} noValidate onSubmit={handleSubmit}>
+                  <form
+                    className={`needs-validation ${
+                      isValidated ? "was-validated" : ""
+                    }`}
+                    noValidate
+                    onSubmit={handleSubmit}
+                  >
                     <label className="form_label">
                       What is the name of your project?
                       <span className="text-danger"> *</span>
@@ -226,12 +244,16 @@ const CreateProjectComponent = () => {
                       onChange={(e) => {
                         setProjectName(e.target.value);
                         e.target.classList.remove("is-invalid");
-                        e.target.classList.add(e.target.checkValidity() ? "is-valid" : "is-invalid");
+                        e.target.classList.add(
+                          e.target.checkValidity() ? "is-valid" : "is-invalid"
+                        );
                       }}
                       maxLength={150}
                       required
                     />
-                    <div className="invalid-feedback">Project name is required.</div>
+                    <div className="invalid-feedback">
+                      Project name is required.
+                    </div>
 
                     <label className="form_label">
                       What is the main purpose of the product?
@@ -240,7 +262,9 @@ const CreateProjectComponent = () => {
                     <Select
                       isMulti
                       name="purpose"
-                      className={`margin-down ${isValidated && purpose.length === 0 ? "is-invalid" : ""}`}
+                      className={`margin-down ${
+                        isValidated && purpose.length === 0 ? "is-invalid" : ""
+                      }`}
                       options={purposeOptions}
                       styles={customSelectStyles}
                       value={purpose.map((p) => ({ value: p, label: p }))}
@@ -248,7 +272,9 @@ const CreateProjectComponent = () => {
                         setPurpose(selected.map((s) => s.value));
                       }}
                     />
-                    <div className="invalid-feedback">Please select at least one purpose.</div>
+                    <div className="invalid-feedback">
+                      Please select at least one purpose.
+                    </div>
 
                     {purpose.includes("Other") && (
                       <input
@@ -267,7 +293,9 @@ const CreateProjectComponent = () => {
                     <Select
                       isMulti
                       name="product"
-                      className={`margin-down ${isValidated && product.length === 0 ? "is-invalid" : ""}`}
+                      className={`margin-down ${
+                        isValidated && product.length === 0 ? "is-invalid" : ""
+                      }`}
                       options={productOptions}
                       styles={customSelectStyles}
                       value={product.map((p) => ({ value: p, label: p }))}
@@ -275,7 +303,9 @@ const CreateProjectComponent = () => {
                         setProduct(selected.map((s) => s.value));
                       }}
                     />
-                    <div className="invalid-feedback">Please select at least one product type.</div>
+                    <div className="invalid-feedback">
+                      Please select at least one product type.
+                    </div>
 
                     {product.includes("Other") && (
                       <input
@@ -297,13 +327,17 @@ const CreateProjectComponent = () => {
                       value={projectBudget}
                       onChange={(e) => {
                         setProjectBudget(e.target.value);
-                        e.target.classList.add(e.target.checkValidity() ? "is-valid" : "is-invalid");
+                        e.target.classList.add(
+                          e.target.checkValidity() ? "is-valid" : "is-invalid"
+                        );
                       }}
                       placeholder="Enter your budget"
                       min="1"
                       required
                     />
-                    <div className="invalid-feedback">Budget must be a positive number.</div>
+                    <div className="invalid-feedback">
+                      Budget must be a positive number.
+                    </div>
 
                     <label className="form_label">
                       Please provide a brief description of your product:
@@ -315,14 +349,18 @@ const CreateProjectComponent = () => {
                       value={projectDescription}
                       onChange={(e) => {
                         setProjectDescription(e.target.value);
-                        e.target.classList.add(e.target.checkValidity() ? "is-valid" : "is-invalid");
+                        e.target.classList.add(
+                          e.target.checkValidity() ? "is-valid" : "is-invalid"
+                        );
                       }}
                       placeholder="Please enter the brief description for this project"
                       style={{ height: "120px", width: "75%" }}
                       maxLength={250}
                       required
                     />
-                    <div className="invalid-feedback">Project description is required.</div>
+                    <div className="invalid-feedback">
+                      Project description is required.
+                    </div>
 
                     <label className="form_label">
                       Please select a category for this project?
@@ -333,14 +371,17 @@ const CreateProjectComponent = () => {
                       name="project_category"
                       className="margin-down"
                       styles={customSelectStyles}
-                      value={category ? { value: category, label: category } : null}
+                      value={
+                        category ? { value: category, label: category } : null
+                      }
                       onChange={(selected) => setCategory(selected.value)}
                       required
                     />
 
                     <div className="feature-section">
                       <label className="form_label">
-                        What are the main features or functionalities you want to include in the project?
+                        What are the main features or functionalities you want
+                        to include in the project?
                       </label>
                       <textarea
                         id="features"
@@ -350,7 +391,9 @@ const CreateProjectComponent = () => {
                         placeholder="Enter features separated by commas (e.g., User login, Sign up)"
                         rows="4"
                         disabled={featuresNA}
-                        className={`form_textarea feature-textarea ${featuresNA ? "disabled-textarea" : ""}`}
+                        className={`form_textarea feature-textarea ${
+                          featuresNA ? "disabled-textarea" : ""
+                        }`}
                       />
                       {user.role === "2" && (
                         <div className="toggle-switch-container">
@@ -364,7 +407,10 @@ const CreateProjectComponent = () => {
                               checked={featuresNA}
                               onChange={() => handleNAChange("features")}
                             />
-                            <label className="form-check-label" htmlFor="featuresNA">
+                            <label
+                              className="form-check-label"
+                              htmlFor="featuresNA"
+                            >
                               {featuresNA ? "Enabled" : "Disabled"}
                             </label>
                           </div>
@@ -373,25 +419,33 @@ const CreateProjectComponent = () => {
                     </div>
 
                     <label className="form_label">
-                      What is the expected timeline or deadline for the project completion?
+                      What is the expected timeline or deadline for the project
+                      completion?
                       <span className="text-danger"> *</span>
                     </label>
                     <input
                       type="date"
                       value={projectDeadline}
                       name="project_deadline"
-                      className={`createproject_datepicker date margin-down ${isValidated && !projectDeadline ? "is-invalid" : ""}`}
+                      className={`createproject_datepicker date margin-down ${
+                        isValidated && !projectDeadline ? "is-invalid" : ""
+                      }`}
                       min={today}
                       onChange={(e) => setProjectDeadline(e.target.value)}
                       required
                     />
-                    <div className="invalid-feedback">Please select a valid project deadline.</div>
+                    <div className="invalid-feedback">
+                      Please select a valid project deadline.
+                    </div>
 
                     <label className="form_label">
                       Upload file(s) for reference...
                     </label>
                     <div {...getRootProps()} className="dropzone">
-                      <input {...getInputProps()} accept=".jpg,.jpeg,.pdf,.png" />
+                      <input
+                        {...getInputProps()}
+                        accept=".jpg,.jpeg,.pdf,.png"
+                      />
                       {imageFile ? (
                         <p>{imageFile.name}</p>
                       ) : (
@@ -401,12 +455,15 @@ const CreateProjectComponent = () => {
 
                     <div className="students-section">
                       <label className="form_label">
-                        Please enter the number of students you want for this project?
+                        Please enter the number of students you want for this
+                        project?
                         <span className="text-danger"> *</span>
                       </label>
                       <input
                         type="number"
-                        className={`margin-down form-control ${numStudentsNA ? "disabled-textarea" : ""}`}
+                        className={`margin-down form-control ${
+                          numStudentsNA ? "disabled-textarea" : ""
+                        }`}
                         value={numStudents}
                         placeholder="Enter number of students..."
                         min="1"
@@ -415,7 +472,9 @@ const CreateProjectComponent = () => {
                       />
                       {user.role === "2" && (
                         <div className="toggle-switch-container">
-                          <label className="form_label">Number of Students N/A</label>
+                          <label className="form_label">
+                            Number of Students N/A
+                          </label>
                           <div className="form-check form-switch">
                             <input
                               className="form-check-input"
@@ -425,7 +484,10 @@ const CreateProjectComponent = () => {
                               checked={numStudentsNA}
                               onChange={() => handleNAChange("students")}
                             />
-                            <label className="form-check-label" htmlFor="numStudentsNA">
+                            <label
+                              className="form-check-label"
+                              htmlFor="numStudentsNA"
+                            >
                               {numStudentsNA ? "Enabled" : "Disabled"}
                             </label>
                           </div>
@@ -435,12 +497,15 @@ const CreateProjectComponent = () => {
 
                     <div className="skills-section">
                       <label className="form_label">
-                        Please enter the required skills (technology) for this project?
+                        Please enter the required skills (technology) for this
+                        project?
                         <span className="text-danger"> *</span>
                       </label>
                       <textarea
                         value={skillsRequired}
-                        className={`margin-down form_textarea ${skillsNA ? "disabled-textarea" : ""}`}
+                        className={`margin-down form_textarea ${
+                          skillsNA ? "disabled-textarea" : ""
+                        }`}
                         style={{ width: "75%" }}
                         placeholder="Enter the skills, and add comma between them..."
                         onChange={(e) => setSkillsRequired(e.target.value)}
@@ -448,7 +513,9 @@ const CreateProjectComponent = () => {
                       />
                       {user.role === "2" && (
                         <div className="toggle-switch-container">
-                          <label className="form_label">Skills Required N/A</label>
+                          <label className="form_label">
+                            Skills Required N/A
+                          </label>
                           <div className="form-check form-switch">
                             <input
                               className="form-check-input"
@@ -458,7 +525,10 @@ const CreateProjectComponent = () => {
                               checked={skillsNA}
                               onChange={() => handleNAChange("skills")}
                             />
-                            <label className="form-check-label" htmlFor="skillsNA">
+                            <label
+                              className="form-check-label"
+                              htmlFor="skillsNA"
+                            >
                               {skillsNA ? "Enabled" : "Disabled"}
                             </label>
                           </div>
@@ -467,8 +537,12 @@ const CreateProjectComponent = () => {
                     </div>
 
                     <div className="message">
-                      {errorMessage && <div className="error-message">{errorMessage}</div>}
-                      {successMessage && <div className="success-message">{successMessage}</div>}
+                      {errorMessage && (
+                        <div className="error-message">{errorMessage}</div>
+                      )}
+                      {successMessage && (
+                        <div className="success-message">{successMessage}</div>
+                      )}
                     </div>
                     <div className="row">
                       <div className="col-12 text-center">

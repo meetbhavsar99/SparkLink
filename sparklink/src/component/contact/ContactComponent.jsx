@@ -6,7 +6,11 @@ import FooterComponent from "../footer/FooterComponent";
 import "./ContactComponent.css";
 
 const ContactComponent = () => {
-  const [formData, setFormData] = useState({ name: "", email: "", message: "" });
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    message: "",
+  });
   const [submissionStatus, setSubmissionStatus] = useState(null);
 
   const handleChange = (e) => {
@@ -31,8 +35,12 @@ const ContactComponent = () => {
 
       const result = await response.json();
       if (response.ok) {
-        setSubmissionStatus(`Your request has been submitted successfully! Token ID: ${result.tokenId}`);
-        alert(`Your request has been submitted successfully!\nToken ID: ${result.tokenId}\nCheck your email for confirmation.`);
+        setSubmissionStatus(
+          `Your request has been submitted successfully! Token ID: ${result.tokenId}`
+        );
+        alert(
+          `Your request has been submitted successfully!\nToken ID: ${result.tokenId}\nCheck your email for confirmation.`
+        );
         setFormData({ name: "", email: "", message: "" });
         form.classList.remove("was-validated");
       } else {
@@ -56,7 +64,9 @@ const ContactComponent = () => {
       <div className="contact-main">
         <div className="contact-container">
           <h2 className="contact-title">Contact Us</h2>
-          <p className="contact-description">Have any questions? We’d love to hear from you.</p>
+          <p className="contact-description">
+            Have any questions? We’d love to hear from you.
+          </p>
 
           <div className="contact-info">
             <p className="contact-item">
@@ -68,9 +78,15 @@ const ContactComponent = () => {
             </p>
           </div>
 
-          <form className="needs-validation contact-form" noValidate onSubmit={handleSubmit}>
+          <form
+            className="needs-validation contact-form"
+            noValidate
+            onSubmit={handleSubmit}
+          >
             <div className="mb-3">
-              <label htmlFor="name" className="form-label">Your Name</label>
+              <label htmlFor="name" className="form-label">
+                Your Name
+              </label>
               <input
                 type="text"
                 name="name"
@@ -86,7 +102,9 @@ const ContactComponent = () => {
             </div>
 
             <div className="mb-3">
-              <label htmlFor="email" className="form-label">Your Email</label>
+              <label htmlFor="email" className="form-label">
+                Your Email
+              </label>
               <input
                 type="email"
                 name="email"
@@ -102,7 +120,9 @@ const ContactComponent = () => {
             </div>
 
             <div className="mb-4">
-              <label htmlFor="message" className="form-label">Your Message</label>
+              <label htmlFor="message" className="form-label">
+                Your Message
+              </label>
               <textarea
                 name="message"
                 id="message"
@@ -117,11 +137,15 @@ const ContactComponent = () => {
               <div className="invalid-feedback">Please provide a message.</div>
             </div>
 
-            <button type="submit" className="send-button w-100">Send Message</button>
+            <button type="submit" className="send-button w-100">
+              Send Message
+            </button>
           </form>
 
           {submissionStatus && (
-            <p className="submission-status text-center mt-3">{submissionStatus}</p>
+            <p className="submission-status text-center mt-3">
+              {submissionStatus}
+            </p>
           )}
         </div>
       </div>

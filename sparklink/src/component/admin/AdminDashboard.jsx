@@ -41,7 +41,8 @@ const AdminDashboard = () => {
     fetchDashboardData();
   }, []);
 
-  if (loading) return <Spinner animation="border" className="loading-spinner" />;
+  if (loading)
+    return <Spinner animation="border" className="loading-spinner" />;
   if (error) return <Alert variant="danger">{error}</Alert>;
 
   return (
@@ -61,7 +62,9 @@ const AdminDashboard = () => {
               <p>Business Owners: {userStats.businessOwners}</p>
               <p>Admins: {userStats.admins}</p>
             </div>
-            <p>Recently Registered Users: {userStats.recentUsers} (last 7 days)</p>
+            <p>
+              Recently Registered Users: {userStats.recentUsers} (last 7 days)
+            </p>
             <p>Pending Confirmations: {userStats.pendingConfirmations}</p>
           </Card.Body>
         </Card>
@@ -138,7 +141,9 @@ const AdminDashboard = () => {
 
         {/* Performance & Analytics */}
         <Card className="mb-4">
-          <Card.Header className="card-header">Performance & Analytics</Card.Header>
+          <Card.Header className="card-header">
+            Performance & Analytics
+          </Card.Header>
           <Card.Body>
             <p>Active Users: {analytics.activeUsers}</p>
             <p>Inactive Users: {analytics.inactiveUsers}</p>

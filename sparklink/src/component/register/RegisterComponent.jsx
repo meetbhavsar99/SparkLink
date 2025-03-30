@@ -24,22 +24,21 @@ const RegistrationForm = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [loading, setLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false); 
-  const [showPassword2, setShowPassword2] = useState(false); 
+  const [showPassword, setShowPassword] = useState(false);
+  const [showPassword2, setShowPassword2] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-  const params = new URLSearchParams(location.search);
-  const querySecret = params.get("q");
+    const params = new URLSearchParams(location.search);
+    const querySecret = params.get("q");
 
-  if (querySecret) {
-    setSecret(querySecret);
+    if (querySecret) {
+      setSecret(querySecret);
 
-    // Optional: Remove query from URL
-    window.history.replaceState({}, document.title, location.pathname);
-  }
-}, [location]);
-
+      // Optional: Remove query from URL
+      window.history.replaceState({}, document.title, location.pathname);
+    }
+  }, [location]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -48,84 +47,91 @@ const RegistrationForm = () => {
 
     setIsValidated(true); // Set flag to show validation
 
-  // Check if form is valid
-  if (!form.checkValidity()) {
-    e.stopPropagation();
-    form.classList.add("was-validated"); // Show validation feedback
-    return; // Stop execution if form is invalid
-  }
+    // Check if form is valid
+    if (!form.checkValidity()) {
+      e.stopPropagation();
+      form.classList.add("was-validated"); // Show validation feedback
+      return; // Stop execution if form is invalid
+    }
 
     console.log("Submitting registration form...");
-    console.log("Sending Data:", { username, email, password, confirmPassword, name, role });
-
+    console.log("Sending Data:", {
+      username,
+      email,
+      password,
+      confirmPassword,
+      name,
+      role,
+    });
 
     if (password !== confirmPassword) {
-        setErrorMessage("Passwords do not match!");
-        return;
+      setErrorMessage("Passwords do not match!");
+      return;
     }
 
     if ((role === "3" || role === "4") && !email.endsWith("@uwindsor.ca")) {
-        setErrorMessage("Email should end with @uwindsor.ca");
-        return;
+      setErrorMessage("Email should end with @uwindsor.ca");
+      return;
     }
 
     try {
-        setLoading(true);
-        const response = await axios.post("/api/users/register", {
-            username,
-            email,
-            password,
-            confirmPassword,
-            name,
-            role,
-            secret,
-        });
+      setLoading(true);
+      const response = await axios.post("/api/users/register", {
+        username,
+        email,
+        password,
+        confirmPassword,
+        name,
+        role,
+        secret,
+      });
 
-        setSuccessMessage("Registration successful! Please check your email to confirm your account.");
+      setSuccessMessage(
+        "Registration successful! Please check your email to confirm your account."
+      );
 
-        // Redirect to login page after 3 seconds
-        setTimeout(() => {
-            navigate("/login");
-        }, 3000);
+      // Redirect to login page after 3 seconds
+      setTimeout(() => {
+        navigate("/login");
+      }, 3000);
 
-        setErrorMessage("");
-        form.classList.remove("was-validated"); // Reset validation styling after successful submission
+      setErrorMessage("");
+      form.classList.remove("was-validated"); // Reset validation styling after successful submission
     } catch (error) {
-        console.log(error);
-        setErrorMessage(
-            error.response?.data?.message || "Registration failed. Please try again."
-        );
-        setSuccessMessage("");
+      console.log(error);
+      setErrorMessage(
+        error.response?.data?.message ||
+          "Registration failed. Please try again."
+      );
+      setSuccessMessage("");
     } finally {
-        setLoading(false);
+      setLoading(false);
     }
-};
+  };
 
-const SUPERVISOR_SECRET = "secret123";
-const ADMIN_SECRET = "admin456";
+  const SUPERVISOR_SECRET = "secret123";
+  const ADMIN_SECRET = "admin456";
 
-const getAllowedRoles = () => {
-  if (secret === ADMIN_SECRET) {
-    return [
-      { value: "1", label: "Admin" },
-      { value: "2", label: "Business Owner" },
-      { value: "3", label: "Supervisor" },
-      { value: "4", label: "Student" },
-    ];
-  } else if (secret === SUPERVISOR_SECRET) {
-    return [
-      { value: "2", label: "Business Owner" },
-      { value: "3", label: "Supervisor" },
-      { value: "4", label: "Student" },
-    ];
-  } else {
-    return [{ value: "4", label: "Student" }];
-  }
-};
+  const getAllowedRoles = () => {
+    if (secret === ADMIN_SECRET) {
+      return [
+        { value: "1", label: "Admin" },
+        { value: "2", label: "Business Owner" },
+        { value: "3", label: "Supervisor" },
+        { value: "4", label: "Student" },
+      ];
+    } else if (secret === SUPERVISOR_SECRET) {
+      return [
+        { value: "2", label: "Business Owner" },
+        { value: "3", label: "Supervisor" },
+        { value: "4", label: "Student" },
+      ];
+    } else {
+      return [{ value: "4", label: "Student" }];
+    }
+  };
 
-const allowedRoles = getAllowedRoles();
-
-
+  const allowedRoles = getAllowedRoles();
 
   return (
     <div className="main row-2">
@@ -140,7 +146,9 @@ const allowedRoles = getAllowedRoles();
             {/* Form Section */}
             <div className="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
               <form
-                className={`register-form needs-validation ${isValidated ? "mb-5" : "" }`} // adds margin if validated
+                className={`register-form needs-validation ${
+                  isValidated ? "mb-5" : ""
+                }`} // adds margin if validated
                 id="register-form"
                 noValidate
                 onSubmit={handleSubmit}
@@ -155,14 +163,19 @@ const allowedRoles = getAllowedRoles();
                     name="username"
                     id="username"
                     value={username}
-                    onChange={(e) => { setUsername(e.target.value);
+                    onChange={(e) => {
+                      setUsername(e.target.value);
                     }}
-                    className={`form-control form-control-lg ${isValidated && !username ? "is-invalid" : ""}`}
+                    className={`form-control form-control-lg ${
+                      isValidated && !username ? "is-invalid" : ""
+                    }`}
                     placeholder="First Name"
                     required
                   />
                   <div className="valid-feedback">Looks good!</div>
-                  <div className="invalid-feedback">Please provide your first name.</div>
+                  <div className="invalid-feedback">
+                    Please provide your first name.
+                  </div>
                 </div>
                 <div data-mdb-input-init className="form-outline mb-4">
                   <input
@@ -171,12 +184,16 @@ const allowedRoles = getAllowedRoles();
                     id="name"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className={`form-control form-control-lg ${isValidated && !name ? "is-invalid" : ""}`}
+                    className={`form-control form-control-lg ${
+                      isValidated && !name ? "is-invalid" : ""
+                    }`}
                     placeholder="Last Name"
                     required
                   />
                   <div className="valid-feedback">Looks good!</div>
-                  <div className="invalid-feedback">Please provide your last name.</div>
+                  <div className="invalid-feedback">
+                    Please provide your last name.
+                  </div>
                 </div>
                 {/* Email Field */}
                 <div data-mdb-input-init className="form-outline mb-4">
@@ -185,58 +202,80 @@ const allowedRoles = getAllowedRoles();
                     name="email"
                     id="email"
                     value={email}
-                    onChange={(e) => { setEmail(e.target.value)
+                    onChange={(e) => {
+                      setEmail(e.target.value);
                     }}
-                    className={`form-control form-control-lg ${isValidated && !email ? "is-invalid" : ""}`}
+                    className={`form-control form-control-lg ${
+                      isValidated && !email ? "is-invalid" : ""
+                    }`}
                     placeholder="Your Email"
                     required
                   />
                   <div className="valid-feedback">Looks good!</div>
-                  <div className="invalid-feedback">Please provide a valid email.</div>
+                  <div className="invalid-feedback">
+                    Please provide a valid email.
+                  </div>
                 </div>
                 {/* Password Field */}
-                <div data-mdb-input-init className="form-outline mb-4  position-relative" >
+                <div
+                  data-mdb-input-init
+                  className="form-outline mb-4  position-relative"
+                >
                   <input
-                     type={showPassword ? "text" : "password"} 
+                    type={showPassword ? "text" : "password"}
                     name="pass"
                     id="pass"
                     value={password}
-                    onChange={(e) => { setPassword(e.target.value)
+                    onChange={(e) => {
+                      setPassword(e.target.value);
                     }}
-                    className={`form-control form-control-lg ${isValidated && !password ? "is-invalid" : ""}`}
+                    className={`form-control form-control-lg ${
+                      isValidated && !password ? "is-invalid" : ""
+                    }`}
                     placeholder="Password"
                     required
                   />
                   <i
-                  className={`fas ${showPassword ? "fa-eye-slash" : "fa-eye"} position-absolute`}  // FontAwesome eye icon
-                  style={{ right: 34, top: 17, cursor: "pointer" }}
-                  onClick={() => setShowPassword(!showPassword)}  // Toggle password visibility
-                ></i>
-                <div className="valid-feedback">Looks good!</div>
-                <div className="invalid-feedback">Password is required.</div>
+                    className={`fas ${
+                      showPassword ? "fa-eye-slash" : "fa-eye"
+                    } position-absolute`} // FontAwesome eye icon
+                    style={{ right: 34, top: 17, cursor: "pointer" }}
+                    onClick={() => setShowPassword(!showPassword)} // Toggle password visibility
+                  ></i>
+                  <div className="valid-feedback">Looks good!</div>
+                  <div className="invalid-feedback">Password is required.</div>
                 </div>
                 {/* Repeat Password Field */}
-                <div data-mdb-input-init className="form-outline mb-4 position-relative">
+                <div
+                  data-mdb-input-init
+                  className="form-outline mb-4 position-relative"
+                >
                   <input
                     type={showPassword2 ? "text" : "password"}
                     name="re_pass"
                     id="re_pass"
                     value={confirmPassword}
-                    onChange={(e) => { setConfirmPassword(e.target.value)
+                    onChange={(e) => {
+                      setConfirmPassword(e.target.value);
                     }}
                     className={`form-control form-control-lg ${
-                      isValidated && (!confirmPassword || confirmPassword !== password) ? "is-invalid" : ""
+                      isValidated &&
+                      (!confirmPassword || confirmPassword !== password)
+                        ? "is-invalid"
+                        : ""
                     }`}
                     placeholder="Repeat your password"
                     required
                   />
-                   <i
-                  className={`fas ${showPassword2 ? "fa-eye-slash" : "fa-eye"} position-absolute`}  // FontAwesome eye icon
-                  style={{ right: 34, top: 17, cursor: "pointer" }}
-                  onClick={() => setShowPassword2(!showPassword2)}  // Toggle password visibility
-                ></i>
-                <div className="valid-feedback">Passwords match!</div>
-                <div className="invalid-feedback">Passwords must match.</div>
+                  <i
+                    className={`fas ${
+                      showPassword2 ? "fa-eye-slash" : "fa-eye"
+                    } position-absolute`} // FontAwesome eye icon
+                    style={{ right: 34, top: 17, cursor: "pointer" }}
+                    onClick={() => setShowPassword2(!showPassword2)} // Toggle password visibility
+                  ></i>
+                  <div className="valid-feedback">Passwords match!</div>
+                  <div className="invalid-feedback">Passwords must match.</div>
                 </div>
                 <div className="mb-3">
                   <label htmlFor="roleSelect" className="form-label">
@@ -258,7 +297,9 @@ const allowedRoles = getAllowedRoles();
                   </select> */}
                   <select
                     id="roleSelect"
-                    className={`form-select ${isValidated && !role ? "is-invalid" : "" }`} 
+                    className={`form-select ${
+                      isValidated && !role ? "is-invalid" : ""
+                    }`}
                     value={role}
                     onChange={(e) => setRole(e.target.value)}
                     required
@@ -273,9 +314,7 @@ const allowedRoles = getAllowedRoles();
                     ))}
                   </select>
 
-                  <div className="invalid-feedback">
-                      Please select a role.
-                  </div>
+                  <div className="invalid-feedback">Please select a role.</div>
                 </div>
                 {/* Submit Button */}
                 {errorMessage && (
@@ -293,14 +332,21 @@ const allowedRoles = getAllowedRoles();
                   >
                     Register
                   </button>
-                  <Link to="/login" className="login-link">I am already a member</Link>
+                  <Link to="/login" className="login-link">
+                    I am already a member
+                  </Link>
                 </div>
 
                 {/* Contact Us Button */}
-              <p className="small fw-bold mt-2 pt-1 mb-0">
+                <p className="small fw-bold mt-2 pt-1 mb-0">
                   Need help?{" "}
-                  <a href="/contact" className="link-primary link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover">Contact Us</a>
-              </p>
+                  <a
+                    href="/contact"
+                    className="link-primary link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover"
+                  >
+                    Contact Us
+                  </a>
+                </p>
               </form>
             </div>
             {/* Image Section */}

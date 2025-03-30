@@ -18,7 +18,18 @@ import photo8 from "../../assets/project_images/photo8.jpg";
 import photo9 from "../../assets/project_images/photo9.jpg";
 import photo10 from "../../assets/project_images/photo10.jpg";
 
-const imageArray = [photo1, photo2, photo3, photo4, photo5, photo6, photo7, photo8, photo9, photo10];
+const imageArray = [
+  photo1,
+  photo2,
+  photo3,
+  photo4,
+  photo5,
+  photo6,
+  photo7,
+  photo8,
+  photo9,
+  photo10,
+];
 
 const StudentGroupComponent = () => {
   const [groupId, setGroupId] = useState("");
@@ -47,7 +58,9 @@ const StudentGroupComponent = () => {
 
   const fetchGroupInfo = async () => {
     try {
-      const response = await axios.get("/api/group/my", { withCredentials: true });
+      const response = await axios.get("/api/group/my", {
+        withCredentials: true,
+      });
       const { group, isLeader } = response.data;
       if (group) {
         setGroupInfo(group);
@@ -65,7 +78,11 @@ const StudentGroupComponent = () => {
 
   const createGroup = async () => {
     try {
-      const res = await axios.post("/api/group/create", {}, { withCredentials: true });
+      const res = await axios.post(
+        "/api/group/create",
+        {},
+        { withCredentials: true }
+      );
       alert(`Group created! Group ID: ${res.data.group_id}`);
       fetchGroupInfo();
     } catch (err) {
@@ -76,7 +93,11 @@ const StudentGroupComponent = () => {
   const joinGroup = async () => {
     if (!groupId.trim()) return alert("Enter valid Group ID");
     try {
-      await axios.post("/api/group/join", { group_id: groupId }, { withCredentials: true });
+      await axios.post(
+        "/api/group/join",
+        { group_id: groupId },
+        { withCredentials: true }
+      );
       alert("Joined group successfully!");
       fetchGroupInfo();
     } catch (err) {
@@ -134,7 +155,9 @@ const StudentGroupComponent = () => {
 
   const fetchGroupProjects = async () => {
     try {
-      const response = await axios.get("/api/group/my-projects", { withCredentials: true });
+      const response = await axios.get("/api/group/my-projects", {
+        withCredentials: true,
+      });
       setGroupProjects(response.data.projects || []);
     } catch (error) {
       console.error("Error fetching group projects:", error);
@@ -164,14 +187,17 @@ const StudentGroupComponent = () => {
                 onChange={(e) => setGroupId(e.target.value)}
               />
               <button onClick={joinGroup}>Join Group</button>
-              {error && <p style={{ color: "gray", marginTop: "1rem" }}>{error}</p>}
+              {error && (
+                <p style={{ color: "gray", marginTop: "1rem" }}>{error}</p>
+              )}
             </div>
           )}
           {groupInfo && (
             <div className="group-details">
               <h4>Group ID: {groupInfo.group_id}</h4>
               <p>
-                <strong>Team Leader:</strong> {groupInfo.team_leader_name || "N/A"}
+                <strong>Team Leader:</strong>{" "}
+                {groupInfo.team_leader_name || "N/A"}
               </p>
               <h5>Members:</h5>
               {groupInfo.members && groupInfo.members.length > 0 ? (
@@ -195,10 +221,15 @@ const StudentGroupComponent = () => {
                 <button className="upload-btn" onClick={handleUpload}>
                   Upload
                 </button>
-                {uploadSuccess && <p className="success-msg">{uploadSuccess}</p>}
+                {uploadSuccess && (
+                  <p className="success-msg">{uploadSuccess}</p>
+                )}
                 {groupInfo.resume_url && (
                   <p>
-                    <button className="download-btn" onClick={handleDownloadResume}>
+                    <button
+                      className="download-btn"
+                      onClick={handleDownloadResume}
+                    >
                       Download Uploaded Resume
                     </button>
                   </p>
@@ -222,7 +253,9 @@ const StudentGroupComponent = () => {
                     <div
                       className="project-image"
                       style={{
-                        backgroundImage: `url(${imageArray[Number(project.image_url)] || ""})`,
+                        backgroundImage: `url(${
+                          imageArray[Number(project.image_url)] || ""
+                        })`,
                         backgroundSize: "cover",
                         backgroundPosition: "center",
                         height: "200px",
@@ -230,7 +263,10 @@ const StudentGroupComponent = () => {
                     ></div>
                     <div className="project-info">
                       <h5>{project.project_name}</h5>
-                      <p>{project.description?.substring(0, 100) || "No description available."}</p>
+                      <p>
+                        {project.description?.substring(0, 100) ||
+                          "No description available."}
+                      </p>
                     </div>
                   </div>
                 ))}
@@ -245,28 +281,43 @@ const StudentGroupComponent = () => {
                       <tbody>
                         <tr>
                           <td colSpan={2}>
-                            <strong>Project Name:</strong> {selectedProject.project_name}
+                            <strong>Project Name:</strong>{" "}
+                            {selectedProject.project_name}
                           </td>
                         </tr>
                         <tr>
-                          <td><strong>Description</strong></td>
+                          <td>
+                            <strong>Description</strong>
+                          </td>
                           <td>{selectedProject.description}</td>
                         </tr>
                         <tr>
-                          <td><strong>Features</strong></td>
+                          <td>
+                            <strong>Features</strong>
+                          </td>
                           <td>{selectedProject.features}</td>
                         </tr>
                         <tr>
-                          <td><strong>Skills Required</strong></td>
+                          <td>
+                            <strong>Skills Required</strong>
+                          </td>
                           <td>{selectedProject.skills_req}</td>
                         </tr>
                         <tr>
-                          <td><strong>Budget</strong></td>
+                          <td>
+                            <strong>Budget</strong>
+                          </td>
                           <td>{selectedProject.budget}</td>
                         </tr>
                         <tr>
-                          <td><strong>End Date</strong></td>
-                          <td>{new Date(selectedProject.end_date).toLocaleDateString()}</td>
+                          <td>
+                            <strong>End Date</strong>
+                          </td>
+                          <td>
+                            {new Date(
+                              selectedProject.end_date
+                            ).toLocaleDateString()}
+                          </td>
                         </tr>
                       </tbody>
                     </Table>

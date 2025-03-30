@@ -1,9 +1,14 @@
-const express = require('express');
-const router = express.Router();
-const editProfileController = require('../controllers/editProfileController');  // Adjust path as needed
+/**
+ * Edit Profile Routes
+ * Handles fetching and updating user profile details based on role.
+ */
 
-router.get('/', editProfileController.getProfile);
-router.post('/', editProfileController.updateProfile);
+const express = require("express");
+const router = express.Router();
+const editProfileController = require("../controllers/editProfileController");
+
+router.get("/", editProfileController.getProfile);
+router.post("/", editProfileController.updateProfile);
 // router.post('/updateProfile', profileController.updateProfile);
 
 module.exports = router;

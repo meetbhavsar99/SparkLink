@@ -110,7 +110,11 @@ const AdminSystemSettings = () => {
               disabled={saving}
               className="save-btn"
             >
-              {saving ? <Spinner animation="border" size="sm" /> : "Save Changes"}
+              {saving ? (
+                <Spinner animation="border" size="sm" />
+              ) : (
+                "Save Changes"
+              )}
             </Button>
           </Form>
         </div>

@@ -1,5 +1,8 @@
 const express = require("express");
-const { getSettings, updateSettings } = require("../controllers/systemSettingsController");
+const {
+  getSettings,
+  updateSettings,
+} = require("../controllers/systemSettingsController");
 const router = express.Router();
 
 // GET: Fetch system settings

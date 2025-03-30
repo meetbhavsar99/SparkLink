@@ -10,10 +10,10 @@ export const NotificationProvider = ({ children }) => {
 
   // Function to update the notification count
   const updateNotifyCount = async () => {
-    const response = await axios.get('/notify/count');
-      console.log("message ---> ",response.data.message);
-      console.log("count ---> ",response.data.notifCount);
-      setNotifyCount(response.data.notifCount);
+    const response = await axios.get("/notify/count");
+    console.log("message ---> ", response.data.message);
+    console.log("count ---> ", response.data.notifCount);
+    setNotifyCount(response.data.notifCount);
   };
 
   return (

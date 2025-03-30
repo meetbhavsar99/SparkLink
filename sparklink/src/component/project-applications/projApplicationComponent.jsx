@@ -4,7 +4,7 @@ import { useNotification } from "../../notificationContext";
 import "./projApplicationComponent.css";
 import MenuComponent from "../menu/MenuComponent";
 import MasterComponent from "../MasterComponent";
-import Swal from 'sweetalert2';
+import Swal from "sweetalert2";
 
 const ProjApplicationComponent = () => {
   const [loading, setLoading] = useState(false);
@@ -30,17 +30,32 @@ const ProjApplicationComponent = () => {
         // Update the state to reflect the accepted project
 
         fetchNotifications();
-        Swal.fire({ title: 'Success', text: 'Project application accepted successfully!', icon: 'success', confirmButtonText: 'Ok' });
+        Swal.fire({
+          title: "Success",
+          text: "Project application accepted successfully!",
+          icon: "success",
+          confirmButtonText: "Ok",
+        });
         // setSuccessMessage("Project application accepted successfully!"); // Success message
         // setErrorMessage(""); // Clear any previous error message
       } else {
-        Swal.fire({ title: 'Error', text: response.data, icon: 'error', confirmButtonText: 'Ok' });
+        Swal.fire({
+          title: "Error",
+          text: response.data,
+          icon: "error",
+          confirmButtonText: "Ok",
+        });
         // setErrorMessage("Failed to accept project: " + response.data); // Error message
         // setSuccessMessage(""); // Clear any previous success message
       }
     } catch (error) {
       console.error("Error accepting project:", error);
-      Swal.fire({ title: 'Error', text: error.message, icon: 'error', confirmButtonText: 'Ok' });
+      Swal.fire({
+        title: "Error",
+        text: error.message,
+        icon: "error",
+        confirmButtonText: "Ok",
+      });
       setErrorMessage("Error accepting project: " + error.message); // Error message
       setSuccessMessage(""); // Clear any previous success message
     } finally {
@@ -61,17 +76,32 @@ const ProjApplicationComponent = () => {
 
       if (response.status === 200 || response.status === 201) {
         fetchNotifications();
-        Swal.fire({ title: 'Success', text: 'Project application rejected successfully!', icon: 'success', confirmButtonText: 'Ok' });
+        Swal.fire({
+          title: "Success",
+          text: "Project application rejected successfully!",
+          icon: "success",
+          confirmButtonText: "Ok",
+        });
         // setSuccessMessage("Project application rejected successfully!"); // Success message
         // setErrorMessage(""); // Clear any previous error message
       } else {
         setErrorMessage("Failed to reject project: " + response.data); // Error message
-        Swal.fire({ title: 'Error', text: `"Failed to reject project: ", ${response.data}`, icon: 'error', confirmButtonText: 'Ok' });
+        Swal.fire({
+          title: "Error",
+          text: `"Failed to reject project: ", ${response.data}`,
+          icon: "error",
+          confirmButtonText: "Ok",
+        });
         setSuccessMessage(""); // Clear any previous success message
       }
     } catch (error) {
       console.error("Error rejecting project:", error);
-      Swal.fire({ title: 'Error', text: `"Error rejecting project: ", ${error.message}`, icon: 'error', confirmButtonText: 'Ok' });
+      Swal.fire({
+        title: "Error",
+        text: `"Error rejecting project: ", ${error.message}`,
+        icon: "error",
+        confirmButtonText: "Ok",
+      });
       setErrorMessage("Error rejecting project: " + error.message); // Error message
       setSuccessMessage(""); // Clear any previous success message
     } finally {
@@ -138,39 +168,42 @@ const ProjApplicationComponent = () => {
       case "BP":
         return (
           <span>
-            You successfully created a new project:{" "}
-            <b> {proj_name}</b>.
+            You successfully created a new project: <b> {proj_name}</b>.
           </span>
         );
       case "BS":
         return (
           <span>
-             <b>
-              <a className="no-underline-link" href={`/profile?user_id=${user_id}`}>
+            <b>
+              <a
+                className="no-underline-link"
+                href={`/profile?user_id=${user_id}`}
+              >
                 {user_name}
               </a>
-            </b>  {" "} has been assigned as
-            the supervisor for your project{" "}
+            </b>{" "}
+            has been assigned as the supervisor for your project{" "}
             <b> {proj_name}</b>.
           </span>
         );
       case "BT":
         return (
           <span>
-             <b>
-              <a className="no-underline-link" href={`/profile?user_id=${user_id}`}>
+            <b>
+              <a
+                className="no-underline-link"
+                href={`/profile?user_id=${user_id}`}
+              >
                 {user_name}
               </a>
-            </b>  {" "} has been assigned as
-            a student for your project{" "}
-            <b> {proj_name}</b>.
+            </b>{" "}
+            has been assigned as a student for your project <b> {proj_name}</b>.
           </span>
         );
       case "SP":
         return (
           <span>
-            You successfully created a new project:{" "}
-            <b> {proj_name}</b>.
+            You successfully created a new project: <b> {proj_name}</b>.
           </span>
         );
       case "SV":
@@ -183,57 +216,64 @@ const ProjApplicationComponent = () => {
       case "SS":
         return (
           <span>
-             <b>
-              <a className="no-underline-link" href={`/profile?user_id=${user_id}`}>
+            <b>
+              <a
+                className="no-underline-link"
+                href={`/profile?user_id=${user_id}`}
+              >
                 {user_name}
               </a>
-            </b>  {" "} has been assigned as
-            the supervisor for your project{" "}
+            </b>{" "}
+            has been assigned as the supervisor for your project{" "}
             <b> {proj_name}</b>.
           </span>
         );
       case "SA":
         return (
           <span>
-             <b>
-              <a className="no-underline-link" href={`/profile?user_id=${user_id}`}>
+            <b>
+              <a
+                className="no-underline-link"
+                href={`/profile?user_id=${user_id}`}
+              >
                 {user_name}
               </a>
-            </b>  {" "} has applied for the
-            project <b> {proj_name}</b>.
+            </b>{" "}
+            has applied for the project <b> {proj_name}</b>.
           </span>
         );
       case "ST":
         return (
           <span>
             <b>
-              <a className="no-underline-link" href={`/profile?user_id=${user_id}`}>
+              <a
+                className="no-underline-link"
+                href={`/profile?user_id=${user_id}`}
+              >
                 {user_name}
               </a>
-            </b>  {" "} has been assigned as
-            a student for your project <b> {proj_name}</b>.
+            </b>{" "}
+            has been assigned as a student for your project <b> {proj_name}</b>.
           </span>
         );
       case "TS":
         return (
           <span>
-            Your application for the project{" "}
-            <b> {proj_name}</b> has been
+            Your application for the project <b> {proj_name}</b> has been
             successfully submitted.
           </span>
         );
       case "TA":
         return (
           <span>
-            Your application for the project{" "}
-            <b> {proj_name}</b> has been accepted.
+            Your application for the project <b> {proj_name}</b> has been
+            accepted.
           </span>
         );
       case "TR":
         return (
           <span>
-            You have been removed from the project{" "}
-            <b> {proj_name}</b>.
+            You have been removed from the project <b> {proj_name}</b>.
           </span>
         );
       default:

@@ -1,16 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import './EditProfileComponent.css';
-import MenuComponent from '../menu/MenuComponent';
-import { useAuth } from '../../AuthContext';
-import Modal from 'react-bootstrap/Modal';
-import Button from 'react-bootstrap/Button';
-import { FaEdit } from 'react-icons/fa';
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import "./EditProfileComponent.css";
+import MenuComponent from "../menu/MenuComponent";
+import { useAuth } from "../../AuthContext";
+import Modal from "react-bootstrap/Modal";
+import Button from "react-bootstrap/Button";
+import { FaEdit } from "react-icons/fa";
 import { toast, ToastContainer } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
+import "react-toastify/dist/ReactToastify.css";
 
-import '../createproject/CreateProjectComponent.css';
+import "../createproject/CreateProjectComponent.css";
 
 const EditProfileComponent = () => {
   const { user } = useAuth();
@@ -18,7 +18,7 @@ const EditProfileComponent = () => {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
   const [selectedAvatar, setSelectedAvatar] = useState(
     profile?.avatar || "https://bootdey.com/img/Content/avatar/avatar7.png"
   );
@@ -33,14 +33,14 @@ const EditProfileComponent = () => {
     "https://bootdey.com/img/Content/avatar/avatar4.png",
     "https://bootdey.com/img/Content/avatar/avatar5.png",
     "https://bootdey.com/img/Content/avatar/avatar6.png",
-    "https://bootdey.com/img/Content/avatar/avatar7.png"
+    "https://bootdey.com/img/Content/avatar/avatar7.png",
   ];
 
   const handleAvatarSelection = (avatar) => {
     setSelectedAvatar(avatar);
     setProfile((prevProfile) => ({
       ...prevProfile,
-      avatar: avatar
+      avatar: avatar,
     }));
   };
 
@@ -60,7 +60,7 @@ const EditProfileComponent = () => {
   const fetchProfile = async () => {
     if (!user) return;
     try {
-      const response = await axios.get('/editProfile');
+      const response = await axios.get("/editProfile");
       setRole(response.data.role);
       setProfile(response.data.profile);
 
@@ -69,7 +69,7 @@ const EditProfileComponent = () => {
         setSelectedAvatar(response.data.profile.avatar);
       }
     } catch (err) {
-      setError('Error fetching profile.');
+      setError("Error fetching profile.");
     } finally {
       setLoading(false);
     }
@@ -105,7 +105,7 @@ const EditProfileComponent = () => {
     };
 
     try {
-      const response = await axios.post('/editProfile', updatedProfileData);
+      const response = await axios.post("/editProfile", updatedProfileData);
       fetchProfile();
 
       // Show success toast
@@ -117,7 +117,7 @@ const EditProfileComponent = () => {
         pauseOnHover: true,
         draggable: true,
         theme: "colored",
-        icon: "✅"
+        icon: "✅",
       });
 
       setTimeout(() => {
@@ -125,16 +125,19 @@ const EditProfileComponent = () => {
       }, 2000);
     } catch (error) {
       // Show error toast
-      toast.error("⚠️ " + (error.response?.data?.message || "Failed to update profile."), {
-        position: "top-right",
-        autoClose: 2000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        theme: "colored",
-        icon: "❌"
-      });
+      toast.error(
+        "⚠️ " + (error.response?.data?.message || "Failed to update profile."),
+        {
+          position: "top-right",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          theme: "colored",
+          icon: "❌",
+        }
+      );
     }
   };
 
@@ -162,7 +165,7 @@ const EditProfileComponent = () => {
       <MenuComponent />
 
       {/* STUDENT EDIT PAGE */}
-      {role === 'student' && (
+      {role === "student" && (
         <div className="profile-container">
           <div className="profile-card">
             <form className="form-horizontal" onSubmit={handleSubmit}>
@@ -186,7 +189,11 @@ const EditProfileComponent = () => {
               </div>
 
               {/* Avatar Selection Modal */}
-              <Modal show={showAvatarModal} onHide={handleCloseAvatarModal} centered>
+              <Modal
+                show={showAvatarModal}
+                onHide={handleCloseAvatarModal}
+                centered
+              >
                 <Modal.Header closeButton>
                   <Modal.Title>Select Your Avatar</Modal.Title>
                 </Modal.Header>
@@ -198,7 +205,7 @@ const EditProfileComponent = () => {
                         src={avatar}
                         alt={`Avatar ${index + 1}`}
                         className={`avatar-option ${
-                          selectedAvatar === avatar ? 'selected' : ''
+                          selectedAvatar === avatar ? "selected" : ""
                         }`}
                         onClick={() => handleAvatarSelection(avatar)}
                       />
@@ -222,18 +229,18 @@ const EditProfileComponent = () => {
                 </div>
                 <div className="panel-body">
                   {[
-                    { label: 'Bio', name: 'bio', type: 'textarea' },
-                    { label: 'Education', name: 'education', type: 'text' },
-                    { label: 'Experience', name: 'experience', type: 'text' },
-                    { label: 'Courses', name: 'course', type: 'text' },
-                    { label: 'Skills', name: 'skills', type: 'text' },
+                    { label: "Bio", name: "bio", type: "textarea" },
+                    { label: "Education", name: "education", type: "text" },
+                    { label: "Experience", name: "experience", type: "text" },
+                    { label: "Courses", name: "course", type: "text" },
+                    { label: "Skills", name: "skills", type: "text" },
                   ].map(({ label, name, type }) => (
                     <div className="form-group" key={name}>
                       <label className="control-label">{label}</label>
-                      {type === 'textarea' ? (
+                      {type === "textarea" ? (
                         <textarea
                           name={name}
-                          value={profile[name] || ''}
+                          value={profile[name] || ""}
                           className="form-control"
                           onChange={handleChange}
                           placeholder={`Enter ${label.toLowerCase()}`}
@@ -242,7 +249,7 @@ const EditProfileComponent = () => {
                         <input
                           name={name}
                           type={type}
-                          value={profile[name] || ''}
+                          value={profile[name] || ""}
                           className="form-control"
                           onChange={handleChange}
                           placeholder={`Enter ${label.toLowerCase()}`}
@@ -260,17 +267,21 @@ const EditProfileComponent = () => {
                 </div>
                 <div className="panel-body">
                   {[
-                    { label: 'Phone Number', name: 'phone_number', type: 'tel' },
-                    { label: 'LinkedIn', name: 'linkedin', type: 'text' },
-                    { label: 'GitHub', name: 'github', type: 'text' },
-                    { label: 'Address', name: 'address', type: 'text' },
+                    {
+                      label: "Phone Number",
+                      name: "phone_number",
+                      type: "tel",
+                    },
+                    { label: "LinkedIn", name: "linkedin", type: "text" },
+                    { label: "GitHub", name: "github", type: "text" },
+                    { label: "Address", name: "address", type: "text" },
                   ].map(({ label, name, type }) => (
                     <div className="form-group" key={name}>
                       <label className="control-label">{label}</label>
                       <input
                         name={name}
                         type={type}
-                        value={profile[name] || ''}
+                        value={profile[name] || ""}
                         className="form-control"
                         onChange={handleChange}
                         placeholder={`Enter ${label.toLowerCase()}`}
@@ -302,7 +313,7 @@ const EditProfileComponent = () => {
       )}
 
       {/* SUPERVISOR EDIT PAGE */}
-      {role === 'supervisor' && (
+      {role === "supervisor" && (
         <div className="profile-container">
           <div className="profile-card">
             <form className="form-horizontal" onSubmit={handleSubmit}>
@@ -318,7 +329,11 @@ const EditProfileComponent = () => {
               </div>
 
               {/* Avatar Selection Modal */}
-              <Modal show={showAvatarModal} onHide={handleCloseAvatarModal} centered>
+              <Modal
+                show={showAvatarModal}
+                onHide={handleCloseAvatarModal}
+                centered
+              >
                 <Modal.Header closeButton>
                   <Modal.Title>Select Your Avatar</Modal.Title>
                 </Modal.Header>
@@ -330,7 +345,7 @@ const EditProfileComponent = () => {
                         src={avatar}
                         alt={`Avatar ${index + 1}`}
                         className={`avatar-option ${
-                          selectedAvatar === avatar ? 'selected' : ''
+                          selectedAvatar === avatar ? "selected" : ""
                         }`}
                         onClick={() => handleAvatarSelection(avatar)}
                       />
@@ -354,19 +369,19 @@ const EditProfileComponent = () => {
                 </div>
                 <div className="panel-body">
                   {[
-                    { label: 'Department', name: 'department', type: 'text' },
-                    { label: 'Domain', name: 'domain', type: 'text' },
-                    { label: 'Bio', name: 'bio', type: 'textarea' },
-                    { label: 'Expertise', name: 'expertise', type: 'text' },
-                    { label: 'Education', name: 'education', type: 'text' },
-                    { label: 'Experience', name: 'experience', type: 'text' },
+                    { label: "Department", name: "department", type: "text" },
+                    { label: "Domain", name: "domain", type: "text" },
+                    { label: "Bio", name: "bio", type: "textarea" },
+                    { label: "Expertise", name: "expertise", type: "text" },
+                    { label: "Education", name: "education", type: "text" },
+                    { label: "Experience", name: "experience", type: "text" },
                   ].map(({ label, name, type }) => (
                     <div className="form-group" key={name}>
                       <label className="control-label">{label}</label>
-                      {type === 'textarea' ? (
+                      {type === "textarea" ? (
                         <textarea
                           name={name}
-                          value={profile[name] || ''}
+                          value={profile[name] || ""}
                           className="form-control"
                           onChange={handleChange}
                           placeholder={`Enter ${label.toLowerCase()}`}
@@ -375,7 +390,7 @@ const EditProfileComponent = () => {
                         <input
                           name={name}
                           type={type}
-                          value={profile[name] || ''}
+                          value={profile[name] || ""}
                           className="form-control"
                           onChange={handleChange}
                           placeholder={`Enter ${label.toLowerCase()}`}
@@ -393,17 +408,21 @@ const EditProfileComponent = () => {
                 </div>
                 <div className="panel-body">
                   {[
-                    { label: 'Phone Number', name: 'phone_number', type: 'tel' },
-                    { label: 'LinkedIn', name: 'linkedin', type: 'text' },
-                    { label: 'GitHub', name: 'github', type: 'text' },
-                    { label: 'Address', name: 'address', type: 'text' },
+                    {
+                      label: "Phone Number",
+                      name: "phone_number",
+                      type: "tel",
+                    },
+                    { label: "LinkedIn", name: "linkedin", type: "text" },
+                    { label: "GitHub", name: "github", type: "text" },
+                    { label: "Address", name: "address", type: "text" },
                   ].map(({ label, name, type }) => (
                     <div className="form-group" key={name}>
                       <label className="control-label">{label}</label>
                       <input
                         name={name}
                         type={type}
-                        value={profile[name] || ''}
+                        value={profile[name] || ""}
                         className="form-control"
                         onChange={handleChange}
                         placeholder={`Enter ${label.toLowerCase()}`}
@@ -431,7 +450,7 @@ const EditProfileComponent = () => {
       )}
 
       {/* BUSINESS OWNER EDIT PAGE */}
-      {role === 'business_owner' && (
+      {role === "business_owner" && (
         <div className="profile-container">
           <div className="profile-card">
             <form className="form-horizontal" onSubmit={handleSubmit}>
@@ -447,7 +466,11 @@ const EditProfileComponent = () => {
               </div>
 
               {/* Avatar Selection Modal (optional) */}
-              <Modal show={showAvatarModal} onHide={handleCloseAvatarModal} centered>
+              <Modal
+                show={showAvatarModal}
+                onHide={handleCloseAvatarModal}
+                centered
+              >
                 <Modal.Header closeButton>
                   <Modal.Title>Select Your Avatar</Modal.Title>
                 </Modal.Header>
@@ -459,7 +482,7 @@ const EditProfileComponent = () => {
                         src={avatar}
                         alt={`Avatar ${index + 1}`}
                         className={`avatar-option ${
-                          selectedAvatar === avatar ? 'selected' : ''
+                          selectedAvatar === avatar ? "selected" : ""
                         }`}
                         onClick={() => handleAvatarSelection(avatar)}
                       />
@@ -483,16 +506,20 @@ const EditProfileComponent = () => {
                 </div>
                 <div className="panel-body">
                   {[
-                    { label: 'Business Type', name: 'business_type', type: 'text' },
-                    { label: 'Domain Type', name: 'domain_type', type: 'text' },
-                    { label: 'Bio', name: 'bio', type: 'textarea' },
+                    {
+                      label: "Business Type",
+                      name: "business_type",
+                      type: "text",
+                    },
+                    { label: "Domain Type", name: "domain_type", type: "text" },
+                    { label: "Bio", name: "bio", type: "textarea" },
                   ].map(({ label, name, type }) => (
                     <div className="form-group" key={name}>
                       <label className="control-label">{label}</label>
-                      {type === 'textarea' ? (
+                      {type === "textarea" ? (
                         <textarea
                           name={name}
-                          value={profile[name] || ''}
+                          value={profile[name] || ""}
                           className="form-control"
                           onChange={handleChange}
                           placeholder={`Enter ${label.toLowerCase()}`}
@@ -501,7 +528,7 @@ const EditProfileComponent = () => {
                         <input
                           name={name}
                           type={type}
-                          value={profile[name] || ''}
+                          value={profile[name] || ""}
                           className="form-control"
                           onChange={handleChange}
                           placeholder={`Enter ${label.toLowerCase()}`}
@@ -519,17 +546,21 @@ const EditProfileComponent = () => {
                 </div>
                 <div className="panel-body">
                   {[
-                    { label: 'Phone Number', name: 'phone_number', type: 'tel' },
-                    { label: 'LinkedIn', name: 'linkedin', type: 'text' },
-                    { label: 'GitHub', name: 'github', type: 'text' },
-                    { label: 'Address', name: 'address', type: 'text' },
+                    {
+                      label: "Phone Number",
+                      name: "phone_number",
+                      type: "tel",
+                    },
+                    { label: "LinkedIn", name: "linkedin", type: "text" },
+                    { label: "GitHub", name: "github", type: "text" },
+                    { label: "Address", name: "address", type: "text" },
                   ].map(({ label, name, type }) => (
                     <div className="form-group" key={name}>
                       <label className="control-label">{label}</label>
                       <input
                         name={name}
                         type={type}
-                        value={profile[name] || ''}
+                        value={profile[name] || ""}
                         className="form-control"
                         onChange={handleChange}
                         placeholder={`Enter ${label.toLowerCase()}`}

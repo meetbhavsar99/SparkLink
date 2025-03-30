@@ -20,28 +20,28 @@ import { useNavigate } from "react-router-dom";
 import logout_icon from "../../assets/logout.png";
 import login_icon from "../../assets/login.png";
 import { useAuth } from "../../AuthContext";
-import Swal from 'sweetalert2';
-import { useSearchParams } from 'react-router-dom';
-import { useNotification } from "../../notificationContext"; 
+import Swal from "sweetalert2";
+import { useSearchParams } from "react-router-dom";
+import { useNotification } from "../../notificationContext";
 
 const MenuComponent = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [open, setOpen] = useState(false);
-  const [role, setRole] = useState('');
+  const [role, setRole] = useState("");
   const { isAuthenticated, setIsAuthenticated, user } = useAuth();
   const [notifCount, setNotifCount] = useState([]);
   const [searchParams] = useSearchParams();
-  const user_id_param = searchParams.get('user_id');
-  const { notifyCount, updateNotifyCount } = useNotification(); 
+  const user_id_param = searchParams.get("user_id");
+  const { notifyCount, updateNotifyCount } = useNotification();
   const menuRef = useRef(null);
   // Add a ref to track if we're currently in a mouse transition
   const isTransitioning = useRef(false);
   // Add a ref to track the timeout ID
   const timeoutRef = useRef(null);
-  
+
   const getNavItemClass = (path) => {
-    return location.pathname === path ? 'nav-item active' : 'nav-item';
+    return location.pathname === path ? "nav-item active" : "nav-item";
   };
 
   const logout = async () => {
@@ -50,11 +50,11 @@ const MenuComponent = () => {
       setIsAuthenticated(false);
       navigate("/");
     } catch (error) {
-      Swal.fire({ 
-        title: 'Error', 
-        text: 'Failed to logout. Please try again.', 
-        icon: 'error', 
-        confirmButtonText: 'Ok' 
+      Swal.fire({
+        title: "Error",
+        text: "Failed to logout. Please try again.",
+        icon: "error",
+        confirmButtonText: "Ok",
       });
     }
   };
@@ -66,14 +66,14 @@ const MenuComponent = () => {
   const fetchNotifCount = async () => {
     try {
       updateNotifyCount();
-      const response = await axios.get('/notify/count');
+      const response = await axios.get("/notify/count");
       setNotifCount(response.data.notifCount);
     } catch (error) {
-      Swal.fire({ 
-        title: 'Error', 
-        text: error.message || 'Failed to fetch notifications', 
-        icon: 'error', 
-        confirmButtonText: 'Ok' 
+      Swal.fire({
+        title: "Error",
+        text: error.message || "Failed to fetch notifications",
+        icon: "error",
+        confirmButtonText: "Ok",
       });
     }
   };
@@ -95,43 +95,43 @@ const MenuComponent = () => {
   // Enhanced mouse event handling with better debounce and state management
   useEffect(() => {
     const menuElement = menuRef.current;
-    
+
     if (!menuElement) return;
-    
+
     const handleMouseEnter = () => {
       // Clear any pending timeout to ensure stability
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);
         timeoutRef.current = null;
       }
-      
+
       // Set transitioning flag to prevent rapid state changes
       isTransitioning.current = true;
-      
+
       // Open the menu
       setOpen(true);
-      
+
       // Reset the transitioning flag after a small delay
       setTimeout(() => {
         isTransitioning.current = false;
       }, 100);
     };
-    
+
     const handleMouseLeave = (e) => {
       // Don't react immediately to avoid flickering
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);
       }
-      
+
       // Check if we're actually leaving the menu area
       // This improved check helps prevent false triggers
       const rect = menuElement.getBoundingClientRect();
-      const isReallyLeaving = 
-        e.clientX < rect.left - 5 || 
-        e.clientX > rect.right + 5 || 
-        e.clientY < rect.top - 5 || 
+      const isReallyLeaving =
+        e.clientX < rect.left - 5 ||
+        e.clientX > rect.right + 5 ||
+        e.clientY < rect.top - 5 ||
         e.clientY > rect.bottom + 5;
-      
+
       if (isReallyLeaving) {
         // Use a longer timeout for more stability
         timeoutRef.current = setTimeout(() => {
@@ -140,17 +140,17 @@ const MenuComponent = () => {
         }, 500); // Increased for better stability
       }
     };
-    
-    menuElement.addEventListener('mouseenter', handleMouseEnter);
-    menuElement.addEventListener('mouseleave', handleMouseLeave);
-    
+
+    menuElement.addEventListener("mouseenter", handleMouseEnter);
+    menuElement.addEventListener("mouseleave", handleMouseLeave);
+
     // Clean up all listeners and timeouts
     return () => {
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);
       }
-      menuElement.removeEventListener('mouseenter', handleMouseEnter);
-      menuElement.removeEventListener('mouseleave', handleMouseLeave);
+      menuElement.removeEventListener("mouseenter", handleMouseEnter);
+      menuElement.removeEventListener("mouseleave", handleMouseLeave);
     };
   }, []);
 
@@ -159,7 +159,9 @@ const MenuComponent = () => {
       <div className="sidemenu-container">
         <div ref={menuRef}>
           <nav
-            className={`navbar content menu-glassmorphism ${open ? "navBackground_expanded" : "navBackground"}`}
+            className={`navbar content menu-glassmorphism ${
+              open ? "navBackground_expanded" : "navBackground"
+            }`}
             style={{ position: "absolute" }}
           >
             {open ? (
@@ -250,25 +252,34 @@ const MenuComponent = () => {
                       <span className="category-label">Project</span>
                     </div>
 
-                    {user && (user.role === '2' || user.role === '3' || user.role === '1') && (
-                      <li className={getNavItemClass("/create-project")}>
-                        <span className="menu-item-wrapper">
-                          <Link className="text-menu nav-link-item" to="/create-project">
-                            <div className="icon-container">
-                              <img
-                                src={create_icon}
-                                className="nav_sub_menu_icon"
-                                alt=""
-                              />
-                            </div>
-                            <span className="menu-text">Create Project</span>
-                          </Link>
-                        </span>
-                      </li>
-                    )}
+                    {user &&
+                      (user.role === "2" ||
+                        user.role === "3" ||
+                        user.role === "1") && (
+                        <li className={getNavItemClass("/create-project")}>
+                          <span className="menu-item-wrapper">
+                            <Link
+                              className="text-menu nav-link-item"
+                              to="/create-project"
+                            >
+                              <div className="icon-container">
+                                <img
+                                  src={create_icon}
+                                  className="nav_sub_menu_icon"
+                                  alt=""
+                                />
+                              </div>
+                              <span className="menu-text">Create Project</span>
+                            </Link>
+                          </span>
+                        </li>
+                      )}
                     <li className={getNavItemClass("/view-project")}>
                       <span className="menu-item-wrapper">
-                        <Link className="text-menu nav-link-item" to="/view-project">
+                        <Link
+                          className="text-menu nav-link-item"
+                          to="/view-project"
+                        >
                           <div className="icon-container">
                             <img
                               src={view_icon}
@@ -280,60 +291,94 @@ const MenuComponent = () => {
                         </Link>
                       </span>
                     </li>
-                    {user && (user.role === '1' || user.role === '3') && (
-  <li className={getNavItemClass("/admin-view")}>
-    <span className="menu-item-wrapper">
-      <Link className="text-menu nav-link-item" to="/admin-view">
-        <div className="icon-container">
-          <img src={group_icon} className="nav_sub_menu_icon" alt="" />
-        </div>
-        <span className="menu-text">View All Groups</span>
-      </Link>
-    </span>
-  </li>
-)}
-                    {user && user.role === '4' && (
-  <>
-    <li className={getNavItemClass("/view-Recomended-project")}>
-      <span className="menu-item-wrapper">
-        <Link className="text-menu nav-link-item" to="/view-Recomended-project">
-          <div className="icon-container">
-            <img src={recommendation_icon} className="nav_sub_menu_icon" alt="" />
-          </div>
-          <span className="menu-text">Recommendations</span>
-        </Link>
-      </span>
-    </li>
+                    {user && (user.role === "1" || user.role === "3") && (
+                      <li className={getNavItemClass("/admin-view")}>
+                        <span className="menu-item-wrapper">
+                          <Link
+                            className="text-menu nav-link-item"
+                            to="/admin-view"
+                          >
+                            <div className="icon-container">
+                              <img
+                                src={group_icon}
+                                className="nav_sub_menu_icon"
+                                alt=""
+                              />
+                            </div>
+                            <span className="menu-text">View All Groups</span>
+                          </Link>
+                        </span>
+                      </li>
+                    )}
+                    {user && user.role === "4" && (
+                      <>
+                        <li
+                          className={getNavItemClass(
+                            "/view-Recomended-project"
+                          )}
+                        >
+                          <span className="menu-item-wrapper">
+                            <Link
+                              className="text-menu nav-link-item"
+                              to="/view-Recomended-project"
+                            >
+                              <div className="icon-container">
+                                <img
+                                  src={recommendation_icon}
+                                  className="nav_sub_menu_icon"
+                                  alt=""
+                                />
+                              </div>
+                              <span className="menu-text">Recommendations</span>
+                            </Link>
+                          </span>
+                        </li>
 
-    <li className={getNavItemClass("/applications")}>
-      <span className="menu-item-wrapper">
-        <Link className="text-menu nav-link-item" to="/applications">
-          <div className="icon-container">
-            <img src={application_icon} className="nav_sub_menu_icon" alt="" />
-          </div>
-          <span className="menu-text">Applications</span>
-        </Link>
-      </span>
-    </li>
+                        <li className={getNavItemClass("/applications")}>
+                          <span className="menu-item-wrapper">
+                            <Link
+                              className="text-menu nav-link-item"
+                              to="/applications"
+                            >
+                              <div className="icon-container">
+                                <img
+                                  src={application_icon}
+                                  className="nav_sub_menu_icon"
+                                  alt=""
+                                />
+                              </div>
+                              <span className="menu-text">Applications</span>
+                            </Link>
+                          </span>
+                        </li>
 
-    <li className={getNavItemClass("/group")}>
-  <span className="menu-item-wrapper">
-    <Link className="text-menu nav-link-item" to="/group">
-      <div className="icon-container">
-        <img src={require("../../assets/group_icon.png")} className="nav_sub_menu_icon" alt="" />
-      </div>
-      <span className="menu-text">Group</span>
-    </Link>
-  </span>
-</li>
-
-  </>
-)}
+                        <li className={getNavItemClass("/group")}>
+                          <span className="menu-item-wrapper">
+                            <Link
+                              className="text-menu nav-link-item"
+                              to="/group"
+                            >
+                              <div className="icon-container">
+                                <img
+                                  src={require("../../assets/group_icon.png")}
+                                  className="nav_sub_menu_icon"
+                                  alt=""
+                                />
+                              </div>
+                              <span className="menu-text">Group</span>
+                            </Link>
+                          </span>
+                        </li>
+                      </>
+                    )}
 
                     {role === "" && (
                       <li className={getNavItemClass("/progress")}>
                         <span className="menu-item-wrapper">
-                          <Link className="text-menu nav-link-item" to="/progress">
+                          <Link
+                            className="text-menu nav-link-item"
+                            to="/progress"
+                          >
                             <div className="icon-container">
                               <img
                                 src={milestone_icon}
@@ -349,14 +394,19 @@ const MenuComponent = () => {
                     {role === "" && (
                       <li className={getNavItemClass("/projApplications")}>
                         <span className="menu-item-wrapper">
-                          <Link className="text-menu nav-link-item" to="/projApplications">
+                          <Link
+                            className="text-menu nav-link-item"
+                            to="/projApplications"
+                          >
                             <div className="icon-container notification-icon-container">
                               <img
                                 src={notification_icon}
                                 className="nav_sub_menu_icon"
                                 alt=""
                               />
-                              <span className="notifcation-badge-expand">{notifyCount > 9 ? '9+' : notifyCount}</span>
+                              <span className="notifcation-badge-expand">
+                                {notifyCount > 9 ? "9+" : notifyCount}
+                              </span>
                             </div>
                             <span className="menu-text">Notifications</span>
                           </Link>
@@ -415,7 +465,10 @@ const MenuComponent = () => {
                 <ul className="nav navbar-nav mt-4">
                   {isAuthenticated && (
                     <li className="nav-item collapsed-item">
-                      <Link to={`/profile?user_id=${user.user_id}`} className="collapsed-link">
+                      <Link
+                        to={`/profile?user_id=${user.user_id}`}
+                        className="collapsed-link"
+                      >
                         <span className="icon-only-container">
                           <img
                             src={profile_icon}
@@ -451,22 +504,12 @@ const MenuComponent = () => {
                 </ul>
                 {isAuthenticated && (
                   <ul className="nav navbar-nav">
-                  {user && (user.role === '1' || user.role === '3') && (
-  <li className="nav-item collapsed-item">
-    <Link to="/admin-view" className="collapsed-link">
-      <span className="icon-only-container">
-        <img src={group_icon} className="nav_sub_menu_icon" alt="" />
-      </span>
-    </Link>
-  </li>
-)}
-
-                    {user && (user.role === '2' || user.role === '3' || user.role === '1') && (
+                    {user && (user.role === "1" || user.role === "3") && (
                       <li className="nav-item collapsed-item">
-                        <Link to="/create-project" className="collapsed-link">
+                        <Link to="/admin-view" className="collapsed-link">
                           <span className="icon-only-container">
                             <img
-                              src={create_icon}
+                              src={group_icon}
                               className="nav_sub_menu_icon"
                               alt=""
                             />
@@ -474,6 +517,23 @@ const MenuComponent = () => {
                         </Link>
                       </li>
                     )}
+
+                    {user &&
+                      (user.role === "2" ||
+                        user.role === "3" ||
+                        user.role === "1") && (
+                        <li className="nav-item collapsed-item">
+                          <Link to="/create-project" className="collapsed-link">
+                            <span className="icon-only-container">
+                              <img
+                                src={create_icon}
+                                className="nav_sub_menu_icon"
+                                alt=""
+                              />
+                            </span>
+                          </Link>
+                        </li>
+                      )}
                     <li className="nav-item collapsed-item">
                       <Link to="/view-project" className="collapsed-link">
                         <span className="icon-only-container">
@@ -506,7 +566,9 @@ const MenuComponent = () => {
                             className="nav_sub_menu_icon"
                             alt=""
                           />
-                          <span className="notification-badge">{notifyCount > 9 ? '9+' : notifyCount}</span>
+                          <span className="notification-badge">
+                            {notifyCount > 9 ? "9+" : notifyCount}
+                          </span>
                         </span>
                       </Link>
                     </li>
@@ -515,10 +577,7 @@ const MenuComponent = () => {
                 <ul className="nav navbar-nav collapsed-menu-footer">
                   {isAuthenticated ? (
                     <li className="nav-item collapsed-item">
-                      <button
-                        className="collapsed-link"
-                        onClick={logout}
-                      >
+                      <button className="collapsed-link" onClick={logout}>
                         <span className="icon-only-container logout-item-collapsed">
                           <img
                             src={logout_icon}
@@ -530,10 +589,7 @@ const MenuComponent = () => {
                     </li>
                   ) : (
                     <li className="nav-item collapsed-item">
-                      <button
-                        className="collapsed-link"
-                        onClick={handleLogin}
-                      >
+                      <button className="collapsed-link" onClick={handleLogin}>
                         <span className="icon-only-container login-item-collapsed">
                           <img
                             src={login_icon}

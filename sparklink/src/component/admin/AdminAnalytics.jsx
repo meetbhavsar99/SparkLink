@@ -34,7 +34,7 @@ const AdminAnalytics = () => {
         <MasterComponent />
         <div className="analytics-container">
           <h1 className="text-primary">Admin Analytics & Reports</h1>
-          
+
           <div className="stats-container">
             <div className="stat-card">
               <h3>Total Users</h3>

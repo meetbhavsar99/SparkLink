@@ -1,9 +1,13 @@
-const express = require('express');
-const router = express.Router();
-const profileController = require('../controllers/profileController');
+/**
+ * Profile Routes
+ * Handles fetching and creation of user profiles based on role.
+ */
 
-router.get('/', profileController.getProfile);
-router.post('/create-profile', profileController.createProfile);
+const express = require("express");
+const router = express.Router();
+const profileController = require("../controllers/profileController");
+
+router.get("/", profileController.getProfile);
+router.post("/create-profile", profileController.createProfile);
 
 module.exports = router;
-
