@@ -250,7 +250,7 @@ exports.createProject = async (req, res) => {
 
 exports.getAllProjects = async (req, res) => {
   try {
-    console.log("🔵 Fetching all projects...");
+    console.log("Fetching all projects...");
 
     // Ensure user is authenticated before accessing
     if (!req.user || !req.user.user_id) {
@@ -612,7 +612,7 @@ exports.getStudentApplications = async (req, res) => {
       return res.status(400).json({ message: "User ID is required" });
     }
 
-    console.log(`🔵 Fetching applications for user: ${user_id}`);
+    console.log(`Fetching applications for user: ${user_id}`);
 
     const applications = await ProjApplication.findAll({
       where: { user_id },

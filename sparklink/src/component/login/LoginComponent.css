@@ -84,16 +84,16 @@
 }
 
 .input-group .input-group-text {
-  width: 45px; /* Adjust width if needed */
+  width: 45px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #e9ecef; /* Background color for icon area */
+  background-color: #e9ecef;
   border: 1px solid #ced4da;
   border-right: none; /* Remove double border between icon and input */
   border-radius: 0; /* Remove rounded corners */
   height: 100%; /* Ensures the icon container matches the input height */
-  font-size: 1.2rem; /* Adjust font size of the icon if needed */
+  font-size: 1.2rem;
 }
 
 .input-group .form-control {
@@ -133,7 +133,7 @@
 }
 
 .form-title {
-  font-size: 50px; /* Adjust font size as needed */
+  font-size: 50px;
   /* font-weight: bold; */
   align-items: center;
   justify-content: center;

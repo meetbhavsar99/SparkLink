@@ -23,16 +23,16 @@ const ApplicationComponent = () => {
   const fetchApplications = async () => {
     setLoading(true);
     try {
-      console.log("🔵 Fetching applications for student:", user.user_id);
+      console.log("Fetching applications for student:", user.user_id);
 
       const response = await axios.get(`/project/getStudentApplications`, {
         params: { user_id: user.user_id },
       });
 
-      console.log("✅ Applications:", response.data);
+      console.log("Applications:", response.data);
       setApplications(response.data);
     } catch (error) {
-      console.error("❌ Error fetching applications:", error);
+      console.error("Error fetching applications:", error);
       Swal.fire({
         title: "Error",
         text: error.response?.data?.message || "Failed to load applications",

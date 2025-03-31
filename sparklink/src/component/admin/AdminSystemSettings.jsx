@@ -47,9 +47,9 @@ const AdminSystemSettings = () => {
 
     try {
       await axios.put("/api/admin/settings", settings);
-      setSuccessMessage("✅ Settings updated successfully!");
+      setSuccessMessage("Settings updated successfully!");
     } catch (err) {
-      setError("❌ Failed to save settings. Try again.");
+      setError("Failed to save settings. Try again.");
     } finally {
       setSaving(false);
     }

@@ -48,7 +48,7 @@ const ContactComponent = () => {
       }
     } catch (error) {
       console.error("Error submitting form:", error);
-      setSubmissionStatus("❌ Something went wrong. Please try again.");
+      setSubmissionStatus("Something went wrong. Please try again.");
     }
   };
 

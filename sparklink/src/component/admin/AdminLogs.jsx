@@ -15,9 +15,9 @@ const AdminLogs = () => {
   const fetchLogs = async () => {
     setLoading(true);
     try {
-      let endpoint = "/api/admin/admin-logs"; // Updated endpoint
+      let endpoint = "/api/admin/admin-logs";
       if (logType !== "all") {
-        endpoint = `/api/admin/admin-logs/${logType}`; // Updated to match backend
+        endpoint = `/api/admin/admin-logs/${logType}`;
       }
       const response = await axios.get(endpoint);
       setLogs(response.data);

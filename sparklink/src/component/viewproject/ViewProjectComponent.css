@@ -50,22 +50,6 @@
     /* Adds some space from the left edge */
 }
 
-/* .pagination-button {
-   background-color: #005596;
-  color: #fff;
-  border: solid 1px;
-  padding: 10px 20px;
-  font-size: 16px;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;;
-}
-
-.pagination-button:hover {
-    background-color: #004080;
-}
-    */
-
 .pagination-button:disabled {
     background-color: #ccc;
     cursor: not-allowed;
@@ -77,8 +61,6 @@
     margin: 0 10px;
 }
 
-
-/* Tabs */
 /* Tabs */
 .tabs-wrapper {
     margin-bottom: 20px;
@@ -140,7 +122,6 @@
     }
 }
 
-/* Centering the Main Progress Container */
 /* Centering the Progress Container */
 .progress-container {
     display: flex;
@@ -393,29 +374,6 @@
     }
 }
 
-/* Progress Container */
-/* .progress_container {
-    padding-left: 65px !important;
-}
-
-@media (max-width: 768px) {
-    .progress_container {
-        padding-left: 45px !important;
-    }
-}
-
-@media (min-width: 769px) {
-    .progress-card {
-        margin-left: 45px;
-    }
-} */
-
-/* .footer-fixed {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-} */
-
 /* Project Details */
 .proj-details-header {
     font-family: "Poppins", system-ui;
@@ -461,9 +419,6 @@
     margin-left: 5px;
     vertical-align: middle;
 }
-
-
-
 
 /* Loading Overlay */
 .loading-overlay {

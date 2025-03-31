@@ -71,18 +71,6 @@ const ViewProjectComponent = () => {
   const [accessVal, setAccessVal] = useState("");
   const today = new Date().toISOString().split("T")[0];
 
-  // useEffect(() => {
-  //     const handleResize = () => {
-  //         setIsMobileView(window.innerWidth < 768);
-  //     };
-
-  //     handleResize();
-
-  //     window.addEventListener('resize', handleResize);
-
-  //     return () => window.removeEventListener('resize', handleResize);
-  // }, []);
-
   const fetchProjects = async () => {
     setLoading(true);
     try {
@@ -173,23 +161,6 @@ const ViewProjectComponent = () => {
     }
   };
 
-  // useEffect(() => {
-  //     if (projDetailsList && triggerModalFlag) {
-  //         let splitDesc = projDetailsList.proj_desc.split(";");
-  //         let filterDesc = [];
-  //         for (let i = 0; i < splitDesc.length; i++) {
-  //             filterDesc[i] = splitDesc[i].trim().split(":");
-  //         }
-  //         setProjDescList(filterDesc);
-  //     }
-  // }, [projDetailsList, triggerModalFlag]);
-
-  // useEffect(() => {
-  //     if (projDescList.length > 0) {
-  //         fetchUserRoles();
-  //     }
-  // }, [projDescList]);
-
   useEffect(() => {
     if (triggerModalFlag && projDetailsList && projDetailsList.proj_id) {
       fetchUserRoles();
@@ -271,35 +242,6 @@ const ViewProjectComponent = () => {
       fetchProjects();
     }
   };
-
-  // const handleUpdateProjDescChange = (event) => {
-  //     const { name, value } = event.target;
-
-  //     const updatedTempProjDescList = tempProjDescList.map((p) => {
-  //         if (p[0] === name) {
-  //             return [p[0], value];
-  //         }
-  //         return p;
-  //     });
-
-  //     setTempProjDescList(updatedTempProjDescList);
-  // };
-
-  // const handleProjDescBlur = () => {
-  //     const trimmedProjDescList = tempProjDescList.map(p => [p[0].trim(), p[1].trim()]);
-  //     setProjDescList(trimmedProjDescList);
-
-  //     setProjDetailsList(prevDetails => {
-  //         const updatedProjDescString = trimmedProjDescList
-  //             .map(p => `${p[0]}: ${p[1]}`)
-  //             .join('; ');
-  //         return { ...prevDetails, proj_desc: updatedProjDescString };
-  //     });
-  // };
-
-  // useEffect(() => {
-  //     setTempProjDescList(projDescList);
-  // }, [projDescList]);
 
   const handleUpdateProjDetailsChange = (event) => {
     const { name, value } = event.target;

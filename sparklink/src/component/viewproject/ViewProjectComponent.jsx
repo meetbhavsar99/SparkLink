@@ -83,59 +83,6 @@ const ViewProjectComponent = () => {
     indexOfLastProject
   );
 
-  // useEffect(() => {
-  //     const handleResize = () => {
-  //         setIsMobileView(window.innerWidth < 768);
-  //     };
-
-  //     handleResize();
-
-  //     window.addEventListener('resize', handleResize);
-
-  //     return () => window.removeEventListener('resize', handleResize);
-  // }, []);
-
-  // const fetchProjects = async () => {
-  //     setLoading(true);
-  //     try {
-  //         const response = await axios.get('/project/getAllProjects');
-  //         console.log(`API response: ${response.data}`);
-  //         setProjectList(response.data.projects);
-  //         setOriginalProjectList(response.data.projects);
-  //         if (isAuthenticated) {
-  //             setUserData(response.data.user);
-  //         }
-  //     } catch (err) {
-  //         Swal.fire({ title: 'Error', text: err.message, icon: 'error', confirmButtonText: 'Ok' });
-  //         //setError(err.message);
-  //     } finally {
-  //         setLoading(false);
-  //     }
-  // };
-
-  //     const fetchProjects = async () => {
-  //     setLoading(true);
-  //     try {
-  //         const token = localStorage.getItem("authToken"); // ✅ Get the token from localStorage
-  //         const response = await axios.get('/project/getAllProjects', {
-  //             headers: { Authorization: `Bearer ${token}` } // ✅ Send Auth Header
-  //         });
-
-  //         console.log(`🟢 API response: ${response.data}`);
-  //         setProjectList(response.data.projects);
-  //         setOriginalProjectList(response.data.projects);
-
-  //         if (isAuthenticated) {
-  //             setUserData(response.data.user);
-  //         }
-  //     } catch (err) {
-  //         console.error("❌ Error fetching projects:", err);
-  //         Swal.fire({ title: 'Error', text: err.response?.data?.message || err.message, icon: 'error', confirmButtonText: 'Ok' });
-  //     } finally {
-  //         setLoading(false);
-  //     }
-  // };
-
   const fetchGroupInfo = async () => {
     try {
       const response = await axios.get("/api/group/my", {
@@ -156,7 +103,7 @@ const ViewProjectComponent = () => {
   const fetchProjects = async () => {
     setLoading(true);
     try {
-      console.log("🔵 Fetching all projects...");
+      console.log("Fetching all projects...");
 
       const response = await axios.get("/project/getAllProjects", {
         headers: {
@@ -171,7 +118,7 @@ const ViewProjectComponent = () => {
         setUserData(response.data.user);
       }
     } catch (err) {
-      console.error("❌ Error fetching projects:", err);
+      console.error("Error fetching projects:", err);
       Swal.fire({
         title: "Error",
         text: err.message,
@@ -214,7 +161,7 @@ const ViewProjectComponent = () => {
 
     if (inputValue.trim() === "") {
       setProjectList(originalProjectList);
-      setSearchError(null); // ✅ Clear error
+      setSearchError(null); // Clear error
     } else {
       const filteredProjects = originalProjectList.filter((project) =>
         project.project_name.toLowerCase().startsWith(inputValue.toLowerCase())
@@ -225,22 +172,10 @@ const ViewProjectComponent = () => {
       if (filteredProjects.length === 0) {
         setSearchError("No relevant match found.");
       } else {
-        setSearchError(null); // ✅ Clear error if match is found
+        setSearchError(null); // Clear error if match is found
       }
     }
   };
-  // const handleInputChange = (inputValue) => {
-  //     setSearchQuery(inputValue);
-
-  //     if (inputValue.trim() === '') {
-  //         setProjectList(originalProjectList);
-  //     } else {
-  //         const filteredProjects = originalProjectList.filter((project) =>
-  //             project.project_name.toLowerCase().startsWith(inputValue.toLowerCase())
-  //         );
-  //         setProjectList(filteredProjects);
-  //     }
-  // };
 
   const handleSelectChange = (selectedOption) => {
     setSelectedOption(selectedOption);
@@ -376,35 +311,6 @@ const ViewProjectComponent = () => {
     }
   };
 
-  // const handleUpdateProjDescChange = (event) => {
-  //     const { name, value } = event.target;
-
-  //     const updatedTempProjDescList = tempProjDescList.map((p) => {
-  //         if (p[0] === name) {
-  //             return [p[0], value];
-  //         }
-  //         return p;
-  //     });
-
-  //     setTempProjDescList(updatedTempProjDescList);
-  // };
-
-  // const handleProjDescBlur = () => {
-  //     const trimmedProjDescList = tempProjDescList.map(p => [p[0].trim(), p[1].trim()]);
-  //     setProjDescList(trimmedProjDescList);
-
-  //     setProjDetailsList(prevDetails => {
-  //         const updatedProjDescString = trimmedProjDescList
-  //             .map(p => `${p[0]}: ${p[1]}`)
-  //             .join('; ');
-  //         return { ...prevDetails, proj_desc: updatedProjDescString };
-  //     });
-  // };
-
-  // useEffect(() => {
-  //     setTempProjDescList(projDescList);
-  // }, [projDescList]);
-
   const handleUpdateProjDetailsChange = (event) => {
     const { name, value } = event.target;
 
@@ -426,16 +332,13 @@ const ViewProjectComponent = () => {
       if (result.isConfirmed) {
         setLoading(true);
         try {
-          console.log(
-            "🔴 Sending delete request for project:",
-            projDetailsList
-          );
+          console.log("Sending delete request for project:", projDetailsList);
 
           const response = await axios.post("/project/deleteProject", {
             projData: projDetailsList,
           });
 
-          console.log("🟢 API Response:", response.data); // ✅ Log the response
+          console.log("API Response:", response.data); // Log the response
 
           if (response.status === 200) {
             //fetchProjects();
@@ -703,35 +606,6 @@ const ViewProjectComponent = () => {
     });
   };
 
-  // const submitApplication = async () => {
-  //     setLoading(true);
-  //     try {
-  //         console.log("🟢 Applying for project:", projDetailsList.proj_id, "User:", user?.user_id);
-  //         const response = await axios.post('/project/applyProject', {
-  //             proj_id: projDetailsList.proj_id
-  //             // user_id: user?.user_id
-  //         });
-  //         console.log("✅ Apply API Response:", response.data);
-
-  //         if (response.status === 200 && response.data.success) {
-  //             //fetchProjects();
-  //             closeModal();
-  //             Swal.fire({ title: 'Application Successful', text: response.data.message, icon: 'success', confirmButtonText: 'Ok' });
-  //             updateNotifyCount();
-  //         } else if (response.status === 200 && !response.data.success) {
-  //             //fetchProjects();
-  //             closeModal();
-  //             Swal.fire({ title: 'Application Unsuccessful', text: response.data.message, icon: 'error', confirmButtonText: 'Ok' });
-  //         }
-  //     } catch (error) {
-  //         Swal.fire({ title: 'Error', text: error.message, icon: 'error', confirmButtonText: 'Ok' });
-  //         //setError(error.message);
-  //     } finally {
-  //         fetchProjects();
-  //         //setLoading(false);
-  //     }
-  // }
-
   const fetchApplicationCount = async () => {
     try {
       const response = await axios.get("/project/appliedProjectCount", {
@@ -770,10 +644,10 @@ const ViewProjectComponent = () => {
 
       const response = await axios.post("/project/applyProject", {
         proj_id: projDetailsList.proj_id,
-        user_id: user?.user_id, // ✅ Ensure user_id is sent
+        user_id: user?.user_id, // Ensure user_id is sent
       });
 
-      console.log("✅ Apply API Response:", response.data);
+      console.log("Apply API Response:", response.data);
 
       if (response.status === 200 && response.data.success) {
         closeModal();
@@ -784,8 +658,8 @@ const ViewProjectComponent = () => {
           confirmButtonText: "Ok",
         });
 
-        console.log("🟢 Re-fetching applied project count...");
-        await fetchApplicationCount(); // ✅ Re-fetch updated count
+        console.log("Re-fetching applied project count...");
+        await fetchApplicationCount(); // Re-fetch updated count
         console.log("📦 Applied Projects Count:", response.data.count);
         updateNotifyCount(); // Already exists
       } else if (response.status === 200 && !response.data.success) {
@@ -798,7 +672,7 @@ const ViewProjectComponent = () => {
         });
       }
     } catch (error) {
-      console.error("❌ Error applying for project:", error); // ✅ Log error details
+      console.error("Error applying for project:", error); // Log error details
       Swal.fire({
         title: "Error",
         text: error.response?.data?.message || error.message,
@@ -1330,7 +1204,7 @@ const ViewProjectComponent = () => {
                               {projDetailsList.category || "N/A"}
                             </td>
                           )}{" "}
-                          {/* ✅ Handle undefined */}
+                          {/* Handle undefined */}
                           {editFlag && (
                             <td className="proj-details-data">
                               <input
@@ -1581,7 +1455,7 @@ const ViewProjectComponent = () => {
                       </button>
                     )}
                     {user?.role === "4" &&
-                      isTeamLeader && // ✅ Must be team leader
+                      isTeamLeader && // Must be team leader
                       !projDetailsList?.stakeholder?.some(
                         (st) =>
                           st.role === "student" && st.user_id === user?.user_id

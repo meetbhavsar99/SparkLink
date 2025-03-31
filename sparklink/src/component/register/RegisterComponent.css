@@ -24,7 +24,6 @@
 
 .mb-5 {
   margin-bottom: 50px;
-  /* Adjust this value as needed */
 }
 
 .login-link {
@@ -38,7 +37,7 @@
 }
 
 .form-title {
-  font-size: 50px; /* Adjust font size as needed */
+  font-size: 50px;
   /* font-weight: bold; */
   padding: 0 0 20px 0; /* Remove any default margin */
   text-align: left;

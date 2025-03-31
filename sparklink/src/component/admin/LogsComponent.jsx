@@ -62,7 +62,7 @@ const LogsComponent = () => {
       link.click();
       link.remove();
     } catch (error) {
-      console.error("❌ Error downloading logs:", error);
+      console.error("Error downloading logs:", error);
     }
   };
 
@@ -77,7 +77,7 @@ const LogsComponent = () => {
               <h1 className="logs-title">System Logs & Activity Tracking</h1>
             </div>
 
-            {/* 🔎 Filter Section */}
+            {/* Filter Section */}
             <div className="logs-filters">
               <input
                 type="text"

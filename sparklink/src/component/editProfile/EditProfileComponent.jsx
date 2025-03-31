@@ -109,7 +109,7 @@ const EditProfileComponent = () => {
       fetchProfile();
 
       // Show success toast
-      toast.success("🎉 Profile updated successfully!", {
+      toast.success("Profile updated successfully!", {
         position: "top-right",
         autoClose: 2000,
         hideProgressBar: false,

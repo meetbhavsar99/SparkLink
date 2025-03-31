@@ -8,6 +8,6 @@ const client = new Client({
 
 client
   .connect()
-  .then(() => console.log("✅ Connected to PostgreSQL successfully!"))
-  .catch((err) => console.error("❌ Database connection failed:", err))
+  .then(() => console.log("Connected to PostgreSQL successfully!"))
+  .catch((err) => console.error("Database connection failed:", err))
   .finally(() => client.end());

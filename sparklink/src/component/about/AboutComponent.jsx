@@ -21,7 +21,6 @@ import Joshua from "./images/Joshua.jpeg";
 import Micheal from "./images/Micheal.jpeg";
 import Kausar from "./images/Kausar.jpg";
 
-// Your New Team Members (Replace with real images if needed)
 import Meet from "./images/Meet.jpg";
 import Heet from "./images/Heet.jpg";
 import Chaitanya from "./images/Chaitanya.jpg";
@@ -32,7 +31,6 @@ const AboutComponent = () => {
   const [showPreviousTeam, setShowPreviousTeam] = useState(false);
   const [showProfessor, setShowProfessor] = useState(false);
 
-  // Your New Team Members
   const currentTeam = [
     {
       id: 1,
@@ -178,7 +176,7 @@ const AboutComponent = () => {
           <section className="mt-4">
             <h2
               className="expandable-title"
-              onClick={() => setShowProfessor(!showProfessor)} // Correct state toggle
+              onClick={() => setShowProfessor(!showProfessor)}
             >
               Professor {showProfessor ? "▼" : "▶"}
             </h2>

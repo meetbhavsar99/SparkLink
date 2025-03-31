@@ -120,7 +120,6 @@ const HomeComponent = () => {
               </div>
             </div>
 
-            {/* Rest of the component remains the same */}
             <div className="features-section">
               <div className="section-header">
                 <h2>Explore What SparkLink Offers</h2>

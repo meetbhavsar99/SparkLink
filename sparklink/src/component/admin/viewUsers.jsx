@@ -56,7 +56,7 @@ const ViewUserComponent = () => {
       const response = await axios.get("/api/users/allusers");
       const mappedUsers = response.data.map((user) => ({
         ...user,
-        roleName: roleMapping[user.role], // Add a readable roleName
+        roleName: roleMapping[user.role],
         is_active: user.is_active === "Y", // Convert to boolean
       }));
 
@@ -95,7 +95,7 @@ const ViewUserComponent = () => {
           confirmButtonText: "Ok",
         });
 
-        // ✅ Remove user from state
+        // Remove user from state
         setAllUsers((prevUsers) =>
           prevUsers.filter((u) => u.user_id !== user.user_id)
         );
@@ -191,7 +191,7 @@ const ViewUserComponent = () => {
       if (response.status === 200) {
         Swal.fire("Deleted!", "Selected users have been deleted.", "success");
 
-        // ✅ Remove deleted users from state
+        // Remove deleted users from state
         setAllUsers((prevUsers) =>
           prevUsers.filter((u) => !selectedUsers.includes(u.user_id))
         );
@@ -199,7 +199,7 @@ const ViewUserComponent = () => {
           prevUsers.filter((u) => !selectedUsers.includes(u.user_id))
         );
 
-        setSelectedUsers([]); // ✅ Clear selection after deletion
+        setSelectedUsers([]); // Clear selection after deletion
       }
     } catch (error) {
       console.error("Bulk delete error:", error);

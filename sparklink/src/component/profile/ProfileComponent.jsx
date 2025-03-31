@@ -53,7 +53,6 @@ const ProfileComponent = () => {
   const [selectedProjectDetails, setSelectedProjectDetails] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // If there's a ?user_id= param in the URL, we might be viewing someone else's profile
   const [searchParams] = useSearchParams();
   const user_id_param = searchParams.get("user_id");
 
@@ -107,7 +106,6 @@ const ProfileComponent = () => {
 
   useEffect(() => {
     if (isAuthenticated && user) {
-      // If ?user_id= is present, fetch that user’s profile, otherwise fetch our own
       fetchProfile(user_id_param || user.user_id);
     }
   }, [user, user_id_param, isAuthenticated]);

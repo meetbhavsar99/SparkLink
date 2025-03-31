@@ -190,7 +190,7 @@ input[type="file"]:hover {
   white-space: nowrap;
 }
 
-/* Updated Hover Effect (Preventing Layout Shifts) */
+/* Hover Effect (Preventing Layout Shifts) */
 .newButtonEdit:hover {
   background-color: #585858;
   color: #FFCE00;
@@ -206,11 +206,9 @@ input[type="file"]:hover {
   gap: 20px;
   /* Adds space around multiple buttons */
   padding: 20px;
-  /* Adjust as needed */
 }
 
 /* Generic Profile Container - Centers the Profile Form */
-/* Updated Profile Container */
 .profile-container {
   display: flex;
   justify-content: center;

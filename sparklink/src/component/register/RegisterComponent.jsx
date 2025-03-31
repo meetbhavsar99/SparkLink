@@ -5,7 +5,7 @@ import { useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import "./RegisterComponent.css";
 import sparklink_icon from "../../assets/SparkLink_icon.png";
-import backgroundImage from "../../assets/background3.jpg"; // Add your background image here
+import backgroundImage from "../../assets/background3.jpg";
 import signupImage from "../../assets/signup_icon.png";
 import sparklink_logo from "../../assets/SparkLink_Logo_3.png";
 import "@fortawesome/fontawesome-free/css/all.min.css";
@@ -35,7 +35,6 @@ const RegistrationForm = () => {
     if (querySecret) {
       setSecret(querySecret);
 
-      // Optional: Remove query from URL
       window.history.replaceState({}, document.title, location.pathname);
     }
   }, [location]);
@@ -353,7 +352,7 @@ const RegistrationForm = () => {
 
             <div className="signup-image col-md-9 col-lg-6 col-xl-5">
               <img
-                src={signupImage} // Use the path of your image
+                src={signupImage}
                 className="img-fluid signup-icon"
                 alt="Sign up image"
               ></img>
