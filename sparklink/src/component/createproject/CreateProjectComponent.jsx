@@ -411,7 +411,7 @@ const CreateProjectComponent = () => {
                               className="form-check-label"
                               htmlFor="featuresNA"
                             >
-                              {featuresNA ? "Enabled" : "Disabled"}
+                              {featuresNA ? "Enable" : "Disable"}
                             </label>
                           </div>
                         </div>
@@ -488,7 +488,7 @@ const CreateProjectComponent = () => {
                               className="form-check-label"
                               htmlFor="numStudentsNA"
                             >
-                              {numStudentsNA ? "Enabled" : "Disabled"}
+                              {numStudentsNA ? "Enable" : "Disable"}
                             </label>
                           </div>
                         </div>
@@ -529,7 +529,7 @@ const CreateProjectComponent = () => {
                               className="form-check-label"
                               htmlFor="skillsNA"
                             >
-                              {skillsNA ? "Enabled" : "Disabled"}
+                              {skillsNA ? "Enable" : "Disable"}
                             </label>
                           </div>
                         </div>
