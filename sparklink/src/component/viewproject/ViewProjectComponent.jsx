@@ -1326,16 +1326,18 @@ const ViewProjectComponent = () => {
                           )}
                         </tr>
                         {/* Display only if number of students is available */}
-                        {projDetailsList.num_students && (
-                          <tr>
-                            <td className="proj-details-sub-header">
-                              Number of Students
-                            </td>
-                            <td className="proj-details-data">
-                              {projDetailsList.num_students}
-                            </td>
-                          </tr>
-                        )}
+                        {projDetailsList.num_students !== null &&
+                          projDetailsList.num_students !== undefined &&
+                          projDetailsList.num_students !== 0 && (
+                            <tr>
+                              <td className="proj-details-sub-header">
+                                Number of Students
+                              </td>
+                              <td className="proj-details-data">
+                                {projDetailsList.num_students}
+                              </td>
+                            </tr>
+                          )}
 
                         {/* Display files if available */}
                         {projDetailsList.files &&
