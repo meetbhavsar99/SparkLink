@@ -74,6 +74,7 @@ const ViewProjectComponent = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [isTeamLeader, setIsTeamLeader] = useState(false);
   const projectsPerPage = 6; // Change for more/less projects per page
+  const [appliedCount, setAppliedCount] = useState(0);
 
   const indexOfLastProject = currentPage * projectsPerPage;
   const indexOfFirstProject = indexOfLastProject - projectsPerPage;
@@ -293,7 +294,8 @@ const ViewProjectComponent = () => {
     if (triggerModalFlag && projDetailsList && projDetailsList.proj_id) {
       fetchUserRoles();
       if (user?.role === "4") {
-        fetchGroupInfo(); // 👈 Only for students
+        fetchGroupInfo(); // Only for students
+        fetchApplicationCount();
       }
     }
   }, [triggerModalFlag]);
@@ -729,11 +731,38 @@ const ViewProjectComponent = () => {
   //         //setLoading(false);
   //     }
   // }
+
+  const fetchApplicationCount = async () => {
+    try {
+      const response = await axios.get("/project/appliedProjectCount", {
+        params: { user_id: user?.user_id },
+      });
+      console.log("📦 Applied Projects Count (real):", response.data.count);
+      if (response.status === 200) {
+        setAppliedCount(response.data.count);
+      }
+    } catch (error) {
+      console.error("Error fetching application count:", error);
+    }
+  };
+
   const submitApplication = async () => {
+    console.log("📦 Current Applied Count:", appliedCount);
+
+    if (appliedCount >= 7) {
+      Swal.fire({
+        title: "Limit Reached",
+        text: "You have already applied for the maximum of 7 projects.",
+        icon: "warning",
+        confirmButtonText: "Ok",
+      });
+      return;
+    }
+
     setLoading(true);
     try {
       console.log(
-        "🟢 Applying for project:",
+        "Applying for project:",
         projDetailsList.proj_id,
         "User:",
         user?.user_id
@@ -754,7 +783,11 @@ const ViewProjectComponent = () => {
           icon: "success",
           confirmButtonText: "Ok",
         });
-        updateNotifyCount();
+
+        console.log("🟢 Re-fetching applied project count...");
+        await fetchApplicationCount(); // ✅ Re-fetch updated count
+        console.log("📦 Applied Projects Count:", response.data.count);
+        updateNotifyCount(); // Already exists
       } else if (response.status === 200 && !response.data.success) {
         closeModal();
         Swal.fire({

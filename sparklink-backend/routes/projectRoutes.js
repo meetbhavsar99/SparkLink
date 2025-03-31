@@ -71,4 +71,6 @@ router.post("/reportProject", reportProject);
 
 router.get("/getStudentApplications", projectController.getStudentApplications);
 
+router.get("/appliedProjectCount", projectController.getAppliedProjectsCount);
+
 module.exports = router;

@@ -776,7 +776,7 @@ exports.DelayProject = async (req, res) => {
 
 exports.applyProject = async (req, res) => {
   try {
-    console.log("🔵 Processing project application...");
+    console.log("Processing project application...");
     console.log("Received request body:", req.body);
 
     const { proj_id, user_id } = req.body;
@@ -802,6 +802,22 @@ exports.applyProject = async (req, res) => {
       return res
         .status(403)
         .json({ message: "Only students can apply for projects" });
+    }
+
+    // 🔐 Prevent applying if 7 or more applications already exist
+    const totalApplications = await ProjApplication.count({
+      where: { user_id, is_active: "Y" },
+    });
+
+    console.log(
+      `Total active applications for user ${user_id}: ${totalApplications}`
+    );
+
+    if (totalApplications >= 7) {
+      return res.status(400).json({
+        success: false,
+        message: "You have already applied to 7 projects.",
+      });
     }
 
     const studentApplList = {
@@ -840,6 +856,31 @@ exports.applyProject = async (req, res) => {
     );
     return res.status(500).json({
       message: "Error creating project application",
+      error: error.message,
+    });
+  }
+};
+
+exports.getAppliedProjectsCount = async (req, res) => {
+  try {
+    const user_id = req.query.user_id || req.body.user_id || req.user?.user_id;
+
+    if (!user_id) {
+      return res.status(400).json({ message: "User ID is required" });
+    }
+
+    const count = await ProjApplication.count({
+      where: {
+        user_id,
+        is_active: "Y",
+      },
+    });
+
+    return res.status(200).json({ count });
+  } catch (error) {
+    console.error("Error fetching application count:", error);
+    return res.status(500).json({
+      message: "Error fetching applied project count",
       error: error.message,
     });
   }
