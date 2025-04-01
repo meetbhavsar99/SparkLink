@@ -7,7 +7,6 @@ import view_icon from "../../assets/view_project.png";
 import about_icon from "../../assets/about_us.png";
 import home_icon from "../../assets/home_icon.png";
 import group_icon from "../../assets/group_icon.png";
-
 import contact_icon from "../../assets/contact_us.png";
 import milestone_icon from "../../assets/Milestone_Tracker.png";
 import profile_icon from "../../assets/profile.png";
@@ -35,9 +34,7 @@ const MenuComponent = () => {
   const user_id_param = searchParams.get("user_id");
   const { notifyCount, updateNotifyCount } = useNotification();
   const menuRef = useRef(null);
-  // Add a ref to track if we're currently in a mouse transition
   const isTransitioning = useRef(false);
-  // Add a ref to track the timeout ID
   const timeoutRef = useRef(null);
 
   const getNavItemClass = (path) => {
@@ -46,7 +43,7 @@ const MenuComponent = () => {
 
   const logout = async () => {
     try {
-      const response = await axios.post("/api/users/logout");
+      await axios.post("/api/users/logout");
       setIsAuthenticated(false);
       navigate("/");
     } catch (error) {
@@ -84,67 +81,48 @@ const MenuComponent = () => {
     }
   }, [isAuthenticated]);
 
-  // Improved menu toggle with stability control
   const handleMenuToggle = (isOpen) => {
-    // Only update state if we're not in a rapid toggle scenario
     if (!isTransitioning.current) {
       setOpen(isOpen);
     }
   };
 
-  // Enhanced mouse event handling with better debounce and state management
   useEffect(() => {
     const menuElement = menuRef.current;
-
     if (!menuElement) return;
 
     const handleMouseEnter = () => {
-      // Clear any pending timeout to ensure stability
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);
         timeoutRef.current = null;
       }
-
-      // Set transitioning flag to prevent rapid state changes
       isTransitioning.current = true;
-
-      // Open the menu
       setOpen(true);
-
-      // Reset the transitioning flag after a small delay
       setTimeout(() => {
         isTransitioning.current = false;
       }, 100);
     };
 
     const handleMouseLeave = (e) => {
-      // Don't react immediately to avoid flickering
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);
       }
-
-      // Check if we're actually leaving the menu area
-      // This improved check helps prevent false triggers
       const rect = menuElement.getBoundingClientRect();
       const isReallyLeaving =
         e.clientX < rect.left - 5 ||
         e.clientX > rect.right + 5 ||
         e.clientY < rect.top - 5 ||
         e.clientY > rect.bottom + 5;
-
       if (isReallyLeaving) {
-        // Use a longer timeout for more stability
         timeoutRef.current = setTimeout(() => {
           setOpen(false);
           timeoutRef.current = null;
-        }, 500); // Increased for better stability
+        }, 500);
       }
     };
 
     menuElement.addEventListener("mouseenter", handleMouseEnter);
     menuElement.addEventListener("mouseleave", handleMouseLeave);
-
-    // Clean up all listeners and timeouts
     return () => {
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);
@@ -251,7 +229,6 @@ const MenuComponent = () => {
                     <div className="text-menu-category text-start px-3">
                       <span className="category-label">Project</span>
                     </div>
-
                     {user &&
                       (user.role === "2" ||
                         user.role === "3" ||
@@ -333,7 +310,6 @@ const MenuComponent = () => {
                             </Link>
                           </span>
                         </li>
-
                         <li className={getNavItemClass("/applications")}>
                           <span className="menu-item-wrapper">
                             <Link
@@ -351,7 +327,6 @@ const MenuComponent = () => {
                             </Link>
                           </span>
                         </li>
-
                         <li className={getNavItemClass("/group")}>
                           <span className="menu-item-wrapper">
                             <Link
@@ -360,7 +335,7 @@ const MenuComponent = () => {
                             >
                               <div className="icon-container">
                                 <img
-                                  src={require("../../assets/group_icon.png")}
+                                  src={group_icon}
                                   className="nav_sub_menu_icon"
                                   alt=""
                                 />
@@ -371,47 +346,48 @@ const MenuComponent = () => {
                         </li>
                       </>
                     )}
-
                     {role === "" && (
-                      <li className={getNavItemClass("/progress")}>
-                        <span className="menu-item-wrapper">
-                          <Link
-                            className="text-menu nav-link-item"
-                            to="/progress"
-                          >
-                            <div className="icon-container">
-                              <img
-                                src={milestone_icon}
-                                className="nav_sub_menu_icon"
-                                alt=""
-                              />
-                            </div>
-                            <span className="menu-text">Milestone Tracker</span>
-                          </Link>
-                        </span>
-                      </li>
-                    )}
-                    {role === "" && (
-                      <li className={getNavItemClass("/projApplications")}>
-                        <span className="menu-item-wrapper">
-                          <Link
-                            className="text-menu nav-link-item"
-                            to="/projApplications"
-                          >
-                            <div className="icon-container notification-icon-container">
-                              <img
-                                src={notification_icon}
-                                className="nav_sub_menu_icon"
-                                alt=""
-                              />
-                              <span className="notifcation-badge-expand">
-                                {notifyCount > 9 ? "9+" : notifyCount}
+                      <>
+                        <li className={getNavItemClass("/progress")}>
+                          <span className="menu-item-wrapper">
+                            <Link
+                              className="text-menu nav-link-item"
+                              to="/progress"
+                            >
+                              <div className="icon-container">
+                                <img
+                                  src={milestone_icon}
+                                  className="nav_sub_menu_icon"
+                                  alt=""
+                                />
+                              </div>
+                              <span className="menu-text">
+                                Milestone Tracker
                               </span>
-                            </div>
-                            <span className="menu-text">Notifications</span>
-                          </Link>
-                        </span>
-                      </li>
+                            </Link>
+                          </span>
+                        </li>
+                        <li className={getNavItemClass("/projApplications")}>
+                          <span className="menu-item-wrapper">
+                            <Link
+                              className="text-menu nav-link-item"
+                              to="/projApplications"
+                            >
+                              <div className="icon-container notification-icon-container">
+                                <img
+                                  src={notification_icon}
+                                  className="nav_sub_menu_icon"
+                                  alt=""
+                                />
+                                <span className="notifcation-badge-expand">
+                                  {notifyCount > 9 ? "9+" : notifyCount}
+                                </span>
+                              </div>
+                              <span className="menu-text">Notifications</span>
+                            </Link>
+                          </span>
+                        </li>
+                      </>
                     )}
                   </ul>
                 )}
@@ -462,7 +438,19 @@ const MenuComponent = () => {
                     />
                   </Link>
                 </div>
+                {/* Home Category Icons */}
                 <ul className="nav navbar-nav mt-4">
+                  <li className="nav-item collapsed-item">
+                    <Link to="/" className="collapsed-link">
+                      <span className="icon-only-container">
+                        <img
+                          src={home_icon}
+                          className="nav_sub_menu_icon"
+                          alt="Welcome"
+                        />
+                      </span>
+                    </Link>
+                  </li>
                   {isAuthenticated && (
                     <li className="nav-item collapsed-item">
                       <Link
@@ -473,7 +461,7 @@ const MenuComponent = () => {
                           <img
                             src={profile_icon}
                             className="nav_sub_menu_icon"
-                            alt=""
+                            alt="Profile"
                           />
                         </span>
                       </Link>
@@ -485,7 +473,7 @@ const MenuComponent = () => {
                         <img
                           src={about_icon}
                           className="nav_sub_menu_icon"
-                          alt=""
+                          alt="About Us"
                         />
                       </span>
                     </Link>
@@ -496,83 +484,133 @@ const MenuComponent = () => {
                         <img
                           src={contact_icon}
                           className="nav_sub_menu_icon"
-                          alt=""
+                          alt="Contact Us"
                         />
                       </span>
                     </Link>
                   </li>
                 </ul>
                 {isAuthenticated && (
-                  <ul className="nav navbar-nav">
-                    {user && (user.role === "1" || user.role === "3") && (
+                  <>
+                    {/* Project Category Icons */}
+                    <ul className="nav navbar-nav">
+                      {user &&
+                        (user.role === "2" ||
+                          user.role === "3" ||
+                          user.role === "1") && (
+                          <li className="nav-item collapsed-item">
+                            <Link
+                              to="/create-project"
+                              className="collapsed-link"
+                            >
+                              <span className="icon-only-container">
+                                <img
+                                  src={create_icon}
+                                  className="nav_sub_menu_icon"
+                                  alt="Create Project"
+                                />
+                              </span>
+                            </Link>
+                          </li>
+                        )}
                       <li className="nav-item collapsed-item">
-                        <Link to="/admin-view" className="collapsed-link">
+                        <Link to="/view-project" className="collapsed-link">
                           <span className="icon-only-container">
                             <img
-                              src={group_icon}
+                              src={view_icon}
                               className="nav_sub_menu_icon"
-                              alt=""
+                              alt="View Project"
                             />
                           </span>
                         </Link>
                       </li>
-                    )}
-
-                    {user &&
-                      (user.role === "2" ||
-                        user.role === "3" ||
-                        user.role === "1") && (
+                      {user && (user.role === "1" || user.role === "3") && (
                         <li className="nav-item collapsed-item">
-                          <Link to="/create-project" className="collapsed-link">
+                          <Link to="/admin-view" className="collapsed-link">
                             <span className="icon-only-container">
                               <img
-                                src={create_icon}
+                                src={group_icon}
                                 className="nav_sub_menu_icon"
-                                alt=""
+                                alt="Admin View"
                               />
                             </span>
                           </Link>
                         </li>
                       )}
-                    <li className="nav-item collapsed-item">
-                      <Link to="/view-project" className="collapsed-link">
-                        <span className="icon-only-container">
-                          <img
-                            src={view_icon}
-                            className="nav_sub_menu_icon"
-                            alt=""
-                          />
-                        </span>
-                      </Link>
-                    </li>
-                    {role === "" && (
-                      <li className="nav-item collapsed-item">
-                        <Link to="/progress" className="collapsed-link">
-                          <span className="icon-only-container">
-                            <img
-                              src={milestone_icon}
-                              className="nav_sub_menu_icon"
-                              alt=""
-                            />
-                          </span>
-                        </Link>
-                      </li>
-                    )}
-                    <li className="nav-item collapsed-item">
-                      <Link to="/projApplications" className="collapsed-link">
-                        <span className="icon-only-container notification-icon-container">
-                          <img
-                            src={notification_icon}
-                            className="nav_sub_menu_icon"
-                            alt=""
-                          />
-                          <span className="notification-badge">
-                            {notifyCount > 9 ? "9+" : notifyCount}
-                          </span>
-                        </span>
-                      </Link>
-                    </li>
-                  </ul>
+                      {user && user.role === "4" && (
+                        <>
+                          <li className="nav-item collapsed-item">
+                            <Link
+                              to="/view-Recomended-project"
+                              className="collapsed-link"
+                            >
+                              <span className="icon-only-container">
+                                <img
+                                  src={recommendation_icon}
+                                  className="nav_sub_menu_icon"
+                                  alt="Recommendations"
+                                />
+                              </span>
+                            </Link>
+                          </li>
+                          <li className="nav-item collapsed-item">
+                            <Link to="/applications" className="collapsed-link">
+                              <span className="icon-only-container">
+                                <img
+                                  src={application_icon}
+                                  className="nav_sub_menu_icon"
+                                  alt="Applications"
+                                />
+                              </span>
+                            </Link>
+                          </li>
+                          <li className="nav-item collapsed-item">
+                            <Link to="/group" className="collapsed-link">
+                              <span className="icon-only-container">
+                                <img
+                                  src={group_icon}
+                                  className="nav_sub_menu_icon"
+                                  alt="Group"
+                                />
+                              </span>
+                            </Link>
+                          </li>
+                        </>
+                      )}
+                      {role === "" && (
+                        <>
+                          <li className="nav-item collapsed-item">
+                            <Link to="/progress" className="collapsed-link">
+                              <span className="icon-only-container">
+                                <img
+                                  src={milestone_icon}
+                                  className="nav_sub_menu_icon"
+                                  alt="Milestone Tracker"
+                                />
+                              </span>
+                            </Link>
+                          </li>
+                          <li className="nav-item collapsed-item">
+                            <Link
+                              to="/projApplications"
+                              className="collapsed-link"
+                            >
+                              <span className="icon-only-container notification-icon-container">
+                                <img
+                                  src={notification_icon}
+                                  className="nav_sub_menu_icon"
+                                  alt="Notifications"
+                                />
+                                <span className="notification-badge">
+                                  {notifyCount > 9 ? "9+" : notifyCount}
+                                </span>
+                              </span>
+                            </Link>
+                          </li>
+                        </>
+                      )}
+                    </ul>
+                  </>
                 )}
                 <ul className="nav navbar-nav collapsed-menu-footer">
                   {isAuthenticated ? (
@@ -582,7 +620,7 @@ const MenuComponent = () => {
                           <img
                             src={logout_icon}
                             className="nav_sub_menu_icon"
-                            alt=""
+                            alt="Logout"
                           />
                         </span>
                       </button>
@@ -594,7 +632,7 @@ const MenuComponent = () => {
                           <img
                             src={login_icon}
                             className="nav_sub_menu_icon"
-                            alt=""
+                            alt="Login"
                           />
                         </span>
                       </button>

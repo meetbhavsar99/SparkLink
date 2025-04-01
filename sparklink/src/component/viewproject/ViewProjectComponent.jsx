@@ -912,7 +912,7 @@ const ViewProjectComponent = () => {
               autoFocus={false}
               enforceFocus={false}
             >
-              <Modal.Header closeButton>
+              <Modal.Header closeButton closeVariant="white">
                 <Modal.Title
                   id="milestone_details_modal"
                   className="modal_text_header"

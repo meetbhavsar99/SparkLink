@@ -183,7 +183,7 @@ const AboutComponent = () => {
             {showProfessor && (
               <div className="team-grid">
                 <div className="team-card">
-                  <img src="" alt="Professor Olena Syrotkina" className="" />
+                  {/* <img src="" alt="Professor Olena Syrotkina" className="" /> */}
                   <h3>
                     <a
                       href="https://www.linkedin.com/in/olena-syrotkina/"

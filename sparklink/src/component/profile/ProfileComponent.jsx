@@ -303,6 +303,7 @@ const ProfileComponent = () => {
                 <h2 className="student-projects-title">
                   Projects you are working on currently:
                 </h2>
+                {/* Use .student-projects for horizontal scroll */}
                 <div className="student-projects">
                   {projectList.map((project, index) => (
                     <div
@@ -592,6 +593,7 @@ const ProfileComponent = () => {
                 <h2 className="supervisor-projects-title">
                   Projects you are supervising currently:
                 </h2>
+                {/* Use .supervisor-projects for horizontal scroll */}
                 <div className="supervisor-projects">
                   {projectList.map((project, index) => (
                     <div
@@ -887,7 +889,8 @@ const ProfileComponent = () => {
                 <h2 className="business-owner-projects-title">
                   Projects you have listed currently:
                 </h2>
-                <div className="business-owner-header">
+                {/* Use .business-owner-projects for horizontal scroll */}
+                <div className="business-owner-projects">
                   {projectList.map((project, index) => (
                     <div
                       className="business-owner-project-card"

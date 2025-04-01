@@ -97,7 +97,7 @@ const LogsComponent = () => {
                 onChange={(e) => setSearchAction(e.target.value)}
               />
               <button onClick={fetchLogs}>Search</button>
-              <button className="btn btn-success" onClick={handleDownload}>
+              <button className="button" onClick={handleDownload}>
                 Download Logs
               </button>
             </div>
