@@ -791,10 +791,10 @@ exports.applyProject = async (req, res) => {
         .json({ message: "Project ID and User ID are required" });
     }
 
-    if (!priority || priority < 1 || priority > 7) {
+    if (!priority || priority < 1 || priority > 10) {
       return res
         .status(400)
-        .json({ message: "Priority must be between 1 and 7" });
+        .json({ message: "Priority must be between 1 and 10" });
     }
 
     const user = await User.findOne({ where: { user_id } });
