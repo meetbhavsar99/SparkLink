@@ -41,6 +41,8 @@ const StudentGroupComponent = () => {
   const [error, setError] = useState("");
   const [selectedProject, setSelectedProject] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [priority, setPriority] = useState(1);
+  const [appliedProjects, setAppliedProjects] = useState([]);
 
   const openModal = (project) => {
     setSelectedProject(project);
@@ -73,6 +75,18 @@ const StudentGroupComponent = () => {
       console.error("Error fetching group info:", err);
       setGroupInfo(null);
       setIsLeader(false);
+    }
+  };
+
+  const fetchAppliedProjects = async () => {
+    try {
+      const res = await axios.get("/api/group/my-applied-projects", {
+        withCredentials: true,
+      });
+      console.log("Applied projects response:", res.data);
+      setAppliedProjects(res.data.appliedProjects || []);
+    } catch (err) {
+      console.error("Error fetching applied projects:", err);
     }
   };
 
@@ -167,6 +181,7 @@ const StudentGroupComponent = () => {
   useEffect(() => {
     if (groupInfo) {
       fetchGroupProjects();
+      fetchAppliedProjects();
     }
   }, [groupInfo]);
 
@@ -323,12 +338,26 @@ const StudentGroupComponent = () => {
                     </Table>
                   )}
                 </Modal.Body>
+
                 <Modal.Footer>
                   <button className="button-home" onClick={closeModal}>
                     Close
                   </button>
                 </Modal.Footer>
               </Modal>
+            </div>
+          )}
+          {appliedProjects.length > 0 && (
+            <div className="applied-projects-section">
+              <h3>Projects Your Group Has Applied To</h3>
+              <ul>
+                {appliedProjects.map((proj) => (
+                  <li key={proj.proj_id}>
+                    {proj.project_name} — <strong>Priority:</strong>{" "}
+                    {proj.priority}
+                  </li>
+                ))}
+              </ul>
             </div>
           )}
         </div>

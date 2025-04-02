@@ -3,6 +3,7 @@ const GroupMember = require("../models/group_member");
 const User = require("../models/user");
 const Project = require("../models/project");
 const ProjAllocation = require("../models/proj_allocation");
+const ProjApplication = require("../models/proj_application");
 const { v4: uuidv4 } = require("uuid");
 const path = require("path");
 
@@ -54,10 +55,10 @@ exports.joinGroup = async (req, res) => {
 
     // Check group size
     const memberCount = await GroupMember.count({ where: { group_id } });
-    if (memberCount >= 5) {
+    if (memberCount >= 7) {
       return res
         .status(400)
-        .json({ message: "This group already has 5 members." });
+        .json({ message: "This group already has 7 members." });
     }
 
     // Add user to group
@@ -130,7 +131,6 @@ exports.getGroups = async (req, res) => {
 // Admin/Supervisor view: Fetch all groups with member and leader info
 exports.getAllDetailedGroups = async (req, res) => {
   try {
-    // Prevent duplicate association error
     if (!Group.associations.GroupMembers) {
       Group.hasMany(GroupMember, {
         foreignKey: "group_id",
@@ -157,18 +157,44 @@ exports.getAllDetailedGroups = async (req, res) => {
       ],
     });
 
-    const formatted = groups.map((group) => ({
-      group_id: group.group_id,
-      team_leader_id: group.team_leader_id,
-      resume_url: group.resume_pdf,
-      members: group.GroupMembers.map((member) => ({
-        user_id: member.user_id,
-        username: member.User?.username || "Unknown",
-        is_leader: member.user_id === group.team_leader_id,
-      })),
-    }));
+    const formatted = await Promise.all(
+      groups.map(async (group) => {
+        const apps = await ProjApplication.findAll({
+          where: {
+            user_id: group.team_leader_id,
+            role: 4,
+            is_active: "Y",
+          },
+          include: [
+            {
+              model: Project,
+              as: "project",
+              attributes: ["proj_id", "project_name"],
+            },
+          ],
+        });
 
-    console.log("Formatted groups:", formatted);
+        const applied_projects = apps.map((a) => ({
+          proj_id: a.proj_id,
+          project_name: a.project?.project_name || "Unknown",
+          priority: a.priority || "N/A",
+        }));
+
+        return {
+          group_id: group.group_id,
+          team_leader_id: group.team_leader_id,
+          resume_url: group.resume_pdf,
+          members: group.GroupMembers.map((member) => ({
+            user_id: member.user_id,
+            username: member.User?.username || "Unknown",
+            is_leader: member.user_id === group.team_leader_id,
+          })),
+          applied_projects, // ✅ now included
+        };
+      })
+    );
+
+    console.log("Formatted groups with applied_projects:", formatted); // ✅ confirm output
     res.status(200).json({ groups: formatted });
   } catch (error) {
     console.error("Error fetching all groups:", error);
@@ -256,5 +282,47 @@ exports.getMyGroupProjects = async (req, res) => {
   } catch (error) {
     console.error("Error fetching group projects:", error);
     return res.status(500).json({ message: "Error fetching group projects" });
+  }
+};
+
+exports.getMyGroupAppliedProjects = async (req, res) => {
+  try {
+    const user_id = req.user.user_id;
+
+    const membership = await GroupMember.findOne({ where: { user_id } });
+    if (!membership)
+      return res.status(403).json({ message: "You are not in any group." });
+
+    const group = await Group.findByPk(membership.group_id);
+    if (!group) return res.status(404).json({ message: "Group not found." });
+
+    const leaderId = group.team_leader_id;
+
+    // ✅ JOIN project applications with projects
+    const applications = await ProjApplication.findAll({
+      where: {
+        user_id: leaderId,
+        role: 4,
+        is_active: "Y",
+      },
+      include: [
+        {
+          model: Project,
+          as: "project", // ✅ Must match alias in proj_application.js
+          attributes: ["proj_id", "project_name"],
+        },
+      ],
+    });
+
+    const formatted = applications.map((app) => ({
+      proj_id: app.proj_id,
+      project_name: app.project?.project_name || "Unknown",
+      priority: app.priority || "N/A",
+    }));
+
+    return res.status(200).json({ appliedProjects: formatted });
+  } catch (error) {
+    console.error("Error fetching applied projects with priority:", error);
+    return res.status(500).json({ message: "Error fetching applied projects" });
   }
 };

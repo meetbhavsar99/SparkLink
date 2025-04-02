@@ -23,6 +23,11 @@ const User = sequelize.define(
       type: DataTypes.STRING,
       allowNull: true,
     },
+    approval_token: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+
     role: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -53,6 +58,14 @@ const User = sequelize.define(
       },
     },
     is_verified: {
+      type: DataTypes.CHAR(1),
+      allowNull: false,
+      defaultValue: "N",
+      validate: {
+        isIn: [["Y", "N"]],
+      },
+    },
+    is_approved: {
       type: DataTypes.CHAR(1),
       allowNull: false,
       defaultValue: "N",

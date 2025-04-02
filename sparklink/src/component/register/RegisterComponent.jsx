@@ -40,6 +40,7 @@ const RegistrationForm = () => {
   }, [location]);
 
   const handleSubmit = async (e) => {
+    const generatedUsername = email.split("@")[0];
     e.preventDefault();
 
     const form = e.target; // Get the form element
@@ -55,7 +56,7 @@ const RegistrationForm = () => {
 
     console.log("Submitting registration form...");
     console.log("Sending Data:", {
-      username,
+      username: generatedUsername,
       email,
       password,
       confirmPassword,
@@ -76,7 +77,7 @@ const RegistrationForm = () => {
     try {
       setLoading(true);
       const response = await axios.post("/api/users/register", {
-        username,
+        username: generatedUsername,
         email,
         password,
         confirmPassword,
@@ -156,7 +157,7 @@ const RegistrationForm = () => {
 
                 {/* Name Field */}
 
-                <div data-mdb-input-init className="form-outline mb-4">
+                {/* <div data-mdb-input-init className="form-outline mb-4">
                   <input
                     type="text"
                     name="username"
@@ -175,7 +176,7 @@ const RegistrationForm = () => {
                   <div className="invalid-feedback">
                     Please provide your first name.
                   </div>
-                </div>
+                </div> */}
                 <div data-mdb-input-init className="form-outline mb-4">
                   <input
                     type="text"
@@ -186,12 +187,12 @@ const RegistrationForm = () => {
                     className={`form-control form-control-lg ${
                       isValidated && !name ? "is-invalid" : ""
                     }`}
-                    placeholder="Last Name"
+                    placeholder="Full Name"
                     required
                   />
                   <div className="valid-feedback">Looks good!</div>
                   <div className="invalid-feedback">
-                    Please provide your last name.
+                    Please provide your full name.
                   </div>
                 </div>
                 {/* Email Field */}

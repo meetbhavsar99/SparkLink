@@ -457,7 +457,9 @@ exports.deleteProject = async (req, res) => {
     await logsController.createLog(
       userId || "System",
       "Project Deleted",
-      `Project ID ${projectId} was deleted by user ${userId || "Unknown"}`,
+      `Project ID ${projectId} was deleted by user ${
+        req.body.user_id || "Unknown"
+      }`,
       "action"
     );
 
@@ -779,13 +781,20 @@ exports.applyProject = async (req, res) => {
     console.log("Processing project application...");
     console.log("Received request body:", req.body);
 
-    const { proj_id, user_id } = req.body;
+    // const { proj_id, user_id } = req.body;
+    const { proj_id, user_id, priority } = req.body;
 
     if (!proj_id || !user_id) {
       console.error("Missing proj_id or user_id");
       return res
         .status(400)
         .json({ message: "Project ID and User ID are required" });
+    }
+
+    if (!priority || priority < 1 || priority > 7) {
+      return res
+        .status(400)
+        .json({ message: "Priority must be between 1 and 7" });
     }
 
     const user = await User.findOne({ where: { user_id } });
@@ -804,7 +813,7 @@ exports.applyProject = async (req, res) => {
         .json({ message: "Only students can apply for projects" });
     }
 
-    // 🔐 Prevent applying if 7 or more applications already exist
+    // Prevent applying if 7 or more applications already exist
     const totalApplications = await ProjApplication.count({
       where: { user_id, is_active: "Y" },
     });
@@ -813,10 +822,10 @@ exports.applyProject = async (req, res) => {
       `Total active applications for user ${user_id}: ${totalApplications}`
     );
 
-    if (totalApplications >= 7) {
+    if (totalApplications >= 10) {
       return res.status(400).json({
         success: false,
-        message: "You have already applied to 7 projects.",
+        message: "You have already applied to 10 projects.",
       });
     }
 
@@ -827,6 +836,7 @@ exports.applyProject = async (req, res) => {
       created_by: user_id,
       modified_by: user_id,
       is_active: "Y",
+      priority: priority || null,
     };
 
     console.log("Creating project application entry:", studentApplList);

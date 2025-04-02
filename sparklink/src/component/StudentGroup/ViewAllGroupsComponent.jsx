@@ -18,6 +18,7 @@ const ViewAllGroupsComponent = () => {
       const res = await axios.get("/api/group/admin-view", {
         withCredentials: true,
       });
+      console.log("Fetched groups ->", res.data.groups[0]);
       setGroups(res.data.groups || []);
     } catch (err) {
       console.error("Error fetching groups:", err);
@@ -97,6 +98,22 @@ const ViewAllGroupsComponent = () => {
                 ) : (
                   <p>No resume uploaded.</p>
                 )}
+                {group.applied_projects &&
+                  group.applied_projects.length > 0 && (
+                    <>
+                      <p>
+                        <strong>Applied Projects (with Priority):</strong>
+                      </p>
+                      <ul>
+                        {group.applied_projects.map((proj) => (
+                          <li key={proj.proj_id}>
+                            {proj.project_name} — <strong>Priority:</strong>{" "}
+                            {proj.priority}
+                          </li>
+                        ))}
+                      </ul>
+                    </>
+                  )}
               </div>
             ))
           )}

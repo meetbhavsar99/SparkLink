@@ -87,6 +87,14 @@ const ProjApplication = sequelize.define(
         isIn: [["Y", "N"]],
       },
     },
+    priority: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      validate: {
+        min: 1,
+        max: 7,
+      },
+    },
   },
   {
     tableName: "t_proj_application",

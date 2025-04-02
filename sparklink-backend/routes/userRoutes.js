@@ -19,6 +19,7 @@ const {
   updateuser,
   deleteUser,
   get5recommendedProjects,
+  approveUser,
 } = require("../controllers/userController");
 
 const router = express.Router();
@@ -81,5 +82,7 @@ router.post("/bulk-delete", async (req, res) => {
     res.status(500).json({ error: "Failed to delete selected users" });
   }
 });
+
+router.get("/approve", approveUser);
 
 module.exports = router;

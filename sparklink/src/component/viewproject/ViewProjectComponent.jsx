@@ -75,6 +75,8 @@ const ViewProjectComponent = () => {
   const [isTeamLeader, setIsTeamLeader] = useState(false);
   const projectsPerPage = 6; // Change for more/less projects per page
   const [appliedCount, setAppliedCount] = useState(0);
+  const [showPriorityModal, setShowPriorityModal] = useState(false);
+  const [priorityInput, setPriorityInput] = useState(1);
 
   const indexOfLastProject = currentPage * projectsPerPage;
   const indexOfFirstProject = indexOfLastProject - projectsPerPage;
@@ -611,7 +613,7 @@ const ViewProjectComponent = () => {
       const response = await axios.get("/project/appliedProjectCount", {
         params: { user_id: user?.user_id },
       });
-      console.log("📦 Applied Projects Count (real):", response.data.count);
+      console.log("Applied Projects Count (real):", response.data.count);
       if (response.status === 200) {
         setAppliedCount(response.data.count);
       }
@@ -620,13 +622,13 @@ const ViewProjectComponent = () => {
     }
   };
 
-  const submitApplication = async () => {
-    console.log("📦 Current Applied Count:", appliedCount);
+  const submitApplication = async (priority) => {
+    console.log("Current Applied Count:", appliedCount);
 
-    if (appliedCount >= 7) {
+    if (appliedCount >= 10) {
       Swal.fire({
         title: "Limit Reached",
-        text: "You have already applied for the maximum of 7 projects.",
+        text: "You have already applied for the maximum of 10 projects.",
         icon: "warning",
         confirmButtonText: "Ok",
       });
@@ -644,7 +646,8 @@ const ViewProjectComponent = () => {
 
       const response = await axios.post("/project/applyProject", {
         proj_id: projDetailsList.proj_id,
-        user_id: user?.user_id, // Ensure user_id is sent
+        user_id: user?.user_id,
+        priority: Number(priority), // cast to number just in case
       });
 
       console.log("Apply API Response:", response.data);
@@ -660,7 +663,7 @@ const ViewProjectComponent = () => {
 
         console.log("Re-fetching applied project count...");
         await fetchApplicationCount(); // Re-fetch updated count
-        console.log("📦 Applied Projects Count:", response.data.count);
+        console.log("Applied Projects Count:", response.data.count);
         updateNotifyCount(); // Already exists
       } else if (response.status === 200 && !response.data.success) {
         closeModal();
@@ -1464,7 +1467,7 @@ const ViewProjectComponent = () => {
                       ) && (
                         <button
                           className="ms-3 text-center button_text button-main"
-                          onClick={submitApplication}
+                          onClick={() => setShowPriorityModal(true)}
                         >
                           Click to Apply
                         </button>
@@ -1513,6 +1516,42 @@ const ViewProjectComponent = () => {
             </div>
           </div>
         )}
+
+        <Modal
+          show={showPriorityModal}
+          onHide={() => setShowPriorityModal(false)}
+        >
+          <Modal.Header closeButton>
+            <Modal.Title>Select Priority (1 to 7)</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <input
+              type="number"
+              min={1}
+              max={7}
+              value={priorityInput}
+              onChange={(e) => setPriorityInput(e.target.value)}
+              className="form-control"
+            />
+          </Modal.Body>
+          <Modal.Footer>
+            <button
+              className="btn btn-secondary"
+              onClick={() => setShowPriorityModal(false)}
+            >
+              Cancel
+            </button>
+            <button
+              className="btn btn-primary"
+              onClick={() => {
+                submitApplication(priorityInput);
+                setShowPriorityModal(false);
+              }}
+            >
+              Submit
+            </button>
+          </Modal.Footer>
+        </Modal>
 
         <div className="footer-fixed">
           <FooterComponent />

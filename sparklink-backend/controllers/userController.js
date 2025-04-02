@@ -81,6 +81,7 @@ exports.register = async (req, res) => {
       confirmation_token, // Store token
       is_active: "N", // Initially inactive
       is_verified: "N",
+      is_approved: role === "4" ? "Y" : "N",
     });
 
     // Log user registration
@@ -112,21 +113,67 @@ exports.register = async (req, res) => {
       to: email,
       subject: "Confirm Your Email",
       html: `
-      <p>Dear ${username},</p>
-      <p>Thank you for registering with SparkLink! Please confirm your email address by clicking the button below:</p>
-      <a href="${confirmationLink}" 
-        style="display: inline-block; padding: 12px 24px; background-color: #005596; color: #ffffff; text-decoration: none; border-radius: 6px; font-weight: bold;">
-        Confirm Your Email
-      </a>
-      <p>If you did not register, please ignore this email.</p>
-      <p>Regards,<br>Team SparkLink</p>
-    `,
+        <p>Dear ${username},</p>
+        <p>Thank you for registering with SparkLink! Please confirm your email address by clicking the button below:</p>
+        <a href="${confirmationLink}" 
+          style="display: inline-block; padding: 12px 24px; background-color: #005596; color: #ffffff; text-decoration: none; border-radius: 6px; font-weight: bold;">
+          Confirm Your Email
+        </a>
+        <p>If you did not register, please ignore this email.</p>
+        <p>Regards,<br>Team SparkLink</p>
+      `,
     };
 
     await transporter.sendMail(mailOptions);
     console.log("Confirmation email sent!");
 
     // Notify all admins if elevated role is registered
+    //   if (role !== "4") {
+    //     const admins = await User.findAll({
+    //       where: { role: "1", is_active: "Y" },
+    //       attributes: ["email"],
+    //     });
+
+    //     const adminEmails = admins.map((admin) => admin.email);
+
+    //     const adminProfileLink = `http://localhost:3100/admin/view-users`;
+
+    //     const mailHTML = `
+    //   <div style="font-family: Arial, sans-serif; background-color: #1a1a1a; color: #ffffff; padding: 20px; border-radius: 8px;">
+    //     <h2 style="color: #FFCE00;">New Elevated Role Registration</h2>
+    //     <p>A new user has registered with elevated access on SparkLink:</p>
+    //     <ul style="line-height: 1.6;">
+    //       <li><strong>Name:</strong> ${name}</li>
+    //       <li><strong>Email:</strong> ${email}</li>
+    //       <li><strong>Username:</strong> ${username}</li>
+    //       <li><strong>Role:</strong> ${role}</li>
+    //     </ul>
+
+    //     ${
+    //       adminProfileLink
+    //         ? `<a href="${adminProfileLink}" style="display: inline-block; margin-top: 20px; padding: 12px 24px; background-color: #005596; color: #ffffff; text-decoration: none; border-radius: 6px; font-weight: bold;">
+    //             View Users
+    //           </a>`
+    //         : ""
+    //     }
+
+    //     <p style="margin-top: 30px;">Regards,<br><strong>Team SparkLink</strong></p>
+    //   </div>
+    // `;
+
+    //     if (adminEmails.length > 0) {
+    //       await transporter.sendMail({
+    //         from: process.env.EMAIL_USER,
+    //         to: adminEmails,
+    //         subject: "New Elevated Role Registration",
+    //         html: mailHTML,
+    //       });
+    //       console.log("Admins notified of elevated role registration.");
+    //     } else {
+    //       console.log("No admins found to notify.");
+    //     }
+    //   }
+
     if (role !== "4") {
       const admins = await User.findAll({
         where: { role: "1", is_active: "Y" },
@@ -137,28 +184,29 @@ exports.register = async (req, res) => {
 
       const adminProfileLink = `http://localhost:3100/admin/view-users`;
 
+      // 1. Send notification email
       const mailHTML = `
-  <div style="font-family: Arial, sans-serif; background-color: #1a1a1a; color: #ffffff; padding: 20px; border-radius: 8px;">
-    <h2 style="color: #FFCE00;">New Elevated Role Registration</h2>
-    <p>A new user has registered with elevated access on SparkLink:</p>
-    <ul style="line-height: 1.6;">
-      <li><strong>Name:</strong> ${name}</li>
-      <li><strong>Email:</strong> ${email}</li>
-      <li><strong>Username:</strong> ${username}</li>
-      <li><strong>Role:</strong> ${role}</li>
-    </ul>
+    <div style="font-family: Arial, sans-serif; background-color: #1a1a1a; color: #ffffff; padding: 20px; border-radius: 8px;">
+      <h2 style="color: #FFCE00;">New Elevated Role Registration</h2>
+      <p>A new user has registered with elevated access on SparkLink:</p>
+      <ul style="line-height: 1.6;">
+        <li><strong>Name:</strong> ${name}</li>
+        <li><strong>Email:</strong> ${email}</li>
+        <li><strong>Username:</strong> ${username}</li>
+        <li><strong>Role:</strong> ${role}</li>
+      </ul>
 
-    ${
-      adminProfileLink
-        ? `<a href="${adminProfileLink}" style="display: inline-block; margin-top: 20px; padding: 12px 24px; background-color: #005596; color: #ffffff; text-decoration: none; border-radius: 6px; font-weight: bold;">
-            View Users
-          </a>`
-        : ""
-    }
+      ${
+        adminProfileLink
+          ? `<a href="${adminProfileLink}" style="display: inline-block; margin-top: 20px; padding: 12px 24px; background-color: #005596; color: #ffffff; text-decoration: none; border-radius: 6px; font-weight: bold;">
+              View Users
+            </a>`
+          : ""
+      }
 
-    <p style="margin-top: 30px;">Regards,<br><strong>Team SparkLink</strong></p>
-  </div>
-`;
+      <p style="margin-top: 30px;">Regards,<br><strong>Team SparkLink</strong></p>
+    </div>
+  `;
 
       if (adminEmails.length > 0) {
         await transporter.sendMail({
@@ -168,8 +216,43 @@ exports.register = async (req, res) => {
           html: mailHTML,
         });
         console.log("Admins notified of elevated role registration.");
-      } else {
-        console.log("No admins found to notify.");
+      }
+
+      // 2. Send approval email with token
+      const approval_token = crypto.randomBytes(32).toString("hex");
+      newUser.approval_token = approval_token;
+      await newUser.save();
+
+      const approvalLink = `http://localhost:5100/api/users/approve?token=${approval_token}`;
+      const approvalHTML = `
+  <div style="font-family: Arial, sans-serif; background-color: #1a1a1a; color: #ffffff; padding: 20px; border-radius: 8px;">
+    <h2 style="color: #FFCE00;">Approval Needed: Elevated Role Registration</h2>
+    <p>A new user has registered with elevated access on SparkLink. Please review and approve their account:</p>
+    
+    <ul style="line-height: 1.6;">
+      <li><strong>Name:</strong> ${name}</li>
+      <li><strong>Email:</strong> ${email}</li>
+      <li><strong>Username:</strong> ${username}</li>
+      <li><strong>Role:</strong> ${role}</li>
+    </ul>
+
+    <a href="${approvalLink}" 
+      style="display: inline-block; margin-top: 20px; padding: 12px 24px; background-color: #005596; color: #ffffff; text-decoration: none; border-radius: 6px; font-weight: bold;">
+      Approve Account
+    </a>
+
+    <p style="margin-top: 30px;">Regards,<br><strong>Team SparkLink</strong></p>
+  </div>
+`;
+
+      if (adminEmails.length > 0) {
+        await transporter.sendMail({
+          from: process.env.EMAIL_USER,
+          to: adminEmails,
+          subject: "Approval Needed: Elevated Role Registration",
+          html: approvalHTML,
+        });
+        console.log("Approval email sent to admins.");
       }
     }
   } catch (error) {
@@ -246,6 +329,19 @@ exports.login = async (req, res, next) => {
       return res
         .status(403)
         .json({ message: "Please confirm your account before logging in." });
+    }
+
+    // Block login if not approved by admin
+    if (user.is_approved === "N" && user.role !== 4) {
+      await createLog(
+        user.user_id,
+        "Unapproved Login Attempt",
+        `Unapproved user ${user.username} attempted login.`,
+        "error"
+      );
+      return res.status(403).json({
+        message: "Your account is pending admin approval. Please wait.",
+      });
     }
 
     // Debugging: Log the stored hashed password for comparison
@@ -392,12 +488,12 @@ exports.forgotPassword = async (req, res) => {
       to: user.email,
       subject: "Password Reset Request",
       html: `
-      <p>Dear User,</p>
-      <p>You requested a password reset. Please click the link below to reset your password:</p>
-      <a href="${resetLink}" style="display: inline-block; padding: 10px 20px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 5px;">Click here to reset your password</a>
-      <p>If you did not request this, please ignore this email.</p>
-      <p>Regards,<br>Your Team</p>
-    `,
+        <p>Dear User,</p>
+        <p>You requested a password reset. Please click the link below to reset your password:</p>
+        <a href="${resetLink}" style="display: inline-block; padding: 10px 20px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 5px;">Click here to reset your password</a>
+        <p>If you did not request this, please ignore this email.</p>
+        <p>Regards,<br>Your Team</p>
+      `,
     });
 
     // Log password reset request
@@ -605,12 +701,12 @@ exports.get5recommendedProjects = async (req, res) => {
     // Fetch projects associated with the user
     const projectsWithSkills = await sequelize.query(
       `
-      SELECT DISTINCT tp.skills_req
-      FROM t_proj_allocation tup
-      JOIN t_project tp ON tup.proj_id = tp.proj_id
-      WHERE tup.user_id = :userId
-      AND tup.is_active = 'Y'
-      `,
+        SELECT DISTINCT tp.skills_req
+        FROM t_proj_allocation tup
+        JOIN t_project tp ON tup.proj_id = tp.proj_id
+        WHERE tup.user_id = :userId
+        AND tup.is_active = 'Y'
+        `,
       {
         replacements: { userId: user.user_id },
         type: sequelize.QueryTypes.SELECT,
@@ -633,16 +729,16 @@ exports.get5recommendedProjects = async (req, res) => {
     // Fetch all projects with required skills
     const projectsWithSkillsa = await sequelize.query(
       `
-      SELECT proj_id, skills_req
-FROM t_project tp
-WHERE skills_req IS NOT NULL
-AND NOT EXISTS (
-    SELECT 1
-    FROM t_proj_allocation tpa
-    WHERE tpa.proj_id = tp.proj_id
-    AND tpa.user_id = :userId -- Exclude projects where the user is already allocated
-)
-      `,
+        SELECT proj_id, skills_req
+  FROM t_project tp
+  WHERE skills_req IS NOT NULL
+  AND NOT EXISTS (
+      SELECT 1
+      FROM t_proj_allocation tpa
+      WHERE tpa.proj_id = tp.proj_id
+      AND tpa.user_id = :userId -- Exclude projects where the user is already allocated
+  )
+        `,
       {
         replacements: { userId: user.user_id },
         type: sequelize.QueryTypes.SELECT,
@@ -696,14 +792,14 @@ AND NOT EXISTS (
     ); // Extracting the proj_id of the top 5 recommended projects
 
     const projectsQuery = `
-  SELECT pr.*, ps.status_desc
-  FROM t_project pr
-  JOIN t_proj_status ps ON pr.status = ps.status_id
-  WHERE pr.is_active = 'Y'
-  AND pr.proj_id IN (:recommendedProjectIds)  
-  ORDER BY pr.created_on DESC
-  LIMIT 50;
-`;
+    SELECT pr.*, ps.status_desc
+    FROM t_project pr
+    JOIN t_proj_status ps ON pr.status = ps.status_id
+    WHERE pr.is_active = 'Y'
+    AND pr.proj_id IN (:recommendedProjectIds)  
+    ORDER BY pr.created_on DESC
+    LIMIT 50;
+  `;
     const projects = await sequelize.query(projectsQuery, {
       replacements: { recommendedProjectIds: recommendedProjectIds },
       type: sequelize.QueryTypes.SELECT,
@@ -713,18 +809,18 @@ AND NOT EXISTS (
       const projIds = projects.map((project) => project.proj_id);
 
       const stakeholdersQuery = `
-    SELECT pa.proj_id, u.username || ' ' || u.name as name, u.user_id,
-    CASE 
-      WHEN pa.role = 2 THEN 'business_owner'
-      WHEN pa.role = 3 THEN 'supervisor'
-      WHEN pa.role = 4 THEN 'student'
-    END AS role
-    FROM t_proj_allocation pa, t_usermst u 
-    WHERE pa.user_id = u.user_id
-    and pa.is_active = 'Y'
-    and pa.proj_id IN (:projIds)
-    order by proj_id desc;
-  `;
+      SELECT pa.proj_id, u.username || ' ' || u.name as name, u.user_id,
+      CASE 
+        WHEN pa.role = 2 THEN 'business_owner'
+        WHEN pa.role = 3 THEN 'supervisor'
+        WHEN pa.role = 4 THEN 'student'
+      END AS role
+      FROM t_proj_allocation pa, t_usermst u 
+      WHERE pa.user_id = u.user_id
+      and pa.is_active = 'Y'
+      and pa.proj_id IN (:projIds)
+      order by proj_id desc;
+    `;
       const stakeholders = await sequelize.query(stakeholdersQuery, {
         replacements: { projIds },
         type: sequelize.QueryTypes.SELECT,
@@ -744,13 +840,13 @@ AND NOT EXISTS (
       }, {});
 
       const milestonesQuery = `
-    SELECT proj_id, 
-      COUNT(CASE WHEN is_active = 'Y' THEN 1 END) AS active_milestones,
-      COUNT(CASE WHEN is_active = 'Y' AND is_completed = 'Y' THEN 1 END) AS completed_milestones
-    FROM t_proj_milestone
-    WHERE proj_id IN (:projIds)
-    GROUP BY proj_id;
-  `;
+      SELECT proj_id, 
+        COUNT(CASE WHEN is_active = 'Y' THEN 1 END) AS active_milestones,
+        COUNT(CASE WHEN is_active = 'Y' AND is_completed = 'Y' THEN 1 END) AS completed_milestones
+      FROM t_proj_milestone
+      WHERE proj_id IN (:projIds)
+      GROUP BY proj_id;
+    `;
       const milestones = await sequelize.query(milestonesQuery, {
         replacements: { projIds },
         type: sequelize.QueryTypes.SELECT,
@@ -796,5 +892,40 @@ AND NOT EXISTS (
     return res
       .status(500)
       .json({ message: "Error fetching recommended projects" });
+  }
+};
+
+exports.approveUser = async (req, res) => {
+  try {
+    const { token } = req.query;
+
+    if (!token) {
+      return res.status(400).json({ message: "Missing token" });
+    }
+
+    const user = await User.findOne({ where: { approval_token: token } });
+
+    if (!user) {
+      return res
+        .status(404)
+        .json({ message: "Invalid or expired approval token." });
+    }
+
+    user.is_active = "Y";
+    // user.is_verified = "Y";
+    user.is_approved = "Y";
+    await user.save();
+
+    await createLog(
+      user.user_id,
+      "Admin Approved Account",
+      `Admin approved user ${user.username}'s elevated access.`,
+      "admin"
+    );
+
+    res.send(`<h3>User approved successfully. They can now log in.</h3>`);
+  } catch (error) {
+    console.error("Error approving user:", error);
+    res.status(500).json({ message: "Approval failed", error: error.message });
   }
 };

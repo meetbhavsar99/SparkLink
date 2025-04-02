@@ -101,4 +101,10 @@ router.get("/admin-download-resume", isAuthenticated, async (req, res) => {
 
 router.get("/my-projects", isAuthenticated, groupController.getMyGroupProjects);
 
+router.get(
+  "/my-applied-projects",
+  isAuthenticated,
+  groupController.getMyGroupAppliedProjects
+);
+
 module.exports = router;
