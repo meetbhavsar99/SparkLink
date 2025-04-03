@@ -44,24 +44,7 @@ router.get("/reset-password", verifyToken);
 router.post("/reset-password", resetPassword);
 // router.post('/reset-email-sent', sendResetEmail);
 
-router.delete("/delete/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-
-    // Find user before deleting
-    const user = await User.findByPk(id);
-    if (!user) {
-      return res.status(404).json({ error: "User not found" });
-    }
-
-    await user.destroy(); // Delete the user
-
-    res.status(200).json({ message: "User deleted successfully" });
-  } catch (error) {
-    console.error("Error deleting user:", error);
-    res.status(500).json({ error: "Failed to delete user" });
-  }
-});
+router.delete("/delete/:id", deleteUser);
 
 router.post("/bulk-delete", async (req, res) => {
   try {

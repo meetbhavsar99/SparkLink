@@ -12,6 +12,7 @@ const passport = require("../config/passportConfig");
 const { Op } = require("sequelize");
 const { getTop5RecommendedProjects } = require("../queue/skillextraction");
 const sequelize = require("../config/db");
+const logsController = require("./logsController");
 
 const { createLog } = require("../controllers/logsController");
 
@@ -644,33 +645,27 @@ exports.updateuser = async (req, res) => {
 // Soft-delete a user by marking their account as inactive
 exports.deleteUser = async (req, res) => {
   try {
-    const { id } = req.params; // User ID from the route
-
-    // Find the user by ID
-    const user = await User.findByPk(id);
-
-    if (!user) {
-      return res.status(404).json({ message: "User not found." });
+    const { id } = req.params;
+    const userToDelete = await User.findByPk(id);
+    if (!userToDelete) {
+      return res.status(404).json({ error: "User not found" });
     }
 
-    // Mark the user as inactive or delete them
-    await User.update({ is_active: "N" }, { where: { user_id: id } });
+    const deletingUser = req.user;
 
-    // Log user deletion
-    await createLog(
-      user.user_id,
-      "User Deletion",
-      `User ${user.username} was deleted (marked inactive).`,
+    await userToDelete.destroy();
+
+    await logsController.createLog(
+      deletingUser.user_id,
+      "User Deleted",
+      `User ${userToDelete.username} ID ${userToDelete.user_id} was deleted by user ID ${deletingUser.user_id} ${deletingUser.username}.`,
       "action"
     );
 
-    res
-      .status(200)
-      .json({ message: "User successfully deleted (marked inactive)." });
+    res.status(200).json({ message: "User deleted successfully" });
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Error deleting user", error: error.message });
+    console.error("Error deleting user:", error);
+    res.status(500).json({ error: "Failed to delete user" });
   }
 };
 

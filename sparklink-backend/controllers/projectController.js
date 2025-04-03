@@ -454,12 +454,15 @@ exports.deleteProject = async (req, res) => {
     await transaction.commit(); // Commit changes
 
     // Log success
+    const currentUser = req.user || {};
+    const userId = currentUser.user_id || "System";
+    const username = currentUser.username || "Unknown";
+    const name = currentUser.name || "";
+
     await logsController.createLog(
-      userId || "System",
+      userId,
       "Project Deleted",
-      `Project ID ${projectId} was deleted by user ${
-        req.body.user_id || "Unknown"
-      }`,
+      `Project ID ${projectId} was deleted by user (${userId}) ${username} ${name}`,
       "action"
     );
 
