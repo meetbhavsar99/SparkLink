@@ -133,7 +133,7 @@
     padding: 40px;
     /* Equal padding */
     box-sizing: border-box;
-    /* Ensures padding doesn’t affect width */
+    /* Ensures padding doesnâ€™t affect width */
     background-color: #f4f4f4;
     /* Soft background color */
 }
@@ -476,4 +476,93 @@
     font-weight: 600;
     color: #FFCE00;
     text-align: center;
+}
+
+/* Tighter, cleaner modal input override */
+.priority-modal-body input.form-control {
+    border: 1px solid #ced4da;
+    border-radius: 6px !important;
+    /* prevent over-rounding */
+    padding: 8px 12px !important;
+    /* reduce height */
+    font-size: 15px;
+    height: 40px !important;
+    /* exact height */
+    box-shadow: none !important;
+    /* remove any auto-glow */
+    background-color: #fff;
+}
+
+.priority-modal-body input.form-control:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25) !important;
+    outline: none;
+}
+
+.priority-modal-body label.form-label {
+    font-weight: 600;
+    font-size: 14px;
+    color: #212529;
+}
+
+/* âœ… Contain and normalize the input */
+.priority-modal-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0.5rem 0;
+}
+
+.priority-modal-body input[type="number"] {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 36px !important;
+    padding: 6px 10px !important;
+    font-size: 15px;
+    line-height: 1.4;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    box-sizing: border-box;
+    appearance: textfield;
+    -moz-appearance: textfield;
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Remove spinners on WebKit */
+.priority-modal-body input::-webkit-inner-spin-button,
+.priority-modal-body input::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.priority-modal-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+/* Fix the input overflow/size */
+.priority-modal-body input#priorityInput {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 36px !important;
+    padding: 6px 10px !important;
+    font-size: 15px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    background-color: #fff;
+    appearance: textfield;
+    -moz-appearance: textfield;
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Remove spinner arrows (Chrome/Safari) */
+.priority-modal-body input::-webkit-inner-spin-button,
+.priority-modal-body input::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
 }

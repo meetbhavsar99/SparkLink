@@ -349,15 +349,21 @@ const StudentGroupComponent = () => {
           )}
           {appliedProjects.length > 0 && (
             <div className="applied-projects-section">
-              <h3>Projects Your Group Has Applied To</h3>
-              <ul>
+              <h3 className="section-title">
+                Projects Your Group Has Applied To
+              </h3>
+              <div className="applied-projects-grid">
                 {appliedProjects.map((proj) => (
-                  <li key={proj.proj_id}>
-                    {proj.project_name} — <strong>Priority:</strong>{" "}
-                    {proj.priority}
-                  </li>
+                  <div className="applied-project-card" key={proj.proj_id}>
+                    <h5 className="applied-project-name">
+                      {proj.project_name}
+                    </h5>
+                    <p className="applied-project-priority">
+                      Priority: <span>{proj.priority}</span>
+                    </p>
+                  </div>
                 ))}
-              </ul>
+              </div>
             </div>
           )}
         </div>

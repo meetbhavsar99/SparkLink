@@ -104,14 +104,21 @@ const ViewAllGroupsComponent = () => {
                       <p>
                         <strong>Applied Projects (with Priority):</strong>
                       </p>
-                      <ul>
+                      <div className="priority-card-container">
                         {group.applied_projects.map((proj) => (
-                          <li key={proj.proj_id}>
-                            {proj.project_name} — <strong>Priority:</strong>{" "}
-                            {proj.priority}
-                          </li>
+                          <div
+                            key={proj.proj_id}
+                            className="priority-project-card"
+                          >
+                            <h5 className="priority-project-title">
+                              {proj.project_name}
+                            </h5>
+                            <div className="priority-level">
+                              Priority: <span>{proj.priority}</span>
+                            </div>
+                          </div>
                         ))}
-                      </ul>
+                      </div>
                     </>
                   )}
               </div>

@@ -77,6 +77,7 @@ const ViewProjectComponent = () => {
   const [appliedCount, setAppliedCount] = useState(0);
   const [showPriorityModal, setShowPriorityModal] = useState(false);
   const [priorityInput, setPriorityInput] = useState(1);
+  const [appliedProjects, setAppliedProjects] = useState([]);
 
   const indexOfLastProject = currentPage * projectsPerPage;
   const indexOfFirstProject = indexOfLastProject - projectsPerPage;
@@ -84,6 +85,21 @@ const ViewProjectComponent = () => {
     indexOfFirstProject,
     indexOfLastProject
   );
+  const fetchAppliedProjects = async () => {
+    try {
+      const res = await axios.get("/api/group/my-applied-projects", {
+        withCredentials: true,
+      });
+      setAppliedProjects(res.data.appliedProjects || []);
+    } catch (err) {
+      console.error("Error fetching applied projects:", err);
+    }
+  };
+  useEffect(() => {
+    if (showPriorityModal) {
+      fetchAppliedProjects(); // fetch priorities when modal opens
+    }
+  }, [showPriorityModal]);
 
   const fetchGroupInfo = async () => {
     try {
@@ -1520,19 +1536,36 @@ const ViewProjectComponent = () => {
         <Modal
           show={showPriorityModal}
           onHide={() => setShowPriorityModal(false)}
+          centered
         >
           <Modal.Header closeButton>
-            <Modal.Title>Select Priority (1 to 7)</Modal.Title>
+            <Modal.Title>Select Priority </Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <input
-              type="number"
-              min={1}
-              max={7}
-              value={priorityInput}
-              onChange={(e) => setPriorityInput(e.target.value)}
-              className="form-control"
-            />
+            <div className="priority-modal-body">
+              <label htmlFor="priorityInput" className="form-label">
+                Priority Number:
+              </label>
+              <input
+                id="priorityInput"
+                type="number"
+                min={1}
+                max={7}
+                className="form-control"
+                value={priorityInput}
+                onChange={(e) => setPriorityInput(e.target.value)}
+              />
+              {projDetailsList &&
+                appliedProjects?.some(
+                  (proj) =>
+                    Number(proj.priority) === Number(priorityInput) &&
+                    proj.proj_id !== projDetailsList.proj_id
+                ) && (
+                  <p className="text-danger mt-2">
+                    ⚠️ You’ve already used this priority for another project.
+                  </p>
+                )}
+            </div>
           </Modal.Body>
           <Modal.Footer>
             <button
@@ -1544,9 +1577,21 @@ const ViewProjectComponent = () => {
             <button
               className="btn btn-primary"
               onClick={() => {
-                submitApplication(priorityInput);
-                setShowPriorityModal(false);
+                const duplicate = appliedProjects?.some(
+                  (proj) =>
+                    Number(proj.priority) === Number(priorityInput) &&
+                    proj.proj_id !== projDetailsList.proj_id
+                );
+                if (!duplicate) {
+                  submitApplication(priorityInput);
+                  setShowPriorityModal(false);
+                }
               }}
+              disabled={appliedProjects?.some(
+                (proj) =>
+                  Number(proj.priority) === Number(priorityInput) &&
+                  proj.proj_id !== projDetailsList.proj_id
+              )}
             >
               Submit
             </button>
