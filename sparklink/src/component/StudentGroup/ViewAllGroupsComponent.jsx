@@ -101,7 +101,7 @@ const ViewAllGroupsComponent = () => {
                 {group.applied_projects &&
                   group.applied_projects.length > 0 && (
                     <>
-                      <p>
+                      <p className="mt-3">
                         <strong>Applied Projects (with Priority):</strong>
                       </p>
                       <div className="priority-card-container">
