@@ -554,10 +554,10 @@ const ProgressTrackerComponent = () => {
           <div className="container-fluid mb-5">
             <div className="milestone_container">
               <div className="row">
-                <div className="col-lg-1 col-md-1 col-sm-3"></div>
+                {/* <div className="col-lg-1 col-md-1 col-sm-3"></div> */}
                 <div className="col-lg-11 col-md-11 col-sm-9">
-                  <div className="milestone_Heading">
-                    <span>Track your Milestone</span>
+                  <div className="milestone_Heading display-4">
+                    <span>Track Your Milestone</span>
                   </div>
                   <div className="search-container">
                     <Select
