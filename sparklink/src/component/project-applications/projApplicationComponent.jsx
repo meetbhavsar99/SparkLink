@@ -289,7 +289,7 @@ const ProjApplicationComponent = () => {
         <div className="col-1"></div>
         <div className="col-11">
           <div className="notification-page">
-            <h1 className="section-heading">Notifications</h1>
+            <h1 className="section-heading display-4">Notifications</h1>
             <div className="notifications-section">
               {notifications.length === 0 ? (
                 // Show message when there are no notifications

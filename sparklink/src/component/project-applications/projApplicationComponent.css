@@ -4,13 +4,19 @@
 }
 
 .section-heading {
-    padding: 10px;
-    max-width: 100%;
-    margin: 10px auto;
-    font-family: "Poppins", system-ui;
+    /* padding: 10px; */
+    /* max-width: 100%; */
+    /* margin: 10px auto; */
+    /* font-family: "Poppins", system-ui; */
     /* font-weight: 500; */
     font-style: normal;
-    text-align: center;
+    /* text-align: center; */
+    text-align: left;
+      font-weight: 700 !important;
+      letter-spacing: 0.5px !important;
+      margin: 20px 0;
+      margin-left: 4px;
+      color: #005596;
 }
 
 .notification-page {
