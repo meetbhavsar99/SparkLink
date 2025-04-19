@@ -1550,10 +1550,11 @@ const ViewProjectComponent = () => {
                 id="priorityInput"
                 type="number"
                 min={1}
-                max={7}
-                className="form-control"
+                max={10}
+                className="form-control pInput"
                 value={priorityInput}
                 onChange={(e) => setPriorityInput(e.target.value)}
+                style={{ width: "20px" }}
               />
               {projDetailsList &&
                 appliedProjects?.some(
@@ -1577,6 +1578,8 @@ const ViewProjectComponent = () => {
             <button
               className="btn btn-primary"
               onClick={() => {
+                if (!projDetailsList) return; // 🛡️ Prevent accessing null
+
                 const duplicate = appliedProjects?.some(
                   (proj) =>
                     Number(proj.priority) === Number(priorityInput) &&
@@ -1587,11 +1590,14 @@ const ViewProjectComponent = () => {
                   setShowPriorityModal(false);
                 }
               }}
-              disabled={appliedProjects?.some(
-                (proj) =>
-                  Number(proj.priority) === Number(priorityInput) &&
-                  proj.proj_id !== projDetailsList.proj_id
-              )}
+              disabled={
+                !projDetailsList ||
+                appliedProjects?.some(
+                  (proj) =>
+                    Number(proj.priority) === Number(priorityInput) &&
+                    proj.proj_id !== projDetailsList.proj_id
+                )
+              }
             >
               Submit
             </button>

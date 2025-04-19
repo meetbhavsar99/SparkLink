@@ -545,8 +545,9 @@
 
 /* Fix the input overflow/size */
 .priority-modal-body input#priorityInput {
-    width: 100% !important;
-    max-width: 100% !important;
+    /* width: 100%;
+    max-width: 100%; */
+    width: 25%;
     height: 36px !important;
     padding: 6px 10px !important;
     font-size: 15px;
@@ -566,3 +567,7 @@
     -webkit-appearance: none;
     margin: 0;
 }
+
+/* .pInput {
+    width: 50px !important;
+} */
