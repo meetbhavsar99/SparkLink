@@ -7,22 +7,22 @@ SparkLink is a platform designed to connect University of Windsor departments wi
 ```
 SparkLink-main/
 │── recommendation/            # Recommendation system module
-│── sparklink/                 # Frontend (https://raw.githubusercontent.com/User/SparkLink/main/cantily/SparkLink.zip)
-│── sparklink-backend/         # Backend (https://raw.githubusercontent.com/User/SparkLink/main/cantily/SparkLink.zip, Express, MySQL)
+│── sparklink/                 # Frontend (React.js)
+│── sparklink-backend/         # Backend (Node.js, Express, MySQL)
 │── Sparklink-TestCases/       # Test cases for project
 │── node_modules/              # Dependencies
-│── https://raw.githubusercontent.com/User/SparkLink/main/cantily/SparkLink.zip               # Project dependencies
-│── https://raw.githubusercontent.com/User/SparkLink/main/cantily/SparkLink.zip          # Dependency lock file
-│── https://raw.githubusercontent.com/User/SparkLink/main/cantily/SparkLink.zip                  # Project documentation
+│── package.json               # Project dependencies
+│── package-lock.json          # Dependency lock file
+│── README.md                  # Project documentation
 ```
 
 ## Prerequisites
 
-- **https://raw.githubusercontent.com/User/SparkLink/main/cantily/SparkLink.zip** (v18 or later recommended)
+- **Node.js** (v18 or later recommended)
 - **MySQL** (Database setup required)
 - **npm** or **yarn** for package management
 
-## Backend Setup
+## Backend Setup (Node.js, Express, MySQL)
 
 1. Navigate to the backend directory:
    ```sh
@@ -38,10 +38,10 @@ SparkLink-main/
 
 4. Start the backend server:
    ```sh
-   npx nodemon https://raw.githubusercontent.com/User/SparkLink/main/cantily/SparkLink.zip
+   npx nodemon app.js
    ```
 
-## Frontend Setup (https://raw.githubusercontent.com/User/SparkLink/main/cantily/SparkLink.zip)
+## Frontend Setup (React.js)
 
 1. Navigate to the frontend directory:
    ```sh
@@ -76,7 +76,7 @@ SparkLink-main/
 
 ## Running the Project
 
-- **Backend**: `cd sparklink-backend && npx nodemon https://raw.githubusercontent.com/User/SparkLink/main/cantily/SparkLink.zip`
+- **Backend**: `cd sparklink-backend && npx nodemon app.js`
 - **Frontend**: `cd sparklink && npm start`
 
 Make sure both the backend and frontend are running simultaneously for full functionality.
@@ -92,18 +92,18 @@ Make sure both the backend and frontend are running simultaneously for full func
 
 Team of Winter 2025 -
 
-- [Meet Bhavsar](https://raw.githubusercontent.com/User/SparkLink/main/cantily/SparkLink.zip)
-- [Heet Patel](https://raw.githubusercontent.com/User/SparkLink/main/cantily/SparkLink.zip)
-- [Chaitanya Parikh](https://raw.githubusercontent.com/User/SparkLink/main/cantily/SparkLink.zip)
-- [Vinit Vekaria](https://raw.githubusercontent.com/User/SparkLink/main/cantily/SparkLink.zip)
+- [Meet Bhavsar](https://www.linkedin.com/in/meetkumar-bhavsar-0059ba1b5/)
+- [Heet Patel](https://www.linkedin.com/in/heet2002/)
+- [Chaitanya Parikh](https://www.linkedin.com/in/chaitanyap310/)
+- [Vinit Vekaria](https://www.linkedin.com/in/vinit-vekariaengineer/)
 
 Team of Fall 2024 -
 
-- [Kausar Fatema](https://raw.githubusercontent.com/User/SparkLink/main/cantily/SparkLink.zip)
-- [Pooja Vishwakarma](https://raw.githubusercontent.com/User/SparkLink/main/cantily/SparkLink.zip)
-- [Fajuko Michael](https://raw.githubusercontent.com/User/SparkLink/main/cantily/SparkLink.zip)
-- [Joshua Daniel](https://raw.githubusercontent.com/User/SparkLink/main/cantily/SparkLink.zip)
-- [Gireesh Chandra](https://raw.githubusercontent.com/User/SparkLink/main/cantily/SparkLink.zip)
+- [Kausar Fatema](https://www.linkedin.com/in/kausar-fatema-9060871b1/)
+- [Pooja Vishwakarma](https://www.linkedin.com/in/pooja-vishwakarma95/)
+- [Fajuko Michael](https://www.linkedin.com/in/fajuko-odunayo-5256a1265/)
+- [Joshua Daniel](https://www.linkedin.com/in/joshua-daniel1999/)
+- [Gireesh Chandra](https://www.linkedin.com/in/gireesh-busam/)
 - [Amanbhai Arifbhai](#)
 
 ## License
